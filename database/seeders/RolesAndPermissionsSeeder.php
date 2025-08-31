@@ -1,0 +1,49 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+
+class RolesAndPermissionsSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        $permissions = [
+            'courses.create',
+            'courses.read',
+            'courses.update',
+            'courses.delete',
+        ];
+
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
+        foreach ($permissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission]);
+        }
+
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
+        Role::firstOrCreate(['name' => 'student']);
+
+        Role::firstOrCreate(['name' => 'professor'])
+            ->syncPermissions([
+                'courses.read'
+            ]);
+
+        Role::firstOrCreate(['name' => 'coordinator'])
+            ->syncPermissions([
+                'courses.create',
+                'courses.read',
+                'courses.update',
+                'courses.delete',
+            ]);
+
+        Role::firstOrCreate(['name' => 'admin'])
+            ->syncPermissions(Permission::all());
+    }
+}
