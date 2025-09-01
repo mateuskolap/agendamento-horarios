@@ -3,9 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Student;
-use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,17 +13,12 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            RolesAndPermissionsSeeder::class
+            RolesAndPermissionsSeeder::class,
+            AdminUserSeeder::class
         ]);
 
-        Student::factory(20)->create();
-
-        $admin = User::firstOrCreate([
-            'name' => 'admin',
-            'email' => 'admin@unicv.edu.br',
-            'password' => Hash::make('admin@123'),
-        ]);
-
-        $admin->assignRole('admin');
+        if (app()->environment('local')) {
+            Student::factory(20)->create();
+        }
     }
 }
