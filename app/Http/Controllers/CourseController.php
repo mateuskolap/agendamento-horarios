@@ -9,7 +9,7 @@ class CourseController extends Controller
 {
     public function index()
     {
-        $courses = Course::all();
+        $courses = Course::ofUser()->get();
 
         return Inertia::render('courses/Index', [
             'courses' => $courses,

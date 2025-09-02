@@ -9,6 +9,7 @@ defineProps<{
 
 <template>
     <Head title="Cursos - Agendamento de Horários" />
+    {{ courses }}
 </template>
 
 <style scoped></style>
