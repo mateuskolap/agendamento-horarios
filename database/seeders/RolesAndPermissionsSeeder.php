@@ -14,8 +14,8 @@ class RolesAndPermissionsSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
+            'courses.index',
             'courses.create',
-            'courses.read',
             'courses.update',
             'courses.delete',
         ];
@@ -32,13 +32,13 @@ class RolesAndPermissionsSeeder extends Seeder
 
         Role::firstOrCreate(['name' => 'professor'])
             ->syncPermissions([
-                'courses.read'
+                'courses.index'
             ]);
 
         Role::firstOrCreate(['name' => 'coordinator'])
             ->syncPermissions([
+                'courses.index',
                 'courses.create',
-                'courses.read',
                 'courses.update',
                 'courses.delete',
             ]);
