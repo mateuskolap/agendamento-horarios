@@ -9,8 +9,6 @@ class CourseStudent extends Pivot
 {
     use SoftDeletes;
 
-    protected $table = 'course_student';
-
     protected $fillable = [
         'student_id',
         'course_id'

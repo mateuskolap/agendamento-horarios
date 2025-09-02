@@ -31,7 +31,8 @@ class Student extends Model
             'course_id'
         )
             ->using(CourseStudent::class)
-            ->wherePivot('deleted_at', null)
+            ->withPivot('id', 'deleted_at')
+            ->wherePivotNull('deleted_at')
             ->withTimestamps();
     }
 }

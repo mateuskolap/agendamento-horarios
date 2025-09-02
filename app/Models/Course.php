@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Course extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -24,7 +25,8 @@ class Course extends Model
             'student_id'
         )
             ->using(CourseStudent::class)
-            ->wherePivot('deleted_at', null)
+            ->withPivot('id', 'deleted_at')
+            ->wherePivotNull('deleted_at')
             ->withTimestamps();
     }
 }
