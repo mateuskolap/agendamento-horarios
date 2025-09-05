@@ -1,7 +1,10 @@
 <script lang="ts" setup>
+import Course from '@/types/Course';
 import { Head } from '@inertiajs/vue3';
 
-defineProps<{}>();
+defineProps<{
+    courses: Course[];
+}>();
 </script>
 
 <template>

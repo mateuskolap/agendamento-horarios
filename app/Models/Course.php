@@ -15,7 +15,8 @@ class Course extends Model
 
     protected $fillable = [
         'name',
-        'description'
+        'description',
+        'coordinator_id'
     ];
 
     public function coordinator(): BelongsTo
