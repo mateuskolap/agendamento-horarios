@@ -14,7 +14,12 @@ class RolesAndPermissionsSeeder extends Seeder
      */
     public function run(): void
     {
-        $permissions = [];
+        $permissions = [
+            'courses.index',
+            'courses.store',
+            'courses.update',
+            'courses.destroy',
+        ];
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
