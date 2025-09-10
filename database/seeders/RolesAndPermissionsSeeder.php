@@ -15,6 +15,8 @@ class RolesAndPermissionsSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
+            'users.index',
+            'users.register',
             'courses.index',
             'courses.store',
             'courses.update',
