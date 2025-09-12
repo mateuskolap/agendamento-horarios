@@ -1,12 +1,25 @@
 <script setup lang="ts">
-import AppLogoIcon from '@/components/AppLogoIcon.vue';
+import { useSidebar } from '@/components/ui/sidebar/utils';
+import { computed } from 'vue';
+
+const { state } = useSidebar();
+
+const logoSrc = computed(() => {
+    return state.value === 'collapsed' ? '/unicv-folha.png' : '/unicv-logo-site.png';
+});
+
+const logoClasses = computed(() => {
+    return state.value === 'collapsed' ? 'h-8' : 'h-12';
+});
 </script>
 
 <template>
-    <div class="flex aspect-square size-8 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
-        <AppLogoIcon class="size-5 fill-current text-white dark:text-black" />
-    </div>
-    <div class="ml-1 grid flex-1 text-left text-sm">
-        <span class="mb-0.5 truncate leading-tight font-semibold">Laravel Starter Kit</span>
+    <div class="flex items-center justify-center">
+        <img
+            :src="logoSrc"
+            :class="logoClasses"
+            alt="Logo UNICV"
+            class="transition-all duration-200"
+        />
     </div>
 </template>
