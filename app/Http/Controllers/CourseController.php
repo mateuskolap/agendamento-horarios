@@ -10,10 +10,14 @@ class CourseController extends Controller
 {
     public function index()
     {
-        $courses = Course::paginate(25);
+        $courses_list = Course::query()
+            ->select(['id', 'name', 'organization_id', 'coordinator_id'])
+            ->with(['coordinator:id,user_id', 'coordinator.user:id,name'])
+            ->orderBy('courses.name')
+            ->paginate(25);
 
-        return Inertia::render('courses/Index', [
-            'courses' => $courses,
+        return Inertia::render('courses/Courses', [
+            'courses_list' => $courses_list,
         ]);
     }
 
