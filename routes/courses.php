@@ -13,7 +13,7 @@ Route::prefix('/courses')->name('courses.')->group(function () {
     Route::put('/', [CourseController::class, 'update'])
         ->middleware('can:courses.update')
         ->name('update');
-    Route::delete('/', [CourseController::class, 'destroy'])
+    Route::delete('/{course}', [CourseController::class, 'destroy'])
         ->middleware('can:courses.delete')
         ->name('destroy');
 });

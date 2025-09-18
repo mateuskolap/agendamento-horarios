@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Coordinator;
 use App\Models\Course;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -16,8 +17,11 @@ class CourseController extends Controller
             ->orderBy('courses.name')
             ->paginate(25);
 
+        $coordinators_list = Coordinator::all();
+
         return Inertia::render('courses/Courses', [
             'courses_list' => $courses_list,
+            'coordinators_list' => $coordinators_list,
         ]);
     }
 
