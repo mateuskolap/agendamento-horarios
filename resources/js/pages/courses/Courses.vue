@@ -147,7 +147,7 @@ function openModal(course: Course | null) {
                 </div>
             </template>
         </PageLayout>
-    </AppLayout>
 
-    <CourseFormModal v-bind="modal.modalBindInfo()" @update:is-open="modal.setOpen($event)" />
+        <CourseFormModal v-bind="modal.modalBindInfo()" @update:is-open="modal.setOpen($event)" />
+    </AppLayout>
 </template>
