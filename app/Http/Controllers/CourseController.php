@@ -44,9 +44,9 @@ class CourseController extends Controller
     public function update(Request $request, Course $course)
     {
         $validated = $request->validate([
-            'name' => ['nullable', 'string'],
-            'organization_id' => ['nullable', 'exists:organizations,id'],
-            'coordinator_id' => ['nullable', 'exists:coordinators,id']
+            'name' => ['required', 'string'],
+            'organization_id' => ['required', 'exists:organizations,id'],
+            'coordinator_id' => ['required', 'exists:coordinators,id']
         ]);
 
         $course->update($validated);
