@@ -1,5 +1,5 @@
-import Organization from '@/types/Organization';
-import Coordinator from '@/types/Coordinator';
+import type Organization from '@/types/Organization';
+import type Coordinator from '@/types/Coordinator';
 
 export default interface Course {
     id: number;
