@@ -15,8 +15,8 @@ class CourseController extends Controller
         $courses_list = Course::query()
             ->select(['id', 'name', 'organization_id', 'coordinator_id'])
             ->with(['coordinator:id,user_id', 'coordinator.user:id,name', 'organization:id,name'])
-            ->orderBy('courses.name')
-            ->paginate(25);
+            ->orderBy('courses.id')
+            ->paginate(15);
 
         $coordinators_list = Coordinator::with('user:id,name')->get();
         $organizations_list = Organization::all();

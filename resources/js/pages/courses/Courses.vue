@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import PageLayout from '@/components/PageLayout.vue';
 import { Button } from '@/components/ui/button';
+import MobileCardList from '@/components/ui/mobile-card/MobileCardList.vue';
 import { useModal } from '@/composables/useModal';
 import AppLayout from '@/layouts/AppLayout.vue';
+import CourseField from '@/pages/courses/components/CourseField.vue';
 import CourseFormModal from '@/pages/courses/modals/CourseFormModal.vue';
 import courses from '@/routes/courses';
 import type { BreadcrumbItem } from '@/types';
@@ -148,9 +150,41 @@ function openModal(course: Course | null) {
                 </Button>
             </template>
             <template #table>
-                <NDataTable :columns="columns" :data="courses_list.data" />
-                <div class="flex justify-end">
-                    <NPagination v-model:page="currentPage" :page-count="courses_list.last_page" />
+                <div class="hidden md:block">
+                    <NDataTable :columns="columns" :data="courses_list.data" size="small" />
+                    <div class="mt-4 flex justify-end">
+                        <NPagination v-model:page="currentPage" :page-count="courses_list.last_page" />
+                    </div>
+                </div>
+
+                <div class="md:hidden">
+                    <MobileCardList :items="courses_list.data" class="space-y-3" item-key="id">
+                        <template #header-left="{ item: course }">
+                            <p class="truncate font-medium text-gray-900 dark:text-gray-100">{{ course.id }}. {{ course.name }}</p>
+                        </template>
+
+                        <template #header-right="{ item: course }">
+                            <NButton size="small" tertiary @click="openModal(course)">
+                                <template #icon>
+                                    <NIcon><Pencil /></NIcon>
+                                </template>
+                            </NButton>
+                            <NButton size="small" tertiary @click="confirmDelete(course)">
+                                <template #icon>
+                                    <NIcon class="text-red-500 dark:text-red-700"><Trash /></NIcon>
+                                </template>
+                            </NButton>
+                        </template>
+
+                        <template #default="{ item: course }">
+                            <CourseField :value="course.organization?.name" label="Organização" />
+                            <CourseField :value="course.coordinator?.user?.name" label="Coordenador" />
+                        </template>
+                    </MobileCardList>
+
+                    <div class="mt-4 flex justify-center">
+                        <NPagination v-model:page="currentPage" :page-count="courses_list.last_page" />
+                    </div>
                 </div>
             </template>
         </PageLayout>
