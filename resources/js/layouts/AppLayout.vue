@@ -2,7 +2,7 @@
 import AppLayout from '@/layouts/app/AppSidebarLayout.vue';
 import type { BreadcrumbItemType } from '@/types';
 import { useNaiveTheme } from '@/composables/useNaiveTheme';
-import ptBR from 'naive-ui/es/locales/common/ptBR'
+import ptBR from 'naive-ui/es/locales/common/ptBR';
 
 interface Props {
     breadcrumbs?: BreadcrumbItemType[];
