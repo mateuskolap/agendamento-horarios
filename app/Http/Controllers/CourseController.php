@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Coordinator;
 use App\Models\Course;
+use App\Models\Organization;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -10,10 +12,19 @@ class CourseController extends Controller
 {
     public function index()
     {
-        $courses = Course::paginate(25);
+        $courses_list = Course::query()
+            ->select(['id', 'name', 'organization_id', 'coordinator_id'])
+            ->with(['coordinator:id,user_id', 'coordinator.user:id,name', 'organization:id,name'])
+            ->orderBy('courses.id')
+            ->paginate(15);
 
-        return Inertia::render('courses/Index', [
-            'courses' => $courses,
+        $coordinators_list = Coordinator::with('user:id,name')->get();
+        $organizations_list = Organization::all();
+
+        return Inertia::render('courses/Courses', [
+            'courses_list' => $courses_list,
+            'coordinators_list' => $coordinators_list,
+            'organizations_list' => $organizations_list,
         ]);
     }
 

@@ -165,3 +165,43 @@
         @apply bg-background text-foreground;
     }
 }
+
+/* SweetAlert2: dark mode overrides */
+.dark .swal2-popup {
+    background: var(--popover);
+    color: var(--popover-foreground);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.dark .swal2-title {
+    color: var(--foreground);
+}
+
+.dark .swal2-html-container {
+    color: var(--muted-foreground);
+}
+
+.dark .swal2-icon {
+    border-color: var(--border);
+}
+
+.dark .swal2-input,
+.dark .swal2-textarea,
+.dark .swal2-select {
+    background: var(--input);
+    color: var(--foreground);
+    border: 1px solid var(--border);
+}
+
+.dark .swal2-actions .swal2-styled:focus {
+    box-shadow: 0 0 0 2px var(--ring);
+}
+
+.dark .swal2-close {
+    color: var(--muted-foreground);
+}
+
+.dark .swal2-timer-progress-bar {
+    background: var(--primary);
+}
