@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import PageLayout from '@/components/PageLayout.vue';
 import { Button } from '@/components/ui/button';
 import { useModal } from '@/composables/useModal';
@@ -8,16 +8,18 @@ import courses from '@/routes/courses';
 import type { BreadcrumbItem } from '@/types';
 import Coordinator from '@/types/Coordinator';
 import Course from '@/types/Course';
+import Organization from '@/types/Organization';
 import PaginatedData from '@/types/PaginatedData';
 import { Head, router } from '@inertiajs/vue3';
 import { Add, Pencil, Trash } from '@vicons/ionicons5';
 import { NButton, NDataTable, NIcon, NPagination } from 'naive-ui';
-import { h, ref, watch } from 'vue';
 import Swal from 'sweetalert2';
+import { h, ref, watch } from 'vue';
 
 const props = defineProps<{
     courses_list: PaginatedData<Course>;
     coordinators_list: Coordinator[];
+    organizations_list: Organization[];
 }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -54,6 +56,7 @@ async function confirmDelete(course: Course) {
 
 const columns = [
     { title: 'ID', key: 'id' },
+    { title: 'Organização', key: 'organization.name' },
     { title: 'Name', key: 'name' },
     { title: 'Coordenador', key: 'coordinator.user.name' },
     {
@@ -105,10 +108,12 @@ const modal = useModal<{
     course: Course | null;
     mode: 'create' | 'edit';
     coordinators_list: Coordinator[];
+    organizations_list: Organization[];
 }>({
     course: null,
     mode: 'create',
     coordinators_list: props.coordinators_list,
+    organizations_list: props.organizations_list,
 });
 
 function openModal(course: Course | null) {
@@ -117,6 +122,7 @@ function openModal(course: Course | null) {
             course: course,
             mode: 'edit',
             coordinators_list: props.coordinators_list,
+            organizations_list: props.organizations_list,
         });
 
         return;
@@ -126,6 +132,7 @@ function openModal(course: Course | null) {
         course: null,
         mode: 'create',
         coordinators_list: props.coordinators_list,
+        organizations_list: props.organizations_list,
     });
 }
 </script>
@@ -133,9 +140,9 @@ function openModal(course: Course | null) {
 <template>
     <Head title="Cursos" />
     <AppLayout :breadcrumbs="breadcrumbs">
-        <PageLayout title="Cursos" description="Gerencie os cursos">
+        <PageLayout description="Gerencie os cursos" title="Cursos">
             <template #buttons>
-                <Button variant="outline" class="cursor-pointer hover:bg-green-500 hover:dark:bg-green-700" @click="openModal(null)">
+                <Button class="cursor-pointer hover:bg-green-500 hover:dark:bg-green-700" variant="outline" @click="openModal(null)">
                     <Add />
                     Adicionar
                 </Button>

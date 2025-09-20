@@ -8,9 +8,9 @@ Route::prefix('/courses')->name('courses.')->group(function () {
         ->middleware('can:courses.index')
         ->name('index');
     Route::post('/', [CourseController::class, 'store'])
-        ->middleware('can:courses.create')
+        ->middleware('can:courses.store')
         ->name('store');
-    Route::put('/', [CourseController::class, 'update'])
+    Route::put('/{course}', [CourseController::class, 'update'])
         ->middleware('can:courses.update')
         ->name('update');
     Route::delete('/{course}', [CourseController::class, 'destroy'])
