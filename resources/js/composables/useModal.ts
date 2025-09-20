@@ -2,7 +2,7 @@ import {ref} from "vue";
 
 export function useModal<T>(initialParams?: T) {
   const isOpen = ref<boolean>(false);
-  const params = ref<T|null>(initialParams || null);
+  const params = ref<T | null>(initialParams ?? null);
 
   function toggle(): void {
     isOpen.value = !isOpen.value;
