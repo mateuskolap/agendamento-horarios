@@ -8,7 +8,7 @@ Route::prefix('/courses')->name('courses.')->group(function () {
         ->middleware('can:courses.index')
         ->name('index');
     Route::post('/', [CourseController::class, 'store'])
-        ->middleware('can:courses.store')
+        ->middleware('can:courses.create')
         ->name('store');
     Route::put('/{course}', [CourseController::class, 'update'])
         ->middleware('can:courses.update')
