@@ -11,9 +11,12 @@ import { Add, Pencil, Trash } from '@vicons/ionicons5';
 import { NButton, NIcon, NPagination } from 'naive-ui';
 import { h } from 'vue';
 import { usePagination } from '@/composables/usePagination';
+import UsersFilters from '@/pages/users/components/UsersFilters.vue';
+import Role from '@/types/Role';
 
 defineProps<{
     users_list: PaginatedData<User>;
+    roles_list: Role[];
 }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -85,6 +88,7 @@ const { currentPage } = usePagination({
             </template>
 
             <template #filters>
+                <UsersFilters :roles_list="roles_list"/>
             </template>
 
             <template #table>
