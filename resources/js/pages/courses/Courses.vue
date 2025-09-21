@@ -2,7 +2,9 @@
 import PageLayout from '@/components/PageLayout.vue';
 import { Button } from '@/components/ui/button';
 import MobileCardList from '@/components/ui/mobile-card/MobileCardList.vue';
+import { useConfirmDelete } from '@/composables/useConfirmDelete';
 import { useModal } from '@/composables/useModal';
+import { usePagination } from '@/composables/usePagination';
 import AppLayout from '@/layouts/AppLayout.vue';
 import CourseField from '@/pages/courses/components/CourseField.vue';
 import CourseFormModal from '@/pages/courses/modals/CourseFormModal.vue';
@@ -12,11 +14,10 @@ import Coordinator from '@/types/Coordinator';
 import Course from '@/types/Course';
 import Organization from '@/types/Organization';
 import PaginatedData from '@/types/PaginatedData';
-import { Head, router } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import { Add, Pencil, Trash } from '@vicons/ionicons5';
 import { NButton, NDataTable, NIcon, NPagination } from 'naive-ui';
-import Swal from 'sweetalert2';
-import { h, ref, watch } from 'vue';
+import { h } from 'vue';
 
 const props = defineProps<{
     courses_list: PaginatedData<Course>;
@@ -31,35 +32,12 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-async function confirmDelete(course: Course) {
-    const result = await Swal.fire({
-        title: 'Tem certeza?',
-        text: 'Esta ação não pode ser desfeita!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Sim, excluir!',
-        cancelButtonText: 'Cancelar',
-    });
-
-    if (result.isConfirmed) {
-        router.delete(courses.destroy(course.id), {
-            onSuccess: async () => {
-                await Swal.fire({
-                    title: 'Excluído!',
-                    text: 'O registro foi excluído com sucesso.',
-                    icon: 'success',
-                });
-            },
-        });
-    }
-}
+const { confirmDelete } = useConfirmDelete();
 
 const columns = [
     { title: 'ID', key: 'id' },
     { title: 'Organização', key: 'organization.name' },
-    { title: 'Name', key: 'name' },
+    { title: 'Nome', key: 'name' },
     { title: 'Coordenador', key: 'coordinator.user.name' },
     {
         title: 'Ações',
@@ -82,7 +60,7 @@ const columns = [
                     {
                         tertiary: true,
                         size: 'small',
-                        onClick: () => confirmDelete(row),
+                        onClick: () => confirmDelete(courses.destroy(row.id).url),
                     },
                     {
                         icon: () => h(NIcon, { class: 'text-red-500 dark:text-red-700' }, { default: () => h(Trash) }),
@@ -93,17 +71,9 @@ const columns = [
     },
 ];
 
-const currentPage = ref(1);
-
-watch(currentPage, (newPage) => {
-    router.get(
-        courses.index().url,
-        { page: newPage },
-        {
-            preserveState: true,
-            preserveScroll: true,
-        },
-    );
+const { currentPage } = usePagination({
+    route: courses.index().url,
+    params: {},
 });
 
 const modal = useModal<{
@@ -152,9 +122,6 @@ function openModal(course: Course | null) {
             <template #table>
                 <div class="hidden md:block">
                     <NDataTable :columns="columns" :data="courses_list.data" size="small" />
-                    <div class="mt-4 flex justify-end">
-                        <NPagination v-model:page="currentPage" :page-count="courses_list.last_page" />
-                    </div>
                 </div>
 
                 <div class="md:hidden">
@@ -181,10 +148,9 @@ function openModal(course: Course | null) {
                             <CourseField :value="course.coordinator?.user?.name" label="Coordenador" />
                         </template>
                     </MobileCardList>
-
-                    <div class="mt-4 flex justify-center">
-                        <NPagination v-model:page="currentPage" :page-count="courses_list.last_page" />
-                    </div>
+                </div>
+                <div class="mt-4 flex justify-end">
+                    <NPagination v-model:page="currentPage" :page-count="courses_list.last_page" />
                 </div>
             </template>
         </PageLayout>

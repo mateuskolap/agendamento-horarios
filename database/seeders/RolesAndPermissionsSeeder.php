@@ -18,6 +18,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'courses.create',
             'courses.update',
             'courses.delete',
+            'users.index'
         ];
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
