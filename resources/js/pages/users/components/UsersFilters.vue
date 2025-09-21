@@ -3,8 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import users from '@/routes/users';
 import Role from '@/types/Role';
-import { useForm } from '@inertiajs/vue3';
-import { Search } from '@vicons/ionicons5';
+import { router, useForm } from '@inertiajs/vue3';
+import { Search, RefreshOutline } from '@vicons/ionicons5';
 import { computed } from 'vue';
 
 const props = defineProps<{
@@ -34,7 +34,16 @@ const handleSubmit = () => {
         <div class="grid grid-cols-12 gap-3">
             <Input v-model="form.name" class="col-span-5" placeholder="Digite um nome" />
             <NSelect v-model:value="form.role_id" class="col-span-5" placeholder="Selecione um papel" :options="rolesOptions" clearable filterable />
-            <Button class="col-span-2 cursor-pointer" variant="outline">
+            <Button
+                class="col-span-1 cursor-pointer"
+                variant="outline"
+                type="button"
+                @click="router.get(users.index().url, {}, { preserveState: true, preserveScroll: true })"
+            >
+                <RefreshOutline />
+                Limpar
+            </Button>
+            <Button class="col-span-1 cursor-pointer" variant="outline">
                 <Search />
                 Pesquisar
             </Button>
