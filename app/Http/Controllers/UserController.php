@@ -20,16 +20,16 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'name' => ['nullable', 'string'],
-            'role' => ['nullable', Rule::in(Role::pluck('name')->toArray())],
+            'role_id' => ['nullable', 'exists:roles,id'],
         ]);
 
         $users_list = User::query()
             ->when(!empty($validated['name']), function ($query) use ($validated) {
                 $query->where('users.name', 'like', '%' . $validated['name'] . '%');
             })
-            ->when(!empty($validated['role']), function ($query) use ($validated) {
+            ->when(!empty($validated['role_id']), function ($query) use ($validated) {
                 $query->whereHas('roles', function ($query) use ($validated) {
-                    $query->where('roles.name', $validated['role']);
+                    $query->where('roles.id', $validated['role_id']);
                 });
             })
             ->with('roles:id,name')
