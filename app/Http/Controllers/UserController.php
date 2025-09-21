@@ -7,17 +7,15 @@ use App\Models\Professor;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
-use Inertia\Response;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(Request $request)
     {
         $request->validate([
             'name' => ['nullable', 'string'],
@@ -34,7 +32,7 @@ class UserController extends Controller
                 });
             })
             ->with('roles:id,name')
-            ->paginate(15)
+            ->paginate(10)
             ->withQueryString();
 
         $roles_list = Role::select('id', 'name')->get();
@@ -45,7 +43,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
