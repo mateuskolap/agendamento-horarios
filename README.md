@@ -16,10 +16,7 @@ Integrantes do Grupo: Mateus Serafim, Rian Torres e Luiz Piovisan
 - Design patterns adotados
 - Como rodar o projeto (Local e Docker/Sail)
 - Front-end (Vue 3 + Vite)
-- Filas e agendamentos (Queue/Schedule)
-- Testes e qualidade
 - Convenções e fluxo de Git
-- Licença
 
 ---
 
