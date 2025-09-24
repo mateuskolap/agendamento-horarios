@@ -189,8 +189,3 @@ Conventional Commits:
 
 - Dúvidas e problemas: abrir Issues com descrição, passos para reproduzir e evidências.
 - Segurança: para vulnerabilidades, preferir contato privado com os mantenedores antes de abrir issue pública.
-
-Integrantes do Grupo:
-- Mateus Serafim
-- Rian Torres
-- Luiz Piovisan
