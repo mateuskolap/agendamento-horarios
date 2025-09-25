@@ -4,6 +4,7 @@ Sistema web para gestão de agendas e marcação de horários, com foco em dispo
 
 - Diagrama do Banco de Dados: https://github.com/user-attachments/files/22503711/Diagrama.em.branco.pdf
 - Documentação detalhada: https://docs.google.com/document/d/1VnPKu9jjnGJqkdoFHQalZ5uvimMnO69b-xxJSnQ_wlQ/edit?usp=sharing
+- Figma: https://www.figma.com/proto/U0BeBhuyLpBFoonS5b0DDK/Sem-t%C3%ADtulo?t=clbf0e6XlwHRE8Uj-1
 
 Integrantes do Grupo: Mateus Serafim, Rian Torres e Luiz Piovisan
 
