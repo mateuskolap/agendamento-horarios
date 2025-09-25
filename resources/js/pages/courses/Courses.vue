@@ -7,6 +7,7 @@ import { useModal } from '@/composables/useModal';
 import { usePagination } from '@/composables/usePagination';
 import AppLayout from '@/layouts/AppLayout.vue';
 import CourseField from '@/pages/courses/components/CourseField.vue';
+import CoursesFilters from '@/pages/courses/components/CoursesFilters.vue';
 import CourseFormModal from '@/pages/courses/modals/CourseFormModal.vue';
 import courses from '@/routes/courses';
 import type { BreadcrumbItem } from '@/types';
@@ -18,9 +19,8 @@ import { Head } from '@inertiajs/vue3';
 import { Add, Pencil, Trash } from '@vicons/ionicons5';
 import { NButton, NDataTable, NIcon, NPagination } from 'naive-ui';
 import { h } from 'vue';
-import CoursesFilters from '@/pages/courses/components/CoursesFilters.vue';
 
-const props = defineProps<{
+defineProps<{
     courses_list: PaginatedData<Course>;
     coordinators_list: Coordinator[];
     organizations_list: Organization[];
@@ -80,13 +80,9 @@ const { currentPage } = usePagination({
 const modal = useModal<{
     course: Course | null;
     mode: 'create' | 'edit';
-    coordinators_list: Coordinator[];
-    organizations_list: Organization[];
 }>({
     course: null,
     mode: 'create',
-    coordinators_list: props.coordinators_list,
-    organizations_list: props.organizations_list,
 });
 
 function openModal(course: Course | null) {
@@ -94,8 +90,6 @@ function openModal(course: Course | null) {
         modal.open({
             course: course,
             mode: 'edit',
-            coordinators_list: props.coordinators_list,
-            organizations_list: props.organizations_list,
         });
 
         return;
@@ -104,8 +98,6 @@ function openModal(course: Course | null) {
     modal.open({
         course: null,
         mode: 'create',
-        coordinators_list: props.coordinators_list,
-        organizations_list: props.organizations_list,
     });
 }
 </script>
@@ -159,6 +151,11 @@ function openModal(course: Course | null) {
             </template>
         </PageLayout>
 
-        <CourseFormModal v-bind="modal.modalBindInfo()" @update:is-open="modal.setOpen($event)" :coordinators_list="coordinators_list"/>
+        <CourseFormModal
+            v-bind="modal.modalBindInfo()"
+            @update:is-open="modal.setOpen($event)"
+            :coordinators_list="coordinators_list"
+            :organizations_list="organizations_list"
+        />
     </AppLayout>
 </template>

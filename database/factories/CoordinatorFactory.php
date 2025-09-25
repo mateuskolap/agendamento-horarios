@@ -13,11 +13,13 @@ class CoordinatorFactory extends Factory
 
     public function definition(): array
     {
+        $user = User::factory()->create()->assignRole('coordinator');
+
         return [
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
 
-            'user_id' => User::factory(),
+            'user_id' => $user->id,
         ];
     }
 }

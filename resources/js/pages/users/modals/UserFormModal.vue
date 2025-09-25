@@ -33,13 +33,13 @@ const form = useForm<{
     email: string;
     password: string;
     password_confirmation: string;
-    roles: number[];
+    role_id: number | null;
 }>({
     name: '',
     email: '',
     password: '',
     password_confirmation: '',
-    roles: [],
+    role_id: null,
 });
 
 watch(
@@ -51,7 +51,7 @@ watch(
             form.email = user.email;
             form.password = '';
             form.password_confirmation = '';
-            form.roles = user.roles.map((r) => r.id);
+            form.role_id = user.roles.length > 0 ? user.roles[0].id : null;
             return;
         }
 
@@ -59,7 +59,7 @@ watch(
         form.email = '';
         form.password = '';
         form.password_confirmation = '';
-        form.roles = [];
+        form.role_id = null;
     },
     { immediate: true },
 );
@@ -90,12 +90,12 @@ function handleSubmit() {
                 <Input v-model="form.password" type="password" :placeholder="mode === 'edit' ? 'Digite a Nova Senha (deixe vazio para manter)' : 'Digite a Senha'" />
                 <Input v-if="mode === 'create' || form.password" v-model="form.password_confirmation" type="password" placeholder="Confirme a Senha" />
                 <NSelect
-                    v-model:value="form.roles"
+                    v-if="mode === 'create'"
+                    v-model:value="form.role_id"
                     :options="rolesOptions"
-                    multiple
                     filterable
                     clearable
-                    placeholder="Selecione os Papéis do Usuário"
+                    placeholder="Selecione o Papel do Usuário"
                 />
             </div>
             <div class="flex justify-end pt-3">

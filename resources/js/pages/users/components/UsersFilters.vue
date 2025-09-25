@@ -40,7 +40,7 @@ const handleSubmit = () => {
                 class="col-span-1 cursor-pointer"
                 variant="outline"
                 type="button"
-                @click="router.get(users.index().url, {}, { preserveState: true, preserveScroll: true })"
+                @click="router.get(users.index().url, {}, { preserveScroll: true })"
             >
                 <RefreshOutline />
             </Button>

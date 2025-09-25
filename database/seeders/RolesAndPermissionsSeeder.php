@@ -33,5 +33,7 @@ class RolesAndPermissionsSeeder extends Seeder
             ->syncPermissions(Permission::all());
 
         Role::firstOrCreate(['name' => 'coordinator']);
+
+        Role::firstOrCreate(['name' => 'student']);
     }
 }
