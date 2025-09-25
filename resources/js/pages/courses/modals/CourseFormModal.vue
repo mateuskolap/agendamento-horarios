@@ -81,11 +81,11 @@ function handleSubmit() {
         <form @submit.prevent="handleSubmit">
             <div class="flex flex-col gap-3">
                 <Input v-model="form.name" placeholder="Digite o Nome do Curso" />
-                <NSelect v-model:value="form.organization_id" :options="organizationsOptions" placeholder="Selecione a Organização" />
-                <NSelect v-model:value="form.coordinator_id" :options="coordinatorsOptions" placeholder="Selecione o Coordenador" />
+                <NSelect v-model:value="form.organization_id" :options="organizationsOptions" filterable clearable placeholder="Selecione a Organização" />
+                <NSelect v-model:value="form.coordinator_id" :options="coordinatorsOptions" filterable clearable placeholder="Selecione o Coordenador" />
             </div>
             <div class="flex justify-end pt-3">
-                <Button class="cursor-pointer" variant="outline">Salvar</Button>
+                <Button class="cursor-pointer hover:bg-emerald-500 dark:hover:bg-emerald-700" variant="outline">Salvar</Button>
             </div>
         </form>
     </Modal>

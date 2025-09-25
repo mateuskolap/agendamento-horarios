@@ -28,7 +28,7 @@ export function useNaiveTheme() {
                     borderFocus: 'none',
                     boxShadowFocus: '0 0 0 3px var(--color-ring/50)',
 
-                    heightSmall: '2.25rem', // h-9
+                    heightMedium: '2.25rem', // h-9
                     paddingSingle: '0.75rem', // p-3
 
                     border: isDarkMode.value ? '1px solid var(--color-ring)' : '1px solid black', // dark:border-gray-500 / border-black

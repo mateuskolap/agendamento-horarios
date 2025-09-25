@@ -1,49 +1,78 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import PageLayout from '@/components/PageLayout.vue';
 import { Button } from '@/components/ui/button';
 import MobileCardList from '@/components/ui/mobile-card/MobileCardList.vue';
 import { useConfirmDelete } from '@/composables/useConfirmDelete';
 import { useModal } from '@/composables/useModal';
-import { usePagination } from '@/composables/usePagination';
 import AppLayout from '@/layouts/AppLayout.vue';
-import CourseField from '@/pages/courses/components/CourseField.vue';
-import CoursesFilters from '@/pages/courses/components/CoursesFilters.vue';
-import CourseFormModal from '@/pages/courses/modals/CourseFormModal.vue';
-import courses from '@/routes/courses';
-import type { BreadcrumbItem } from '@/types';
-import Coordinator from '@/types/Coordinator';
-import Course from '@/types/Course';
-import Organization from '@/types/Organization';
+import UserField from '@/pages/users/components/UserField.vue';
+import UserFormModal from '@/pages/users/modals/UserFormModal.vue';
+import UsersFilters from '@/pages/users/components/UsersFilters.vue';
+import users from '@/routes/users';
+import type { BreadcrumbItem, User } from '@/types';
 import PaginatedData from '@/types/PaginatedData';
+import Role from '@/types/Role';
 import { Head } from '@inertiajs/vue3';
 import { Add, Pencil, Trash } from '@vicons/ionicons5';
 import { NButton, NDataTable, NIcon, NPagination } from 'naive-ui';
 import { h } from 'vue';
+import { usePagination } from '@/composables/usePagination';
 
-defineProps<{
-    courses_list: PaginatedData<Course>;
-    coordinators_list: Coordinator[];
-    organizations_list: Organization[];
+const props = defineProps<{
+    users_list: PaginatedData<User>;
+    roles_list: Role[];
 }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Cursos',
-        href: courses.index().url,
+        title: 'Usuários',
+        href: users.index().url,
     },
 ];
 
 const { confirmDelete } = useConfirmDelete();
 
+const modal = useModal<{
+    user: User | null;
+    mode: 'create' | 'edit';
+    roles_list: Role[];
+}>({
+    user: null,
+    mode: 'create',
+    roles_list: props.roles_list,
+});
+
+function openModal(user: User | null) {
+    if (user) {
+        modal.open({
+            user: user,
+            mode: 'edit',
+            roles_list: props.roles_list,
+        });
+        return;
+    }
+
+    modal.open({
+        user: null,
+        mode: 'create',
+        roles_list: props.roles_list,
+    });
+}
+
 const columns = [
     { title: 'ID', key: 'id' },
-    { title: 'Organização', key: 'organization.name' },
     { title: 'Nome', key: 'name' },
-    { title: 'Coordenador', key: 'coordinator.user.name' },
+    {
+        title: 'Papéis',
+        key: 'roles',
+        render(row: User) {
+            return row.roles.map((r) => r.name).join(', ');
+        },
+    },
     {
         title: 'Ações',
         key: 'actions',
-        render(row: Course) {
+        render(row: User) {
             return h('div', { class: 'flex gap-2' }, [
                 h(
                     NButton,
@@ -61,7 +90,7 @@ const columns = [
                     {
                         tertiary: true,
                         size: 'small',
-                        onClick: () => confirmDelete(courses.destroy(row.id).url),
+                        onClick: () => confirmDelete(users.destroy(row.id).url),
                     },
                     {
                         icon: () => h(NIcon, { class: 'text-red-500 dark:text-red-700' }, { default: () => h(Trash) }),
@@ -73,89 +102,69 @@ const columns = [
 ];
 
 const { currentPage } = usePagination({
-    route: courses.index().url,
+    route: users.index().url,
     params: {},
 });
-
-const modal = useModal<{
-    course: Course | null;
-    mode: 'create' | 'edit';
-}>({
-    course: null,
-    mode: 'create',
-});
-
-function openModal(course: Course | null) {
-    if (course) {
-        modal.open({
-            course: course,
-            mode: 'edit',
-        });
-
-        return;
-    }
-
-    modal.open({
-        course: null,
-        mode: 'create',
-    });
-}
 </script>
 
 <template>
-    <Head title="Cursos" />
+    <Head title="Usuários" />
     <AppLayout :breadcrumbs="breadcrumbs">
-        <PageLayout description="Gerencie os cursos" title="Cursos">
+        <PageLayout title="Usuários" description="Gerencie os usuários">
+
             <template #buttons>
                 <Button class="cursor-pointer hover:bg-green-500 hover:dark:bg-green-700" variant="outline" @click="openModal(null)">
                     <Add />
                     Adicionar
                 </Button>
             </template>
+
             <template #filters>
-                <CoursesFilters :coordinators_list="coordinators_list" :organizations_list="organizations_list" />
+                <UsersFilters :roles_list="roles_list"/>
             </template>
+
             <template #table>
                 <div class="hidden md:block">
-                    <NDataTable :columns="columns" :data="courses_list.data" size="small" />
+                    <NDataTable :columns="columns" :data="users_list.data" size="small" />
                 </div>
 
                 <div class="md:hidden">
-                    <MobileCardList :items="courses_list.data" class="space-y-3" item-key="id">
-                        <template #header-left="{ item: course }">
-                            <p class="truncate font-medium text-gray-900 dark:text-gray-100">{{ course.id }}. {{ course.name }}</p>
+                    <MobileCardList :items="users_list.data" class="space-y-3" item-key="id">
+                        <template #header-left="{ item: user }">
+                            <p class="truncate font-medium text-gray-900 dark:text-gray-100">{{ user.id }}. {{ user.name }}</p>
                         </template>
 
-                        <template #header-right="{ item: course }">
-                            <NButton size="small" tertiary @click="openModal(course)">
+                        <template #header-right="{ item: user }">
+                            <NButton size="small" tertiary @click="openModal(user)">
                                 <template #icon>
                                     <NIcon><Pencil /></NIcon>
                                 </template>
                             </NButton>
-                            <NButton size="small" tertiary @click="confirmDelete(course)">
+                            <NButton size="small" tertiary @click="confirmDelete(users.destroy(user.id).url)">
                                 <template #icon>
                                     <NIcon class="text-red-500 dark:text-red-700"><Trash /></NIcon>
                                 </template>
                             </NButton>
                         </template>
 
-                        <template #default="{ item: course }">
-                            <CourseField :value="course.organization?.name" label="Organização" />
-                            <CourseField :value="course.coordinator?.user?.name" label="Coordenador" />
+                        <template #default="{ item: user }">
+                            <UserField :value="user.roles.map((r: Role) => r.name).join(', ')" label="Papéis" />
                         </template>
                     </MobileCardList>
                 </div>
+
                 <div class="mt-4 flex justify-end">
-                    <NPagination v-model:page="currentPage" :page-count="courses_list.last_page" />
+                    <NPagination v-model:page="currentPage" :page-count="users_list.last_page" />
                 </div>
             </template>
+
         </PageLayout>
 
-        <CourseFormModal
-            v-bind="modal.modalBindInfo()"
-            @update:is-open="modal.setOpen($event)"
-            :coordinators_list="coordinators_list"
-            :organizations_list="organizations_list"
+        <UserFormModal
+            v-model:is-open="modal.isOpen.value"
+            :user="modal.getParams()?.user || null"
+            :mode="modal.getParams()?.mode || 'create'"
+            :roles_list="modal.getParams()?.roles_list || []"
         />
     </AppLayout>
 </template>
