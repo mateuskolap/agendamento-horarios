@@ -37,7 +37,8 @@ const handleSubmit = () => {
 
 <template>
     <form @submit.prevent="handleSubmit">
-        <div class="grid grid-cols-12 gap-3">
+        <!-- Layout para telas grandes -->
+        <div class="hidden md:grid md:grid-cols-12 gap-3">
             <Input v-model="form.name" class="col-span-4" placeholder="Nome do curso" />
             <NSelect v-model:value="form.coordinator_id" class="col-span-3" placeholder="Coordenador" :options="coordinatorsOptions" clearable filterable />
             <NSelect v-model:value="form.organization_id" class="col-span-3" placeholder="Organização" :options="organizationsOptions" clearable filterable />
@@ -48,12 +49,32 @@ const handleSubmit = () => {
                 @click="router.get(courses.index().url, {}, { preserveState: true, preserveScroll: true })"
             >
                 <RefreshOutline />
-                Limpar
             </Button>
             <Button class="col-span-1 cursor-pointer" variant="outline">
                 <Search />
-                Pesquisar
             </Button>
+        </div>
+
+        <!-- Layout para telas pequenas -->
+        <div class="md:hidden space-y-3">
+            <Input v-model="form.name" placeholder="Nome do curso" />
+            <NSelect v-model:value="form.coordinator_id" placeholder="Coordenador" :options="coordinatorsOptions" clearable filterable />
+            <NSelect v-model:value="form.organization_id" placeholder="Organização" :options="organizationsOptions" clearable filterable />
+            <div class="flex gap-2">
+                <Button
+                    class="flex-1 cursor-pointer"
+                    variant="outline"
+                    type="button"
+                    @click="router.get(courses.index().url, {}, { preserveState: true, preserveScroll: true })"
+                >
+                    <RefreshOutline />
+                    Limpar
+                </Button>
+                <Button class="flex-1 cursor-pointer" variant="outline">
+                    <Search />
+                    Pesquisar
+                </Button>
+            </div>
         </div>
     </form>
 </template>
