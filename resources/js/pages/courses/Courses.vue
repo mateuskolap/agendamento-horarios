@@ -18,6 +18,7 @@ import { Head } from '@inertiajs/vue3';
 import { Add, Pencil, Trash } from '@vicons/ionicons5';
 import { NButton, NDataTable, NIcon, NPagination } from 'naive-ui';
 import { h } from 'vue';
+import CoursesFilters from '@/pages/courses/components/CoursesFilters.vue';
 
 const props = defineProps<{
     courses_list: PaginatedData<Course>;
@@ -118,6 +119,9 @@ function openModal(course: Course | null) {
                     <Add />
                     Adicionar
                 </Button>
+            </template>
+            <template #filters>
+                <CoursesFilters :coordinators_list="coordinators_list" :organizations_list="organizations_list" />
             </template>
             <template #table>
                 <div class="hidden md:block">
