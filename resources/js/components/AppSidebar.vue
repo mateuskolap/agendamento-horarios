@@ -1,11 +1,13 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
+import courses from '@/routes/courses';
+import users from '@/routes/users';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { LayoutGrid } from 'lucide-vue-next';
+import { GraduationCap, LayoutGrid, Users } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
@@ -13,6 +15,16 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
+    },
+    {
+        title: 'Cursos',
+        href: courses.index(),
+        icon: GraduationCap,
+    },
+    {
+        title: 'Usuários',
+        href: users.index(),
+        icon: Users,
     },
 ];
 </script>
@@ -22,7 +34,7 @@ const mainNavItems: NavItem[] = [
         <SidebarHeader>
             <SidebarMenu>
                 <SidebarMenuItem>
-                    <SidebarMenuButton class="justify-center" size="lg" as-child>
+                    <SidebarMenuButton as-child class="justify-center" size="lg">
                         <Link :href="dashboard()">
                             <AppLogo />
                         </Link>

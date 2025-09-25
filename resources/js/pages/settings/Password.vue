@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import PasswordController from '@/actions/App/Http/Controllers/Settings/PasswordController';
 import InputError from '@/components/InputError.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
@@ -30,28 +30,31 @@ const currentPasswordInput = ref<HTMLInputElement | null>(null);
 
         <SettingsLayout>
             <div class="space-y-6">
-                <HeadingSmall title="Atualizar senha" description="Garanta que sua conta esteja usando uma senha longa e aleatória para manter a segurança" />
+                <HeadingSmall
+                    description="Garanta que sua conta esteja usando uma senha longa e aleatória para manter a segurança"
+                    title="Atualizar senha"
+                />
 
                 <Form
-                    v-bind="PasswordController.update.form()"
+                    v-slot="{ errors, processing, recentlySuccessful }"
                     :options="{
                         preserveScroll: true,
                     }"
-                    reset-on-success
                     :reset-on-error="['password', 'password_confirmation', 'current_password']"
                     class="space-y-6"
-                    v-slot="{ errors, processing, recentlySuccessful }"
+                    reset-on-success
+                    v-bind="PasswordController.update.form()"
                 >
                     <div class="grid gap-2">
                         <Label for="current_password">Senha atual</Label>
                         <Input
                             id="current_password"
                             ref="currentPasswordInput"
-                            name="current_password"
-                            type="password"
-                            class="mt-1 block w-full"
                             autocomplete="current-password"
+                            class="mt-1 block w-full"
+                            name="current_password"
                             placeholder="Senha atual"
+                            type="password"
                         />
                         <InputError :message="errors.current_password" />
                     </div>
@@ -61,11 +64,11 @@ const currentPasswordInput = ref<HTMLInputElement | null>(null);
                         <Input
                             id="password"
                             ref="passwordInput"
-                            name="password"
-                            type="password"
-                            class="mt-1 block w-full"
                             autocomplete="new-password"
+                            class="mt-1 block w-full"
+                            name="password"
                             placeholder="Nova senha"
+                            type="password"
                         />
                         <InputError :message="errors.password" />
                     </div>
@@ -74,17 +77,17 @@ const currentPasswordInput = ref<HTMLInputElement | null>(null);
                         <Label for="password_confirmation">Confirme a senha</Label>
                         <Input
                             id="password_confirmation"
-                            name="password_confirmation"
-                            type="password"
-                            class="mt-1 block w-full"
                             autocomplete="new-password"
+                            class="mt-1 block w-full"
+                            name="password_confirmation"
                             placeholder="Confirme a senha"
+                            type="password"
                         />
                         <InputError :message="errors.password_confirmation" />
                     </div>
 
                     <div class="flex items-center gap-4">
-                        <Button :disabled="processing">Salvar senha</Button>
+                        <Button :disabled="processing" class="cursor-pointer">Salvar senha</Button>
 
                         <Transition
                             enter-active-class="transition ease-in-out"

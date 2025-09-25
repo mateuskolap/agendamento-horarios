@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -16,9 +15,10 @@ class RolesAndPermissionsSeeder extends Seeder
     {
         $permissions = [
             'courses.index',
-            'courses.store',
+            'courses.create',
             'courses.update',
-            'courses.destroy',
+            'courses.delete',
+            'users.index'
         ];
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
@@ -31,5 +31,9 @@ class RolesAndPermissionsSeeder extends Seeder
 
         Role::firstOrCreate(['name' => 'admin'])
             ->syncPermissions(Permission::all());
+
+        Role::firstOrCreate(['name' => 'coordinator']);
+
+        Role::firstOrCreate(['name' => 'student']);
     }
 }
