@@ -31,5 +31,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         Role::firstOrCreate(['name' => 'admin'])
             ->syncPermissions(Permission::all());
+
+        Role::firstOrCreate(['name' => 'coordinator']);
     }
 }
