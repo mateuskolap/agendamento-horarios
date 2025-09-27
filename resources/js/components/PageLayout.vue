@@ -20,6 +20,9 @@ defineProps<{
     <div v-if="$slots.table && $slots.table().length" class="space-y-4">
         <slot name="table"></slot>
     </div>
+    <div v-if="$slots.pagination && $slots.pagination().length" class="space-y-4">
+        <slot name="pagination"></slot>
+    </div>
 </template>
 
 <style scoped></style>

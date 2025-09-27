@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import {onBeforeUnmount, onMounted, ref, watch} from 'vue';
 
 type ModalSize = 'sm' | 'md' | 'lg' | 'xl';
 
 const props = defineProps<{
-    id: string;
-    title: string;
-    size: ModalSize;
-    isOpen: boolean;
-    innerClass?: string;
+    id: string,
+    title: string,
+    size: ModalSize,
+    isOpen: boolean,
+    innerClass?: string,
 }>();
 
 const emit = defineEmits(['update:is-open']);
@@ -21,25 +21,22 @@ const sizeClasses: Record<ModalSize, string> = {
     sm: 'max-w-sm',
     md: 'max-w-lg',
     lg: 'max-w-2xl',
-    xl: 'max-w-5xl',
+    xl: 'max-w-5xl'
 };
-const modalHeight = ref('max-h-[calc(100%-5rem)]');
+const modalHeight = ref('max-h-[calc(100%-5rem)]')
 const contentHeight = ref('max-h-[calc(100%-4rem)]');
 
-watch(
-    () => props.isOpen,
-    (isOpen) => {
-        if (isOpen) {
-            document.body.classList.add('overflow-hidden');
-        } else {
-            document.body.classList.remove('overflow-hidden');
-        }
-    },
-);
+watch(() => props.isOpen, (isOpen) => {
+    if (isOpen) {
+        document.body.classList.add('overflow-hidden');
+    } else {
+        document.body.classList.remove('overflow-hidden');
+    }
+});
 
 onMounted(() => {
     const handleKey = (event: KeyboardEvent) => {
-        if (event.key === 'Escape') {
+        if ((props.isOpen) && (event.key === 'Escape')) {
             closeModal();
         }
     };
@@ -73,20 +70,22 @@ onMounted(() => {
                         </h3>
                         <button
                             type="button"
-                            class="ml-auto inline-flex cursor-pointer items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-300 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
+                            class="text-gray-300 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
                             @click="closeModal"
                         >
-                            <svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    fill-rule="evenodd"
-                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                    clip-rule="evenodd"
-                                ></path>
+                            <svg aria-hidden="true"
+                                 class="w-5 h-5"
+                                 fill="currentColor"
+                                 viewBox="0 0 20 20"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                      clip-rule="evenodd"></path>
                             </svg>
                         </button>
                     </div>
                     <div :class="contentHeight" class="overflow-y-auto px-4">
-                        <slot />
+                        <slot/>
                     </div>
                 </div>
             </div>
@@ -95,9 +94,8 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.modalanim-enter-active,
-.modalanim-leave-active {
-    transition: all 0.3s cubic-bezier(0, 1, 1, 1);
+.modalanim-enter-active, .modalanim-leave-active {
+    transition: all .3s cubic-bezier(0, 1, 1, 1);
 }
 
 .modalanim-enter-from {
