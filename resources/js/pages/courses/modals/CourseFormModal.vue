@@ -61,7 +61,7 @@ function handleSubmit() {
     if (mode.value === 'create') {
         form.post(courses.store().url, formOptions);
     } else if (mode.value === 'edit' && props.course) {
-        form.put(courses.update(props.course.id).url, formOptions)
+        form.put(courses.update(props.course.id).url, formOptions);
     }
 }
 </script>
