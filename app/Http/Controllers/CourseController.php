@@ -10,7 +10,7 @@ use Inertia\Inertia;
 
 class CourseController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): \Inertia\Response
     {
         $validated = $request->validate([
             'organization_id' => ['nullable', 'exists:organizations,id'],
@@ -44,7 +44,7 @@ class CourseController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
         $validated = $request->validate([
             'name' => ['required', 'string'],
@@ -57,7 +57,7 @@ class CourseController extends Controller
         return redirect()->back()->with('success', 'Curso criado com sucesso!');
     }
 
-    public function update(Request $request, Course $course)
+    public function update(Request $request, Course $course): \Illuminate\Http\RedirectResponse
     {
         $validated = $request->validate([
             'name' => ['required', 'string'],
@@ -70,7 +70,7 @@ class CourseController extends Controller
         return redirect()->back()->with('success', 'Curso atualizado com sucesso!');
     }
 
-    public function destroy(Course $course)
+    public function destroy(Course $course): \Illuminate\Http\RedirectResponse
     {
         $course->delete();
 
