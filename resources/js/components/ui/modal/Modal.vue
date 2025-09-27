@@ -23,7 +23,7 @@ const sizeClasses: Record<ModalSize, string> = {
     lg: 'max-w-2xl',
     xl: 'max-w-5xl'
 };
-const modalHeight = ref('max-h-[calc(100%-5rem)]')
+const modalHeight = ref('max-h-[calc(100%-5rem)]');
 const contentHeight = ref('max-h-[calc(100%-4rem)]');
 
 watch(() => props.isOpen, (isOpen) => {
