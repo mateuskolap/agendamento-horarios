@@ -86,8 +86,13 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => ['nullable', 'string', 'max:255'],
             'email' => ['nullable', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class, 'email')->ignore($user->id)],
+            'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        if (isset($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
+        }
+        $user->must_change_password = true;
         $user->update($validated);
 
         return redirect()->back()->with('success', 'Usuário atualizado com sucesso');

@@ -31,4 +31,3 @@ class PasswordChangeController extends Controller
         return redirect()->intended(route('dashboard'))->with('success', 'Senha alterada com sucesso!');
     }
 }
-
