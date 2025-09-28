@@ -13,7 +13,7 @@ class Professor extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'user_id'
+        'user_id',
     ];
 
     public function user(): BelongsTo

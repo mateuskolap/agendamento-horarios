@@ -28,7 +28,3 @@ class Availability extends Model
         return $this->belongsToMany(Scheduling::class, 'availability_schedulings');
     }
 }
-
-
-
-

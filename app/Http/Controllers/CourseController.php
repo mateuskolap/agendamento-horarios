@@ -19,13 +19,13 @@ class CourseController extends Controller
         ]);
 
         $courses_list = Course::query()
-            ->when(!empty($validated['organization_id']), function ($query) use ($validated) {
+            ->when(! empty($validated['organization_id']), function ($query) use ($validated) {
                 $query->where('organization_id', $validated['organization_id']);
             })
-            ->when(!empty($validated['name']), function ($query) use ($validated) {
-                $query->where('name', 'like', '%' . $validated['name'] . '%');
+            ->when(! empty($validated['name']), function ($query) use ($validated) {
+                $query->where('name', 'like', '%'.$validated['name'].'%');
             })
-            ->when(!empty($validated['coordinator_id']), function ($query) use ($validated) {
+            ->when(! empty($validated['coordinator_id']), function ($query) use ($validated) {
                 $query->where('coordinator_id', $validated['coordinator_id']);
             })
             ->select(['id', 'name', 'organization_id', 'coordinator_id'])
@@ -35,7 +35,7 @@ class CourseController extends Controller
             ->withQueryString();
 
         $coordinators_list = Coordinator::with('user:id,name')->get();
-        $organizations_list = Organization::select('id','name')->get();
+        $organizations_list = Organization::select('id', 'name')->get();
 
         return Inertia::render('courses/Courses', [
             'courses_list' => $courses_list,
@@ -49,7 +49,7 @@ class CourseController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string'],
             'organization_id' => ['required', 'exists:organizations,id'],
-            'coordinator_id' => ['required', 'exists:coordinators,id']
+            'coordinator_id' => ['required', 'exists:coordinators,id'],
         ]);
 
         Course::create($validated);
@@ -62,7 +62,7 @@ class CourseController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string'],
             'organization_id' => ['required', 'exists:organizations,id'],
-            'coordinator_id' => ['required', 'exists:coordinators,id']
+            'coordinator_id' => ['required', 'exists:coordinators,id'],
         ]);
 
         $course->update($validated);
