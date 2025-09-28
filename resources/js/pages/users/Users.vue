@@ -44,7 +44,7 @@ function closeModal() {
         <PageLayout title="Usuários" description="Gerencie os usuários">
 
             <template #buttons>
-                <UserButtons @open-modal="openModal($event)" />
+                <UserButtons @open-modal="openModal()" />
             </template>
 
             <template #filters>

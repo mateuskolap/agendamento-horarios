@@ -47,7 +47,7 @@ function closeModal() {
         <PageLayout description="Gerencie os cursos" title="Cursos">
 
             <template #buttons>
-                <CourseButtons @open-modal="openModal($event)" />
+                 <CourseButtons @open-modal="openModal()" />
             </template>
 
             <template #filters>
