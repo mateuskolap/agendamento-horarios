@@ -7,16 +7,20 @@ import { h } from 'vue';
 import { Pencil, Trash } from '@vicons/ionicons5';
 import MobileCardList from '@/components/ui/mobile-card/MobileCardList.vue';
 import CourseField from './CourseField.vue';
+import { usePermission } from '@/composables/usePermissions';
+
 
 defineProps<{
     courses_list: Course[];
 }>();
 
 const { confirmDelete } = useConfirmDelete();
-
 const emit = defineEmits<{
     (e: 'open-modal', course?: Course): void;
 }>();
+
+const canEdit = usePermission()('courses.update');
+const canDelete = usePermission()('courses.delete');
 
 const columns = [
     { title: 'ID', key: 'id' },
@@ -27,8 +31,9 @@ const columns = [
         title: 'Ações',
         key: 'actions',
         render(row: Course) {
+            if (!canEdit && !canDelete) return null;
             return h('div', { class: 'flex gap-2' }, [
-                h(
+                canEdit && h(
                     NButton,
                     {
                         tertiary: true,
@@ -39,7 +44,7 @@ const columns = [
                         icon: () => h(NIcon, null, { default: () => h(Pencil) }),
                     },
                 ),
-                h(
+                canDelete && h(
                     NButton,
                     {
                         tertiary: true,
@@ -50,7 +55,7 @@ const columns = [
                         icon: () => h(NIcon, { class: 'text-red-500 dark:text-red-700' }, { default: () => h(Trash) }),
                     },
                 ),
-            ]);
+            ].filter(Boolean));
         },
     },
 ];
@@ -68,12 +73,12 @@ const columns = [
             </template>
 
             <template #header-right="{ item: course }">
-                <NButton size="small" tertiary @click="emit('open-modal', course)">
+                <NButton v-if="canEdit" size="small" tertiary @click="emit('open-modal', course)">
                     <template #icon>
                         <NIcon><Pencil /></NIcon>
                     </template>
                 </NButton>
-                <NButton size="small" tertiary @click="confirmDelete(courses.destroy(course.id).url)">
+                <NButton v-if="canDelete" size="small" tertiary @click="confirmDelete(courses.destroy(course.id).url)">
                     <template #icon>
                         <NIcon class="text-red-500 dark:text-red-700"><Trash /></NIcon>
                     </template>
