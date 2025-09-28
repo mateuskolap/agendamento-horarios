@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\OrganizationEnum;
 use App\Models\Organization;
 use Illuminate\Database\Seeder;
 
@@ -12,12 +13,7 @@ class OrganizationSeeder extends Seeder
      */
     public function run(): void
     {
-        $organizations = [
-            'GRAD PRESENCIAL',
-            'POS PRESENCIAL',
-        ];
-
-        foreach ($organizations as $org) {
+        foreach (OrganizationEnum::cases() as $org) {
             Organization::firstOrCreate(['name' => $org]);
         }
     }

@@ -24,10 +24,10 @@ class UserController extends Controller
         ]);
 
         $users_list = User::query()
-            ->when(!empty($validated['name']), function ($query) use ($validated) {
-                $query->where('users.name', 'like', '%' . $validated['name'] . '%');
+            ->when(! empty($validated['name']), function ($query) use ($validated) {
+                $query->where('users.name', 'like', '%'.$validated['name'].'%');
             })
-            ->when(!empty($validated['role_id']), function ($query) use ($validated) {
+            ->when(! empty($validated['role_id']), function ($query) use ($validated) {
                 $query->whereHas('roles', function ($query) use ($validated) {
                     $query->where('roles.id', $validated['role_id']);
                 });
@@ -48,7 +48,7 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'role_id' => ['required', 'exists:roles,id'],
         ]);
@@ -68,11 +68,11 @@ class UserController extends Controller
                 break;
 
             case 'coordinator':
-                Coordinator::create(['user_id' => $user->id,]);
+                Coordinator::create(['user_id' => $user->id]);
                 break;
 
             case 'professor':
-                Professor::create(['user_id' => $user->id,]);
+                Professor::create(['user_id' => $user->id]);
                 break;
         }
 

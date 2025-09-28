@@ -11,7 +11,7 @@ class Organization extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'name'
+        'name',
     ];
 
     public function courses(): HasMany

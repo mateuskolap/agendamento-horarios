@@ -8,21 +8,20 @@ import Role from '@/types/Role';
 import { useForm } from '@inertiajs/vue3';
 import { NSelect } from 'naive-ui';
 import { computed, watch } from 'vue';
+import { makeFormOptions } from '@/types/helpers';
 
 const props = defineProps<{
     isOpen: boolean;
-    user: User | null;
+    user?: User;
     roles_list: Role[];
-    mode: 'create' | 'edit';
 }>();
 
 const emit = defineEmits<{
     (e: 'update:is-open', value: boolean): void;
 }>();
 
-const modalTitle = computed(() => {
-    return props.mode === 'create' ? 'Adicionar Usuário' : 'Editar Usuário';
-});
+const mode = computed(() => (props.user ? 'edit' : 'create'));
+const modalTitle = computed(() => (mode.value === 'create' ? 'Adicionar Usuário' : 'Editar Usuário'));
 
 const rolesOptions = computed(() => (props.roles_list || []).map((r) => ({ label: r.name, value: r.id })));
 
@@ -43,41 +42,36 @@ const form = useForm<{
 });
 
 watch(
-    () => [props.user, props.mode, props.isOpen] as const,
-    ([user, mode, isOpen]) => {
-        if (!isOpen) return;
-        if (mode === 'edit' && user) {
+    () => props.user,
+    (user) => {
+        if (mode.value === 'edit' && user) {
             form.name = user.name;
             form.email = user.email;
             form.password = '';
             form.password_confirmation = '';
             form.role_id = user.roles.length > 0 ? user.roles[0].id : null;
-            return;
+        } else if (mode.value === 'create') {
+            form.name = '';
+            form.email = '';
+            form.password = '';
+            form.password_confirmation = '';
+            form.role_id = null;
         }
-
-        form.name = '';
-        form.email = '';
-        form.password = '';
-        form.password_confirmation = '';
-        form.role_id = null;
     },
     { immediate: true },
 );
 
-function handleSubmit() {
-    if (props.mode === 'create') {
-        form.post(users.store().url, {
-            onSuccess: () => closeModal(),
-        });
-        return;
-    }
+const formOptions = makeFormOptions(() => {
+    form.reset();
+    closeModal();
+});
 
-    if (props.user) {
-        form.put(users.update(props.user.id).url, {
-            onSuccess: () => closeModal(),
-        });
+function handleSubmit() {
+    if (mode.value === 'create') {
+        form.post(users.store().url, formOptions);
+    } else if (mode.value === 'edit' && props.user) {
+        form.put(users.update(props.user.id).url, formOptions);
     }
-    return;
 }
 </script>
 

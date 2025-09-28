@@ -15,7 +15,7 @@ class Course extends Model
     protected $fillable = [
         'name',
         'organization_id',
-        'coordinator_id'
+        'coordinator_id',
     ];
 
     public function organization(): BelongsTo

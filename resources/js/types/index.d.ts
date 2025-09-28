@@ -1,9 +1,11 @@
 import { InertiaLinkProps } from '@inertiajs/vue3';
 import type { LucideIcon } from 'lucide-vue-next';
 import Role from '@/types/Role';
+import Permission from '@/types/Permission';
 
 export interface Auth {
     user: User;
+    permissions: Permission[];
 }
 
 export interface BreadcrumbItem {
