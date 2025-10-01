@@ -1,5 +1,5 @@
 import type Organization from '@/types/Organization';
-import type Coordinator from '@/types/Coordinator';
+import { User } from '.';
 
 export default interface Course {
     id: number;
@@ -11,5 +11,5 @@ export default interface Course {
     deleted_at?: string | null;
 
     organization: Organization;
-    coordinator: Coordinator;
+    coordinator: User;
 }

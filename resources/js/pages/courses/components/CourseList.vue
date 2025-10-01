@@ -86,7 +86,7 @@ const columns = [
 
             <template #default="{ item: course }">
                 <CourseField :value="course.organization?.name" label="Organização" />
-                <CourseField :value="course.coordinator?.user?.name" label="Coordenador" />
+                <CourseField :value="course.coordinator?.name" label="Coordenador" />
             </template>
         </MobileCardList>
     </div>
