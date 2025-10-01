@@ -47,7 +47,8 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role_id' => ['required', 'exists:roles,id'],
+            'role_ids' => ['required', 'array'],
+            'role_ids.*' => ['exists:roles,id'],
         ]);
 
         $user = User::create([
@@ -56,7 +57,7 @@ class UserController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
-        $user->assignRole(roles: $validated['role_id']);
+        $user->assignRole($validated['role_ids']);
 
         event(new Registered($user));
 

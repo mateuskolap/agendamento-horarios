@@ -22,6 +22,14 @@ const props = defineProps<{
 
 const rolesListPtBr = computed(() => translateArray(props.roles_list, ['name']));
 
+const usersListPtBr = computed(() => ({
+    ...props.users_list,
+    data: props.users_list.data.map(user => ({
+        ...user,
+        roles: translateArray(user.roles, ['name'])
+    }))
+}));
+
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Usuários',
@@ -56,11 +64,11 @@ function closeModal() {
             </template>
 
             <template #table>
-                <UserList :users_list="users_list.data" @open-modal="openModal" />
+                <UserList :users_list="usersListPtBr.data" @open-modal="openModal" />
             </template>
 
             <template #pagination>
-                <Pagination :pagination="users_list" />
+                <Pagination :pagination="usersListPtBr" />
             </template>
 
         </PageLayout>

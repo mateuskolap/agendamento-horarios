@@ -21,24 +21,18 @@ const emit = defineEmits<{
 }>();
 
 const mode = computed(() => (props.user ? 'edit' : 'create'));
-const modalTitle = computed(() => (mode.value === 'create' ? 'Adicionar Usuário' : 'Editar Usuário'));
+const title = computed(() => (mode.value === 'create' ? 'Adicionar Usuário' : 'Editar Usuário'));
 
 const rolesOptions = computed(() => (props.roles_list || []).map((r) => ({ label: r.name, value: r.id })));
 
 const closeModal = () => emit('update:is-open', false);
 
-const form = useForm<{
-    name: string;
-    email: string;
-    password: string;
-    password_confirmation: string;
-    role_id: number | null;
-}>({
+const form = useForm({
     name: '',
     email: '',
     password: '',
     password_confirmation: '',
-    role_id: null,
+    role_ids: [] as number[],
 });
 
 watch(
@@ -49,13 +43,13 @@ watch(
             form.email = user.email;
             form.password = '';
             form.password_confirmation = '';
-            form.role_id = user.roles.length > 0 ? user.roles[0].id : null;
+            form.role_ids = user.roles.length > 0 ? user.roles.map(role => role.id) : [];
         } else if (mode.value === 'create') {
             form.name = '';
             form.email = '';
             form.password = '';
             form.password_confirmation = '';
-            form.role_id = null;
+            form.role_ids = [];
         }
     },
     { immediate: true },
@@ -76,7 +70,7 @@ function handleSubmit() {
 </script>
 
 <template>
-    <Modal :id="`${mode}UserModal`" :is-open="isOpen" :title="modalTitle" size="md" @update:is-open="closeModal">
+    <Modal :id="`${mode}UserModal`" :is-open="isOpen" :title="title" size="md" @update:is-open="closeModal">
         <form @submit.prevent="handleSubmit">
             <div class="flex flex-col gap-3">
                 <Input v-model="form.name" placeholder="Digite o Nome do Usuário" />
@@ -85,8 +79,9 @@ function handleSubmit() {
                 <Input v-if="mode === 'create' || form.password" v-model="form.password_confirmation" type="password" placeholder="Confirme a Senha" />
                 <NSelect
                     v-if="mode === 'create'"
-                    v-model:value="form.role_id"
+                    v-model:value="form.role_ids"
                     :options="rolesOptions"
+                    multiple
                     filterable
                     clearable
                     placeholder="Selecione o Papel do Usuário"
