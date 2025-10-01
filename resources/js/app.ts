@@ -8,7 +8,7 @@ import { createApp, h } from 'vue';
 import { initializeTheme } from './composables/useAppearance';
 import naive from 'naive-ui'
 import VueSweetalert2 from 'vue-sweetalert2';
-import Swal from 'sweetalert2';
+import { translatePlugin } from './plugins/translate';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -18,6 +18,7 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         createApp({ render: () => h(App, props) })
             .use(plugin)
+            .use(translatePlugin)
             .use(naive)
             .use(VueSweetalert2)
             .mount(el);

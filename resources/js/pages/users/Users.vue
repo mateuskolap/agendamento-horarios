@@ -12,11 +12,15 @@ import PaginatedData from '@/types/PaginatedData';
 import Role from '@/types/Role';
 import { Head } from '@inertiajs/vue3';
 import Pagination from '@/components/ui/pagination/Pagination.vue';
+import { computed } from 'vue';
+import { translateArray } from '@/plugins/translate';
 
-defineProps<{
+const props = defineProps<{
     users_list: PaginatedData<User>;
     roles_list: Role[];
 }>();
+
+const rolesListPtBr = computed(() => translateArray(props.roles_list, ['name']));
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -48,7 +52,7 @@ function closeModal() {
             </template>
 
             <template #filters>
-                <UsersFilters :roles_list="roles_list" />
+                <UsersFilters :roles_list="rolesListPtBr" />
             </template>
 
             <template #table>
@@ -61,6 +65,6 @@ function closeModal() {
 
         </PageLayout>
 
-        <UserFormModal v-bind="modal.modalBindInfo()" :roles_list="roles_list" @update:is-open="closeModal" />
+        <UserFormModal v-bind="modal.modalBindInfo()" :roles_list="rolesListPtBr" @update:is-open="closeModal" />
     </AppLayout>
 </template>
