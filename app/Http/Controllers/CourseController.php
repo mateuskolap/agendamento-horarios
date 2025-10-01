@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Coordinator;
 use App\Models\Course;
 use App\Models\Organization;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -15,7 +15,7 @@ class CourseController extends Controller
         $validated = $request->validate([
             'organization_id' => ['nullable', 'exists:organizations,id'],
             'name' => ['nullable', 'string'],
-            'coordinator_id' => ['nullable', 'exists:coordinators,id'],
+            'coordinator_id' => ['nullable', 'exists:users,id'],
         ]);
 
         $courses_list = Course::query()
@@ -29,12 +29,12 @@ class CourseController extends Controller
                 $query->where('coordinator_id', $validated['coordinator_id']);
             })
             ->select(['id', 'name', 'organization_id', 'coordinator_id'])
-            ->with(['coordinator.user:id,name', 'organization:id,name'])
+            ->with(['coordinator:id,name', 'organization:id,name'])
             ->orderBy('courses.id')
             ->paginate(10)
             ->withQueryString();
 
-        $coordinators_list = Coordinator::with('user:id,name')->get();
+        $coordinators_list = User::role('coordinator')->select('id', 'name')->get();
         $organizations_list = Organization::select('id', 'name')->get();
 
         return Inertia::render('courses/Courses', [
@@ -49,7 +49,7 @@ class CourseController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string'],
             'organization_id' => ['required', 'exists:organizations,id'],
-            'coordinator_id' => ['required', 'exists:coordinators,id'],
+            'coordinator_id' => ['required', 'exists:users,id'],
         ]);
 
         Course::create($validated);
@@ -62,7 +62,7 @@ class CourseController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string'],
             'organization_id' => ['required', 'exists:organizations,id'],
-            'coordinator_id' => ['required', 'exists:coordinators,id'],
+            'coordinator_id' => ['required', 'exists:users,id'],
         ]);
 
         $course->update($validated);

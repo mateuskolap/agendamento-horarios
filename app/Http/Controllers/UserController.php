@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Coordinator;
-use App\Models\Professor;
-use App\Models\Student;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
@@ -59,22 +56,7 @@ class UserController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
-        $role = Role::findById($validated['role_id']);
-        $user->assignRole($role->name);
-
-        switch ($role->name) {
-            case 'student':
-                Student::create(['user_id' => $user->id]);
-                break;
-
-            case 'coordinator':
-                Coordinator::create(['user_id' => $user->id]);
-                break;
-
-            case 'professor':
-                Professor::create(['user_id' => $user->id]);
-                break;
-        }
+        $user->assignRole(roles: $validated['role_id']);
 
         event(new Registered($user));
 
@@ -89,10 +71,13 @@ class UserController extends Controller
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        if (isset($validated['password'])) {
+        if (!empty($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);
+            $user->must_change_password = true;
+        } else {
+            unset($validated['password']);
         }
-        $user->must_change_password = true;
+
         $user->update($validated);
 
         return redirect()->back()->with('success', 'Usuário atualizado com sucesso');

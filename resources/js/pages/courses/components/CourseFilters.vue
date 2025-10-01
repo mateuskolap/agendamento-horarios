@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import courses from '@/routes/courses';
-import Coordinator from '@/types/Coordinator';
+import { User } from '@/types';
 import Organization from '@/types/Organization';
 import { router, useForm } from '@inertiajs/vue3';
 import { RefreshOutline, Search } from '@vicons/ionicons5';
@@ -10,11 +10,11 @@ import { NSelect } from 'naive-ui';
 import { computed } from 'vue';
 
 const props = defineProps<{
-    coordinators_list: Coordinator[];
+    coordinators_list: User[];
     organizations_list: Organization[];
 }>();
 
-const coordinatorsOptions = computed(() => (props.coordinators_list || []).map((c) => ({ label: c.user.name, value: c.id })));
+const coordinatorsOptions = computed(() => (props.coordinators_list || []).map((c) => ({ label: c.name, value: c.id })));
 const organizationsOptions = computed(() => (props.organizations_list || []).map((o) => ({ label: o.name, value: o.id })));
 
 const form = useForm({

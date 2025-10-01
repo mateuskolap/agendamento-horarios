@@ -9,7 +9,6 @@ import MobileCardList from '@/components/ui/mobile-card/MobileCardList.vue';
 import CourseField from './CourseField.vue';
 import { usePermission } from '@/composables/usePermissions';
 
-
 defineProps<{
     courses_list: Course[];
 }>();
@@ -26,7 +25,7 @@ const columns = [
     { title: 'ID', key: 'id' },
     { title: 'Organização', key: 'organization.name' },
     { title: 'Nome', key: 'name' },
-    { title: 'Coordenador', key: 'coordinator.user.name' },
+    { title: 'Coordenador', key: 'coordinator.name' },
     {
         title: 'Ações',
         key: 'actions',

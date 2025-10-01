@@ -18,10 +18,5 @@ class DatabaseSeeder extends Seeder
             OrganizationSeeder::class,
             AdminUserSeeder::class,
         ]);
-
-        // Para desenvolvimento local, cria dados fictícios
-        if (app()->environment('local', 'development')) {
-            Coordinator::factory()->count(10)->create();
-        }
     }
 }

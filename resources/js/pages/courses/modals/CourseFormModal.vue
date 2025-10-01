@@ -3,22 +3,22 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Modal from '@/components/ui/modal/Modal.vue';
 import courses from '@/routes/courses';
-import Coordinator from '@/types/Coordinator';
 import Course from '@/types/Course';
 import Organization from '@/types/Organization';
 import { useForm } from '@inertiajs/vue3';
 import { NSelect } from 'naive-ui';
 import { computed, watch } from 'vue';
 import { makeFormOptions } from '@/types/helpers';
+import { User } from '@/types';
 
 const props = defineProps<{
     isOpen: boolean;
     course?: Course;
-    coordinators_list: Coordinator[];
+    coordinators_list: User[];
     organizations_list: Organization[];
 }>();
 
-const coordinatorsOptions = computed(() => (props.coordinators_list || []).map((c) => ({ label: c.user.name, value: c.id })));
+const coordinatorsOptions = computed(() => (props.coordinators_list || []).map((c) => ({ label: c.name, value: c.id })));
 const organizationsOptions = computed(() => (props.organizations_list || []).map((o) => ({ label: o.name, value: o.id })));
 
 const emit = defineEmits<{
