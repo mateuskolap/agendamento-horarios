@@ -41,6 +41,13 @@ class UserController extends Controller
         ]);
     }
 
+    public function show(User $user): \Inertia\Response
+    {
+        return Inertia::render('users/Show', [
+            'user'=> $user
+        ]);
+    }
+
     public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
         $validated = $request->validate([

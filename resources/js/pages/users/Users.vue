@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import PageLayout from '@/components/PageLayout.vue';
+import PageLayout from '@/layouts/PageLayout.vue';
 import { useModal } from '@/composables/useModal';
 import AppLayout from '@/layouts/AppLayout.vue';
 import UserButtons from '@/pages/users/components/UserButtons.vue';

@@ -5,10 +5,11 @@ import type { User } from '@/types';
 import Role from '@/types/Role';
 import { useConfirmDelete } from '@/composables/useConfirmDelete';
 import { h } from 'vue';
-import { Pencil, Trash } from '@vicons/ionicons5';
+import { Pencil, Trash, Eye } from '@vicons/ionicons5';
 import MobileCardList from '@/components/ui/mobile-card/MobileCardList.vue';
 import UserField from './UserField.vue';
 import { usePermission } from '@/composables/usePermissions';
+import { router } from '@inertiajs/vue3';
 
 defineProps<{
     users_list: User[];
@@ -39,6 +40,17 @@ const columns = [
         render(row: User) {
             if (!canEdit && !canDelete) return null;
             return h('div', { class: 'flex gap-2' }, [
+                h(
+                    NButton,
+                    {
+                        tertiary: true,
+                        size: 'small',
+                        onClick: () => router.get(users.show(row.id).url),
+                    },
+                    {
+                        icon: () => h(NIcon, { class: 'text-green-500 dark:text-green-700' }, { default: () => h(Eye) }),
+                    },
+                ),
                 canEdit && h(
                     NButton,
                     {
@@ -81,12 +93,16 @@ const columns = [
             <template #header-right="{ item: user }">
                 <NButton v-if="canEdit" size="small" tertiary @click="emit('open-modal', user)">
                     <template #icon>
-                        <NIcon><Pencil /></NIcon>
+                        <NIcon>
+                            <Pencil />
+                        </NIcon>
                     </template>
                 </NButton>
                 <NButton v-if="canDelete" size="small" tertiary @click="confirmDelete(users.destroy(user.id).url)">
                     <template #icon>
-                        <NIcon class="text-red-500 dark:text-red-700"><Trash /></NIcon>
+                        <NIcon class="text-red-500 dark:text-red-700">
+                            <Trash />
+                        </NIcon>
                     </template>
                 </NButton>
             </template>

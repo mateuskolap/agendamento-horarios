@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import PageLayout from '@/components/PageLayout.vue';
+import PageLayout from '@/layouts/PageLayout.vue';
 import { useModal } from '@/composables/useModal';
 import AppLayout from '@/layouts/AppLayout.vue';
 import CourseFilters from '@/pages/courses/components/CourseFilters.vue';
