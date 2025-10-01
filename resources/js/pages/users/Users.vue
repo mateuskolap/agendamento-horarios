@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import PageLayout from '@/layouts/PageLayout.vue';
+import IndexLayout from '@/layouts/IndexLayout.vue';
 import { useModal } from '@/composables/useModal';
 import AppLayout from '@/layouts/AppLayout.vue';
 import UserButtons from '@/pages/users/components/UserButtons.vue';
@@ -53,7 +53,7 @@ function closeModal() {
 <template>
     <Head title="Usuários" />
     <AppLayout :breadcrumbs="breadcrumbs">
-        <PageLayout title="Usuários" description="Gerencie os usuários">
+        <IndexLayout title="Usuários" description="Gerencie os usuários">
 
             <template #buttons>
                 <UserButtons @open-modal="openModal()" />
@@ -71,7 +71,7 @@ function closeModal() {
                 <Pagination :pagination="usersListPtBr" />
             </template>
 
-        </PageLayout>
+        </IndexLayout>
 
         <UserFormModal v-bind="modal.modalBindInfo()" :roles_list="rolesListPtBr" @update:is-open="closeModal" />
     </AppLayout>

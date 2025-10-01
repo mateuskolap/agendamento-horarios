@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import PageLayout from '@/layouts/PageLayout.vue';
+import IndexLayout from '@/layouts/IndexLayout.vue';
 import { useModal } from '@/composables/useModal';
 import AppLayout from '@/layouts/AppLayout.vue';
 import CourseFilters from '@/pages/courses/components/CourseFilters.vue';
@@ -44,7 +44,7 @@ function closeModal() {
 
     <Head title="Cursos" />
     <AppLayout :breadcrumbs="breadcrumbs">
-        <PageLayout description="Gerencie os cursos" title="Cursos">
+        <IndexLayout description="Gerencie os cursos" title="Cursos">
 
             <template #buttons>
                 <CourseButtons @open-modal="openModal()" />
@@ -62,7 +62,7 @@ function closeModal() {
                 <Pagination :pagination="courses_list" />
             </template>
 
-        </PageLayout>
+        </IndexLayout>
 
         <CourseFormModal v-bind="modal.modalBindInfo()" :coordinators_list="coordinators_list"
             :organizations_list="organizations_list" @update:is-open="closeModal" />

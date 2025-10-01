@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import PageLayout from '@/layouts/PageLayout.vue';
+import IndexLayout from '@/layouts/IndexLayout.vue';
 import users from '@/routes/users';
 import { BreadcrumbItem, User } from '@/types';
+import { Head } from '@inertiajs/vue3';
 
 const props = defineProps<{
     user: User;
@@ -14,7 +15,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: users.index().url,
     },
     {
-        title: 'Visualização',
+        title: 'Informações',
         href: users.show(props.user.id).url
     }
 ];
@@ -23,8 +24,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 <template>
     <Head title="Visualização Usuário" />
     <AppLayout :breadcrumbs="breadcrumbs">
-        <PageLayout :title="user.name">
-
-        </PageLayout>
+        <IndexLayout :title="user.name" description="Gerenciar informações do usuário">
+            <template></template>
+        </IndexLayout>
     </AppLayout>
 </template>
