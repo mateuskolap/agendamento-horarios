@@ -45,7 +45,7 @@ const columns = [
                     {
                         tertiary: true,
                         size: 'small',
-                        onClick: () => router.get(users.show(row.id).url),
+                        onClick: () => router.get(users.courses.index(row.id).url),
                     },
                     {
                         icon: () => h(NIcon, { class: 'text-green-500 dark:text-green-700' }, { default: () => h(Eye) }),

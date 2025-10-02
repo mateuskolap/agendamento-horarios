@@ -70,8 +70,7 @@ class User extends Authenticatable
     public function courses(): BelongsToMany
     {
         return $this->belongsToMany(Course::class)
-                    ->withPivot('role_id')
-                    ->withTimestamps();
+                    ->withPivot('role_id');
     }
 
     public function availabilities(): HasMany

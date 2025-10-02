@@ -12,4 +12,5 @@ export default interface Course {
 
     organization: Organization;
     coordinator: User;
+    pivot: any;
 }

@@ -14,4 +14,6 @@ Route::middleware('can:users.index')->prefix('/users')->name('users.')->group(fu
     Route::delete('/{user}', [UserController::class, 'destroy'])
         ->middleware('can:users.delete')
         ->name('destroy');
+
+    require __DIR__.'/user_courses.php';
 });

@@ -4,16 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
+use Inertia\Response;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-    public function index(Request $request): \Inertia\Response
+    public function index(Request $request): Response
     {
         $validated = $request->validate([
             'name' => ['nullable', 'string'],
@@ -41,14 +43,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function show(User $user): \Inertia\Response
-    {
-        return Inertia::render('users/Show', [
-            'user'=> $user
-        ]);
-    }
-
-    public function store(Request $request): \Illuminate\Http\RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -71,7 +66,7 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Usuário cadastrado com sucesso');
     }
 
-    public function update(Request $request, User $user): \Illuminate\Http\RedirectResponse
+    public function update(Request $request, User $user): RedirectResponse
     {
         $validated = $request->validate([
             'name' => ['nullable', 'string', 'max:255'],
@@ -91,7 +86,7 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Usuário atualizado com sucesso');
     }
 
-    public function destroy(User $user): \Illuminate\Http\RedirectResponse
+    public function destroy(User $user): RedirectResponse
     {
         $user->delete();
 
