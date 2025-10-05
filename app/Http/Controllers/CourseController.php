@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Organization;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class CourseController extends Controller
 {
-    public function index(Request $request): \Inertia\Response
+    public function index(Request $request): Response
     {
         $validated = $request->validate([
             'organization_id' => ['nullable', 'exists:organizations,id'],
@@ -44,7 +46,7 @@ class CourseController extends Controller
         ]);
     }
 
-    public function store(Request $request): \Illuminate\Http\RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'name' => ['required', 'string'],
@@ -54,10 +56,10 @@ class CourseController extends Controller
 
         Course::create($validated);
 
-        return redirect()->back()->with('success', 'Curso criado com sucesso!');
+        return back()->with('success', 'Curso criado com sucesso!');
     }
 
-    public function update(Request $request, Course $course): \Illuminate\Http\RedirectResponse
+    public function update(Request $request, Course $course): RedirectResponse
     {
         $validated = $request->validate([
             'name' => ['required', 'string'],
@@ -67,13 +69,13 @@ class CourseController extends Controller
 
         $course->update($validated);
 
-        return redirect()->back()->with('success', 'Curso atualizado com sucesso!');
+        return back()->with('success', 'Curso atualizado com sucesso!');
     }
 
-    public function destroy(Course $course): \Illuminate\Http\RedirectResponse
+    public function destroy(Course $course): RedirectResponse
     {
         $course->delete();
 
-        return redirect()->back()->with('success', 'Curso excluído com sucesso!');
+        return back()->with('success', 'Curso excluído com sucesso!');
     }
 }

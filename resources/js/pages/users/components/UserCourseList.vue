@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useConfirmDelete } from '@/composables/useConfirmDelete';
+import users from '@/routes/users';
 import Course from '@/types/Course';
 import { Link2Off } from 'lucide-vue-next';
 import { NButton, NDataTable, NIcon, type DataTableColumns } from 'naive-ui';
@@ -29,7 +30,7 @@ const columns = computed(() => {
                         {
                             tertiary: true,
                             size: 'small',
-                            onClick: () => confirmDelete(''),
+                            onClick: () => confirmDelete(users.courses.destroy({ user: row.pivot.user_id, course: row.id }).url),
                         },
                         {
                             default: () => h(NIcon, { class: 'text-red-500 dark:text-red-700' }, { default: () => h(Link2Off) }),
