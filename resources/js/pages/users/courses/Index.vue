@@ -10,14 +10,16 @@ import Course from '@/types/Course';
 import Label from '@/components/ui/label/Label.vue';
 import { computed, watch } from 'vue';
 import { translateArray } from '@/plugins/translate';
+import UserCourseList from '@/pages/users/components/UserCourseList.vue';
 
 const props = defineProps<{
     user: User;
-    roles: Role[];
-    courses: Course[];
+    roles_list: Role[];
+    courses_list: Course[];
+    selected_role?: Role;
 }>();
 
-const rolesListPtBr = computed(() => translateArray(props.roles, ['name']));
+const rolesListPtBr = computed(() => translateArray(props.roles_list, ['name']));
 const rolesOptions = computed(() => (rolesListPtBr.value || []).map((r) => ({ label: r.name, value: r.id })));
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -41,6 +43,7 @@ watch(() => form.role_id, () => {
 </script>
 
 <template>
+
     <Head title="Visualização Usuário" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <UserCourseLayout :user="user">
@@ -48,7 +51,10 @@ watch(() => form.role_id, () => {
             <NSelect v-model:value="form.role_id" class="md:col-span-3" placeholder="Selecione um papel"
                 :options="rolesOptions" clearable filterable />
 
-            <pre>{{ courses }}</pre>
+            <div class="pt-6">
+                <UserCourseList :courses_list="courses_list" :can_manage="selected_role?.can_manage_courses ?? 0" />
+            </div>
+
         </UserCourseLayout>
     </AppLayout>
 </template>

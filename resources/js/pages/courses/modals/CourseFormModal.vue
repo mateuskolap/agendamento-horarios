@@ -10,6 +10,7 @@ import { NSelect } from 'naive-ui';
 import { computed, watch } from 'vue';
 import { makeFormOptions } from '@/types/helpers';
 import { User } from '@/types';
+import FormGroup from '@/components/FormGroup.vue';
 
 const props = defineProps<{
     isOpen: boolean;
@@ -70,21 +71,27 @@ function handleSubmit() {
     <Modal :id="`${mode}CourseModal`" :is-open="isOpen" :title="title" size="md" @update:is-open="closeModal">
         <form @submit.prevent="handleSubmit">
             <div class="flex flex-col gap-3">
-                <Input v-model="form.name" placeholder="Digite o Nome do Curso" />
-                <NSelect
-                    v-model:value="form.organization_id"
-                    :options="organizationsOptions"
-                    filterable
-                    clearable
-                    placeholder="Selecione a Organização"
-                />
-                <NSelect
-                    v-model:value="form.coordinator_id"
-                    :options="coordinatorsOptions"
-                    filterable
-                    clearable
-                    placeholder="Selecione o Coordenador"
-                />
+                <FormGroup label="Nome" :input-error="form.errors.name" required>
+                    <Input v-model="form.name" placeholder="Digite o Nome do Curso" />
+                </FormGroup>
+                <FormGroup label="Organização" :input-error="form.errors.organization_id" required>
+                    <NSelect
+                        v-model:value="form.organization_id"
+                        :options="organizationsOptions"
+                        filterable
+                        clearable
+                        placeholder="Selecione a Organização"
+                    />
+                </FormGroup>
+                <FormGroup label="Coordenador" :input-error="form.errors.coordinator_id" required>
+                    <NSelect
+                        v-model:value="form.coordinator_id"
+                        :options="coordinatorsOptions"
+                        filterable
+                        clearable
+                        placeholder="Selecione o Coordenador"
+                    />
+                </FormGroup>
             </div>
             <div class="flex justify-end pt-3">
                 <Button class="cursor-pointer hover:bg-emerald-500 dark:hover:bg-emerald-700" variant="outline">Salvar</Button>

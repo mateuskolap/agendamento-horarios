@@ -9,6 +9,7 @@ import { useForm } from '@inertiajs/vue3';
 import { NSelect } from 'naive-ui';
 import { computed, watch } from 'vue';
 import { makeFormOptions } from '@/types/helpers';
+import FormGroup from '@/components/FormGroup.vue';
 
 const props = defineProps<{
     isOpen: boolean;
@@ -73,19 +74,28 @@ function handleSubmit() {
     <Modal :id="`${mode}UserModal`" :is-open="isOpen" :title="title" size="md" @update:is-open="closeModal">
         <form @submit.prevent="handleSubmit">
             <div class="flex flex-col gap-3">
-                <Input v-model="form.name" placeholder="Digite o Nome do Usuário" />
-                <Input v-model="form.email" type="email" placeholder="Digite o E-mail" />
-                <Input v-model="form.password" type="password" :placeholder="mode === 'edit' ? 'Digite a Nova Senha (deixe vazio para manter)' : 'Digite a Senha'" />
-                <Input v-if="mode === 'create' || form.password" v-model="form.password_confirmation" type="password" placeholder="Confirme a Senha" />
-                <NSelect
-                    v-if="mode === 'create'"
-                    v-model:value="form.role_ids"
-                    :options="rolesOptions"
-                    multiple
-                    filterable
-                    clearable
-                    placeholder="Selecione o Papel do Usuário"
-                />
+                <FormGroup label="Nome" :input-error="form.errors.name" required>
+                    <Input v-model="form.name" placeholder="Digite o Nome do Usuário" />
+                </FormGroup>
+                <FormGroup label="E-mail" :input-error="form.errors.email" required>
+                    <Input v-model="form.email" type="email" placeholder="Digite o E-mail" />
+                </FormGroup>
+                <FormGroup label="Senha" :input-error="form.errors.password" :required="mode === 'create'">
+                    <Input v-model="form.password" type="password" :placeholder="mode === 'edit' ? 'Digite a Nova Senha (deixe vazio para manter)' : 'Digite a Senha'" />
+                </FormGroup>
+                <FormGroup v-if="mode === 'create' || form.password" label="Confirmar Senha" :input-error="form.errors.password_confirmation" :required="mode === 'create' || !!form.password">
+                    <Input v-model="form.password_confirmation" type="password" placeholder="Confirme a Senha" />
+                </FormGroup>
+                <FormGroup label="Papel do Usuário" :input-error="form.errors.role_ids" required>
+                    <NSelect
+                        v-model:value="form.role_ids"
+                        :options="rolesOptions"
+                        multiple
+                        filterable
+                        clearable
+                        placeholder="Selecione o Papel do Usuário"
+                    />
+                </FormGroup>
             </div>
             <div class="flex justify-end pt-3">
                 <Button class="cursor-pointer hover:bg-emerald-500 dark:hover:bg-emerald-700" variant="outline">Salvar</Button>

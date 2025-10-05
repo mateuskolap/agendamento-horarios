@@ -77,6 +77,8 @@ class UserController extends Controller
             'name' => ['nullable', 'string', 'max:255'],
             'email' => ['nullable', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class, 'email')->ignore($user->id)],
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
+            'role_ids' => ['nullable', 'array'],
+            'role_ids.*' => ['exists:roles,id'],
         ]);
 
         if (! empty($validated['password'])) {
@@ -87,6 +89,7 @@ class UserController extends Controller
         }
 
         $user->update($validated);
+        $user->syncRoles($validated['role_ids']);
 
         return redirect()->back()->with('success', 'Usuário atualizado com sucesso');
     }

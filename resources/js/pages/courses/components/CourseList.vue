@@ -24,7 +24,7 @@ const canDelete = usePermission()('courses.delete');
 const columns = [
     { title: 'ID', key: 'id' },
     { title: 'Organização', key: 'organization.name' },
-    { title: 'Nome', key: 'name' },
+    { title: 'Curso', key: 'name' },
     { title: 'Coordenador', key: 'coordinator.name' },
     {
         title: 'Ações',
