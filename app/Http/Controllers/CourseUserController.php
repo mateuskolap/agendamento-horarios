@@ -3,21 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Spatie\Permission\Models\Role;
 
 class CourseUserController extends Controller
 {
-    public function index(User $user) {
-        // Carrega os cursos com join para incluir dados da role
-        $user->load(['courses' => function ($query) {
-            $query->join('roles', 'course_user.role_id', '=', 'roles.id')
-                  ->select('courses.*', 'roles.name as role_name', 'course_user.role_id as pivot_role_id')
-                  ->withPivot('role_id');
-        }]);
+    public function index(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'role_id' => ['nullable', 'exists:roles,id'],
+        ]);
 
-        return Inertia::render('users/show/Courses', props: [
+        $courses = collect();
+
+        if (! empty($validated['role_id'])) {
+            $courses = $user->courses()
+                ->wherePivot('role_id', $validated['role_id'])
+                ->get();
+        }
+
+        return Inertia::render('users/courses/Index', [
             'user' => $user,
+            'roles' => $user->roles,
+            'courses' => $courses,
         ]);
     }
 }

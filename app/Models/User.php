@@ -53,8 +53,8 @@ class User extends Authenticatable
     }
 
     /**
-     * Cursos coordenados pelo usuário (quando possui role 'coordinator') 
-     * 
+     * Cursos coordenados pelo usuário (quando possui role 'coordinator')
+     *
      * @return HasMany<Course, User>
      */
     public function coordinatedCourses(): HasMany
@@ -64,13 +64,14 @@ class User extends Authenticatable
 
     /**
      * Cursos vinculados ao usuário
-     * 
+     *
      * @return BelongsToMany<Course, User, \Illuminate\Database\Eloquent\Relations\Pivot>
      */
     public function courses(): BelongsToMany
     {
         return $this->belongsToMany(Course::class)
-                    ->withPivot('role_id');
+            ->withPivot('role_id')
+            ->withTimestamps();
     }
 
     public function availabilities(): HasMany
@@ -80,7 +81,7 @@ class User extends Authenticatable
 
     /**
      * Agendamentos onde o usuário é o estudante
-     * 
+     *
      * @return HasMany<Scheduling, User>
      */
     public function studentSchedulings(): HasMany
@@ -90,7 +91,7 @@ class User extends Authenticatable
 
     /**
      * Agendamentos onde o usuário é o educador (coordenador ou professor)
-     * 
+     *
      * @return HasMany<Scheduling, User>
      */
     public function educatorSchedulings(): HasMany

@@ -31,7 +31,8 @@ class Course extends Model
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class)
-                    ->withPivot('role_id');
+            ->withPivot('role_id')
+            ->withTimestamps();
     }
 
     public function schedulings(): HasMany

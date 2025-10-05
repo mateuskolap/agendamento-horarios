@@ -37,10 +37,15 @@ class UserController extends Controller
 
         $roles_list = Role::select('id', 'name')->get();
 
-        return Inertia::render('users/Users', [
+        return Inertia::render('users/Index', [
             'users_list' => $users_list,
             'roles_list' => $roles_list,
         ]);
+    }
+
+    public function show(User $user): RedirectResponse
+    {
+        return redirect()->route('users.courses.index', ['user' => $user]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -74,7 +79,7 @@ class UserController extends Controller
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        if (!empty($validated['password'])) {
+        if (! empty($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);
             $user->must_change_password = true;
         } else {

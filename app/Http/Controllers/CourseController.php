@@ -37,7 +37,7 @@ class CourseController extends Controller
         $coordinators_list = User::role('coordinator')->select('id', 'name')->get();
         $organizations_list = Organization::select('id', 'name')->get();
 
-        return Inertia::render('courses/Courses', [
+        return Inertia::render('courses/Index', [
             'courses_list' => $courses_list,
             'coordinators_list' => $coordinators_list,
             'organizations_list' => $organizations_list,
