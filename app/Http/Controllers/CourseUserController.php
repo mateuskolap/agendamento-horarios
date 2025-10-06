@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\RoleEnum;
 use App\Models\Course;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -27,6 +28,10 @@ class CourseUserController extends Controller
                 ->wherePivot('role_id', $validated['role_id'])
                 ->with('organization:id,name')
                 ->get();
+
+            if ($courses->isEmpty() && $selectedRole->name === RoleEnum::COORDINATOR->value) {
+                $courses = $user->coordinatedCourses()->with('organization')->get();
+            }
         }
 
         return Inertia::render('users/courses/Index', [
