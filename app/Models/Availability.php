@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -36,5 +37,17 @@ class Availability extends Model
     public function schedulings(): BelongsToMany
     {
         return $this->belongsToMany(Scheduling::class);
+    }
+
+    public function scopeAccessibleByUser(Builder $query, User $user)
+    {
+        if ($user->hasRole('admin')) {
+            return $query;
+        }
+
+        if ($user->hasRole('coordinator')) {
+            $users = $user->coordinatedCourses->map->coordinator;
+            return $query->whereIn('user_id', $users->pluck('id'));
+        }
     }
 }
