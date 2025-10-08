@@ -6,12 +6,15 @@ import { dashboard } from '@/routes';
 import courses from '@/routes/courses';
 import users from '@/routes/users';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 import { GraduationCap, LayoutGrid, Users } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 import { usePermission } from '@/composables/usePermissions';
 
 const can = usePermission();
+const page = usePage();
+
+const mustChangePassword = page.props.auth.user.must_change_password;
 
 const mainNavItems = [
     {
@@ -47,7 +50,7 @@ const mainNavItems = [
         </SidebarHeader>
 
         <SidebarContent>
-            <NavMain :items="mainNavItems" />
+            <NavMain v-if="!mustChangePassword" :items="mainNavItems" />
         </SidebarContent>
 
         <SidebarFooter>
