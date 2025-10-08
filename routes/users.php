@@ -4,6 +4,7 @@ use App\Http\Controllers\UserController;
 
 Route::middleware('can:users.index')->prefix('/users')->name('users.')->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('index');
+    Route::get('/{user}', [UserController::class, 'show'])->name('show');
     Route::post('/', [UserController::class, 'store'])
         ->middleware('can:users.create')
         ->name('store');
@@ -13,4 +14,6 @@ Route::middleware('can:users.index')->prefix('/users')->name('users.')->group(fu
     Route::delete('/{user}', [UserController::class, 'destroy'])
         ->middleware('can:users.delete')
         ->name('destroy');
+
+    require __DIR__.'/user_courses.php';
 });

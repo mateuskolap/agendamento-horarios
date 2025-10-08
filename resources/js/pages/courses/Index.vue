@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-import PageLayout from '@/components/PageLayout.vue';
+import IndexLayout from '@/layouts/IndexLayout.vue';
 import { useModal } from '@/composables/useModal';
 import AppLayout from '@/layouts/AppLayout.vue';
 import CourseFilters from '@/pages/courses/components/CourseFilters.vue';
 import CourseFormModal from '@/pages/courses/modals/CourseFormModal.vue';
 import courses from '@/routes/courses';
-import type { BreadcrumbItem } from '@/types';
-import Coordinator from '@/types/Coordinator';
+import type { BreadcrumbItem, User } from '@/types';
 import Course from '@/types/Course';
 import Organization from '@/types/Organization';
 import PaginatedData from '@/types/PaginatedData';
@@ -17,7 +16,7 @@ import Pagination from '@/components/ui/pagination/Pagination.vue';
 
 defineProps<{
     courses_list: PaginatedData<Course>;
-    coordinators_list: Coordinator[];
+    coordinators_list: User[];
     organizations_list: Organization[];
 }>();
 
@@ -42,12 +41,13 @@ function closeModal() {
 </script>
 
 <template>
+
     <Head title="Cursos" />
     <AppLayout :breadcrumbs="breadcrumbs">
-        <PageLayout description="Gerencie os cursos" title="Cursos">
+        <IndexLayout description="Gerencie os cursos" title="Cursos">
 
             <template #buttons>
-                 <CourseButtons @open-modal="openModal()" />
+                <CourseButtons @open-modal="openModal()" />
             </template>
 
             <template #filters>
@@ -55,15 +55,16 @@ function closeModal() {
             </template>
 
             <template #table>
-                <CourseList :courses_list="courses_list.data" @open-modal="openModal"/>
+                <CourseList :courses_list="courses_list.data" @open-modal="openModal" />
             </template>
 
             <template #pagination>
                 <Pagination :pagination="courses_list" />
             </template>
 
-        </PageLayout>
+        </IndexLayout>
 
-        <CourseFormModal v-bind="modal.modalBindInfo()" :coordinators_list="coordinators_list" :organizations_list="organizations_list" @update:is-open="closeModal" />
+        <CourseFormModal v-bind="modal.modalBindInfo()" :coordinators_list="coordinators_list"
+            :organizations_list="organizations_list" @update:is-open="closeModal" />
     </AppLayout>
 </template>

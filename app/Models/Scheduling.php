@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Permission\Models\Role;
 
 class Scheduling extends Model
 {
@@ -16,7 +16,7 @@ class Scheduling extends Model
     protected $fillable = [
         'student_id',
         'educator_id',
-        'educator_type',
+        'educator_role_id',
         'course_id',
         'subject',
         'status',
@@ -24,12 +24,17 @@ class Scheduling extends Model
 
     public function student(): BelongsTo
     {
-        return $this->belongsTo(Student::class);
+        return $this->belongsTo(User::class);
     }
 
-    public function educator(): MorphTo
+    public function educator(): BelongsTo
     {
-        return $this->morphTo();
+        return $this->belongsTo(User::class);
+    }
+
+    public function educatorRole(): BelongsTo
+    {
+        return $this->belongsTo(Role::class);
     }
 
     public function course(): BelongsTo
@@ -39,7 +44,7 @@ class Scheduling extends Model
 
     public function availabilities(): BelongsToMany
     {
-        return $this->belongsToMany(Availability::class, 'availability_schedulings');
+        return $this->belongsToMany(Availability::class);
     }
 
     public function responses(): HasMany

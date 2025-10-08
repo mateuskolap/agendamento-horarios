@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import PageLayout from '@/components/PageLayout.vue';
+import IndexLayout from '@/layouts/IndexLayout.vue';
 import { useModal } from '@/composables/useModal';
 import AppLayout from '@/layouts/AppLayout.vue';
 import UserButtons from '@/pages/users/components/UserButtons.vue';
@@ -12,11 +12,23 @@ import PaginatedData from '@/types/PaginatedData';
 import Role from '@/types/Role';
 import { Head } from '@inertiajs/vue3';
 import Pagination from '@/components/ui/pagination/Pagination.vue';
+import { computed } from 'vue';
+import { translateArray } from '@/plugins/translate';
 
-defineProps<{
+const props = defineProps<{
     users_list: PaginatedData<User>;
     roles_list: Role[];
 }>();
+
+const rolesListPtBr = computed(() => translateArray(props.roles_list, ['name']));
+
+const usersListPtBr = computed(() => ({
+    ...props.users_list,
+    data: props.users_list.data.map(user => ({
+        ...user,
+        roles: translateArray(user.roles, ['name'])
+    }))
+}));
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -41,26 +53,26 @@ function closeModal() {
 <template>
     <Head title="Usuários" />
     <AppLayout :breadcrumbs="breadcrumbs">
-        <PageLayout title="Usuários" description="Gerencie os usuários">
+        <IndexLayout title="Usuários" description="Gerencie os usuários">
 
             <template #buttons>
                 <UserButtons @open-modal="openModal()" />
             </template>
 
             <template #filters>
-                <UsersFilters :roles_list="roles_list" />
+                <UsersFilters :roles_list="rolesListPtBr" />
             </template>
 
             <template #table>
-                <UserList :users_list="users_list.data" @open-modal="openModal" />
+                <UserList :users_list="usersListPtBr.data" @open-modal="openModal" />
             </template>
 
             <template #pagination>
-                <Pagination :pagination="users_list" />
+                <Pagination :pagination="usersListPtBr" />
             </template>
 
-        </PageLayout>
+        </IndexLayout>
 
-        <UserFormModal v-bind="modal.modalBindInfo()" :roles_list="roles_list" @update:is-open="closeModal" />
+        <UserFormModal v-bind="modal.modalBindInfo()" :roles_list="rolesListPtBr" @update:is-open="closeModal" />
     </AppLayout>
 </template>

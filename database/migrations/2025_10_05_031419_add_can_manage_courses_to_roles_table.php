@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('course_students', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('course_id')->constrained();
-            $table->foreignId('student_id')->constrained();
-            $table->unique(['course_id', 'student_id']);
+        Schema::table('roles', function (Blueprint $table) {
+            $table->boolean('can_manage_courses')->after('guard_name')->default(true);
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('course_students');
+        Schema::table('roles', function (Blueprint $table) {
+            $table->dropColumn('can_manage_courses');
+        });
     }
 };

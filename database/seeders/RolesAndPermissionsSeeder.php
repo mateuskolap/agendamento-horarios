@@ -22,6 +22,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'users.create',
             'users.update',
             'users.delete',
+            'users.courses.index',
         ];
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
@@ -33,9 +34,14 @@ class RolesAndPermissionsSeeder extends Seeder
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         Role::firstOrCreate(['name' => 'admin'])
-            ->syncPermissions(Permission::all());
+            ->syncPermissions(Permission::all())
+            ->update(['can_manage_courses' => false]);
 
         Role::firstOrCreate(['name' => 'coordinator'])
+            ->syncPermissions([])
+            ->update(['can_manage_courses' => false]);
+
+        Role::firstOrCreate(['name' => 'professor'])
             ->syncPermissions([]);
 
         Role::firstOrCreate(['name' => 'student'])

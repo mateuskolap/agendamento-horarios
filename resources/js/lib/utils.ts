@@ -13,3 +13,15 @@ export function urlIsActive(urlToCheck: NonNullable<InertiaLinkProps['href']>, c
 export function toUrl(href: NonNullable<InertiaLinkProps['href']>) {
     return typeof href === 'string' ? href : href?.url;
 }
+
+export function makeFormOptions(
+    onSuccess: () => void,
+    overrides?: { preserveState?: boolean; preserveScroll?: boolean },
+) {
+    return {
+        onSuccess,
+        preserveState: true,
+        preserveScroll: true,
+        ...(overrides ?? {}),
+    };
+}

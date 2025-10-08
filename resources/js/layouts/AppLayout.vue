@@ -29,7 +29,6 @@ watch(flash, (msg) => {
             showConfirmButton: false,
             position: "top-end",
             width: 400,
-            height: 200,
             padding: '1em',
         });
     }
@@ -43,7 +42,6 @@ watch(flash, (msg) => {
             showConfirmButton: false,
             position: "top-end",
             width: 400,
-            height: 200,
             padding: '1em',
         });
     }
@@ -57,7 +55,6 @@ watch(flash, (msg) => {
             showConfirmButton: false,
             position: "top-end",
             width: 400,
-            height: 200,
             padding: '1em',
         });
     }
@@ -71,7 +68,6 @@ watch(flash, (msg) => {
             showConfirmButton: false,
             position: "top-end",
             width: 400,
-            height: 200,
             padding: '1em',
         });
     }
