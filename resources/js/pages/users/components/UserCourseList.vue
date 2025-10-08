@@ -5,13 +5,35 @@ import Course from '@/types/Course';
 import { Link2Off } from 'lucide-vue-next';
 import { NButton, NDataTable, NIcon, type DataTableColumns } from 'naive-ui';
 import { computed, h } from 'vue';
+import Role from '@/types/Role';
+import { router } from '@inertiajs/vue3';
 
 const props = defineProps<{
-    courses_list: Course[];
+    user_courses: Course[];
+    selected_role?: Role;
     can_manage: number;
 }>();
 
-const { confirmDelete } = useConfirmDelete();
+const { confirmDelete, showDeleteSuccess } = useConfirmDelete();
+
+const handleDetachCourse = async (course: Course) => {
+    const confirmed = await confirmDelete(
+        'Desvincular curso?',
+        `Tem certeza que deseja desvincular o curso "${course.name}" deste usuário?`
+    );
+
+    if (confirmed) {
+        const deleteData: any = {};
+        if (props.selected_role?.id) {
+            deleteData.role_id = props.selected_role.id;
+        }
+
+        router.delete(users.courses.destroy({ user: course.pivot.user_id, course: course.id }).url, {
+            data: deleteData,
+            onSuccess: () => showDeleteSuccess('Curso desvinculado!', 'O curso foi desvinculado do usuário com sucesso.')
+        });
+    }
+};
 
 const columns = computed(() => {
     const baseColumns: DataTableColumns<Course> = [
@@ -30,7 +52,7 @@ const columns = computed(() => {
                         {
                             tertiary: true,
                             size: 'small',
-                            onClick: () => confirmDelete(users.courses.destroy({ user: row.pivot.user_id, course: row.id }).url),
+                            onClick: () => handleDetachCourse(row),
                         },
                         {
                             default: () => h(NIcon, { class: 'text-red-500 dark:text-red-700' }, { default: () => h(Link2Off) }),
@@ -47,6 +69,6 @@ const columns = computed(() => {
 
 <template>
     <div>
-        <NDataTable :columns="columns" :data="courses_list"/>
+        <NDataTable :columns="columns" :data="user_courses"/>
     </div>
 </template>

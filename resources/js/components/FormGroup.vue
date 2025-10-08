@@ -12,7 +12,7 @@ defineProps<{
 <template>
     <Label>
         {{ label }}
-        <span v-if="required" class="text-red-500 ml-1">*</span>
+        <span v-if="required" class="text-red-500 ml-1 pb-2">*</span>
     </Label>
     <slot></slot>
     <InputError :message="inputError"/>

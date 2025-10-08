@@ -1,25 +1,36 @@
 <script setup lang="ts">
-import { NButton, NDataTable, NIcon } from 'naive-ui';
+import MobileCardList from '@/components/ui/mobile-card/MobileCardList.vue';
+import { useConfirmDelete } from '@/composables/useConfirmDelete';
+import { usePermission } from '@/composables/usePermissions';
 import courses from '@/routes/courses';
 import Course from '@/types/Course';
-import { useConfirmDelete } from '@/composables/useConfirmDelete';
-import { h } from 'vue';
+import { router } from '@inertiajs/vue3';
 import { Pencil, Trash } from '@vicons/ionicons5';
-import MobileCardList from '@/components/ui/mobile-card/MobileCardList.vue';
+import { NButton, NDataTable, NIcon } from 'naive-ui';
+import { h } from 'vue';
 import CourseField from './CourseField.vue';
-import { usePermission } from '@/composables/usePermissions';
 
 defineProps<{
     courses_list: Course[];
 }>();
 
-const { confirmDelete } = useConfirmDelete();
+const { confirmDelete, showDeleteSuccess } = useConfirmDelete();
 const emit = defineEmits<{
     (e: 'open-modal', course?: Course): void;
 }>();
 
 const canEdit = usePermission()('courses.update');
 const canDelete = usePermission()('courses.delete');
+
+const handleDeleteCourse = async (course: Course) => {
+    const confirmed = await confirmDelete('Excluir curso?', `Tem certeza que deseja excluir o curso "${course.name}"?`);
+
+    if (confirmed) {
+        router.delete(courses.destroy(course.id).url, {
+            onSuccess: () => showDeleteSuccess('Curso excluído!', 'O curso foi excluído com sucesso.')
+        });
+    }
+};
 
 const columns = [
     { title: 'ID', key: 'id' },
@@ -31,30 +42,36 @@ const columns = [
         key: 'actions',
         render(row: Course) {
             if (!canEdit && !canDelete) return null;
-            return h('div', { class: 'flex gap-2' }, [
-                canEdit && h(
-                    NButton,
-                    {
-                        tertiary: true,
-                        size: 'small',
-                        onClick: () => emit('open-modal', row),
-                    },
-                    {
-                        icon: () => h(NIcon, null, { default: () => h(Pencil) }),
-                    },
-                ),
-                canDelete && h(
-                    NButton,
-                    {
-                        tertiary: true,
-                        size: 'small',
-                        onClick: () => confirmDelete(courses.destroy(row.id).url),
-                    },
-                    {
-                        icon: () => h(NIcon, { class: 'text-red-500 dark:text-red-700' }, { default: () => h(Trash) }),
-                    },
-                ),
-            ].filter(Boolean));
+            return h(
+                'div',
+                { class: 'flex gap-2' },
+                [
+                    canEdit &&
+                        h(
+                            NButton,
+                            {
+                                tertiary: true,
+                                size: 'small',
+                                onClick: () => emit('open-modal', row),
+                            },
+                            {
+                                icon: () => h(NIcon, null, { default: () => h(Pencil) }),
+                            },
+                        ),
+                    canDelete &&
+                        h(
+                            NButton,
+                            {
+                                tertiary: true,
+                                size: 'small',
+                                onClick: () => handleDeleteCourse(row),
+                            },
+                            {
+                                icon: () => h(NIcon, { class: 'text-red-500 dark:text-red-700' }, { default: () => h(Trash) }),
+                            },
+                        ),
+                ].filter(Boolean),
+            );
         },
     },
 ];
@@ -77,7 +94,7 @@ const columns = [
                         <NIcon><Pencil /></NIcon>
                     </template>
                 </NButton>
-                <NButton v-if="canDelete" size="small" tertiary @click="confirmDelete(courses.destroy(course.id).url)">
+                <NButton v-if="canDelete" size="small" tertiary @click="handleDeleteCourse(course)">
                     <template #icon>
                         <NIcon class="text-red-500 dark:text-red-700"><Trash /></NIcon>
                     </template>

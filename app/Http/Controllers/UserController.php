@@ -22,7 +22,7 @@ class UserController extends Controller
             'role_id' => ['nullable', 'exists:roles,id'],
         ]);
 
-        $users_list = User::query()
+        $usersList = User::query()
             ->when(! empty($validated['name']), function ($query) use ($validated) {
                 $query->where('users.name', 'like', '%'.$validated['name'].'%');
             })
@@ -35,11 +35,11 @@ class UserController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        $roles_list = Role::select('id', 'name')->get();
+        $rolesList = Role::select('id', 'name')->get();
 
         return Inertia::render('users/Index', [
-            'users_list' => $users_list,
-            'roles_list' => $roles_list,
+            'users_list' => $usersList,
+            'roles_list' => $rolesList,
         ]);
     }
 

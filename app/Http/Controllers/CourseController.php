@@ -20,15 +20,15 @@ class CourseController extends Controller
             'coordinator_id' => ['nullable', 'exists:users,id'],
         ]);
 
-        $courses_list = Course::query()
+        $coursesList = Course::query()
             ->when(! empty($validated['organization_id']), function ($query) use ($validated) {
-                $query->where('organization_id', $validated['organization_id']);
+                $query->whereOrganizationId($validated['organization_id']);
             })
             ->when(! empty($validated['name']), function ($query) use ($validated) {
                 $query->where('name', 'like', '%'.$validated['name'].'%');
             })
             ->when(! empty($validated['coordinator_id']), function ($query) use ($validated) {
-                $query->where('coordinator_id', $validated['coordinator_id']);
+                $query->whereCoordinatorId($validated['coordinator_id']);
             })
             ->select(['id', 'name', 'organization_id', 'coordinator_id'])
             ->with(['coordinator:id,name', 'organization:id,name'])
@@ -36,13 +36,13 @@ class CourseController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        $coordinators_list = User::role('coordinator')->select('id', 'name')->get();
-        $organizations_list = Organization::select('id', 'name')->get();
+        $coordinatorsList = User::role('coordinator')->select('id', 'name')->get();
+        $organizationsList = Organization::select('id', 'name')->get();
 
         return Inertia::render('courses/Index', [
-            'courses_list' => $courses_list,
-            'coordinators_list' => $coordinators_list,
-            'organizations_list' => $organizations_list,
+            'courses_list' => $coursesList,
+            'coordinators_list' => $coordinatorsList,
+            'organizations_list' => $organizationsList,
         ]);
     }
 
