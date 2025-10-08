@@ -60,7 +60,7 @@ function handleRoleChange(roleId?: number) {
 
 onMounted(() => {
     handleRoleChange();
-})
+});
 
 const modal = useModal();
 
