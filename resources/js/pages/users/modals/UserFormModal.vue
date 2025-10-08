@@ -8,7 +8,7 @@ import Role from '@/types/Role';
 import { useForm } from '@inertiajs/vue3';
 import { NSelect } from 'naive-ui';
 import { computed, watch } from 'vue';
-import { makeFormOptions } from '@/types/helpers';
+import { makeFormOptions } from '@/lib/utils';
 import FormGroup from '@/components/FormGroup.vue';
 
 const props = defineProps<{
@@ -103,5 +103,3 @@ function handleSubmit() {
         </form>
     </Modal>
 </template>
-
-<style scoped></style>

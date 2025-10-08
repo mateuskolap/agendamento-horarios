@@ -15,7 +15,7 @@ defineProps<{
     users_list: User[];
 }>();
 
-const { confirmDelete } = useConfirmDelete();
+const { confirmDelete, showDeleteSuccess } = useConfirmDelete();
 
 const emit = defineEmits<{
     (e: 'open-modal', user?: User): void;
@@ -23,6 +23,19 @@ const emit = defineEmits<{
 
 const canEdit = usePermission()('users.update');
 const canDelete = usePermission()('users.delete');
+
+const handleDeleteUser = async (user: User) => {
+    const confirmed = await confirmDelete(
+        'Excluir usuário?',
+        `Tem certeza que deseja excluir o usuário "${user.name}"?`
+    );
+
+    if (confirmed) {
+        router.delete(users.destroy(user.id).url, {
+            onSuccess: () => showDeleteSuccess('Usuário excluído!', 'O usuário foi excluído com sucesso.')
+        });
+    }
+};
 
 const columns = [
     { title: 'ID', key: 'id' },
@@ -67,7 +80,7 @@ const columns = [
                     {
                         tertiary: true,
                         size: 'small',
-                        onClick: () => confirmDelete(users.destroy(row.id).url),
+                        onClick: () => handleDeleteUser(row),
                     },
                     {
                         icon: () => h(NIcon, { class: 'text-red-500 dark:text-red-700' }, { default: () => h(Trash) }),
@@ -98,7 +111,7 @@ const columns = [
                         </NIcon>
                     </template>
                 </NButton>
-                <NButton v-if="canDelete" size="small" tertiary @click="confirmDelete(users.destroy(user.id).url)">
+                <NButton v-if="canDelete" size="small" tertiary @click="handleDeleteUser(user)">
                     <template #icon>
                         <NIcon class="text-red-500 dark:text-red-700">
                             <Trash />

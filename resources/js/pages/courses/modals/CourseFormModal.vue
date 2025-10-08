@@ -8,7 +8,7 @@ import Organization from '@/types/Organization';
 import { useForm } from '@inertiajs/vue3';
 import { NSelect } from 'naive-ui';
 import { computed, watch } from 'vue';
-import { makeFormOptions } from '@/types/helpers';
+import { makeFormOptions } from '@/lib/utils';
 import { User } from '@/types';
 import FormGroup from '@/components/FormGroup.vue';
 
