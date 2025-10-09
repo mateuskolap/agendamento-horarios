@@ -7,9 +7,10 @@ import courses from '@/routes/courses';
 import users from '@/routes/users';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { GraduationCap, LayoutGrid, Users } from 'lucide-vue-next';
+import { GraduationCap, LayoutGrid, Users, Clock2 } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 import { usePermission } from '@/composables/usePermissions';
+import availabilities from '@/routes/availabilities';
 
 const can = usePermission();
 
@@ -28,6 +29,11 @@ const mainNavItems = [
         title: 'Usuários',
         href: users.index(),
         icon: Users,
+    },
+    can('availabilities.index') && {
+        title: 'Disponibilidade',
+        href: availabilities.index(),
+        icon: Clock2,
     },
 ].filter(Boolean) as NavItem[];
 </script>

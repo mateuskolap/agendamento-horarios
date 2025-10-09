@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Availability;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Inertia\Response;
 
 class AvailabilityController extends Controller
@@ -25,6 +27,13 @@ class AvailabilityController extends Controller
             ->paginate(10)
             ->withQueryString();
 
+        $usersList = User::whereHas('availabilities')->get();
+        $rolesList = Availability::with('role')->get()->map->role;
 
+        return Inertia::render('availabilities/Index', [
+            'availabilities_list' => $availabilitiesList,
+            'users_list' => $usersList,
+            'roles_list' => $rolesList,
+        ]);
     }
 }

@@ -8,7 +8,7 @@ import { router } from '@inertiajs/vue3';
 import { Pencil, Trash } from '@vicons/ionicons5';
 import { NButton, NDataTable, NIcon } from 'naive-ui';
 import { h } from 'vue';
-import CourseField from './CourseField.vue';
+import Field from './Field.vue';
 
 defineProps<{
     courses_list: Course[];
@@ -102,8 +102,8 @@ const columns = [
             </template>
 
             <template #default="{ item: course }">
-                <CourseField :value="course.organization?.name" label="Organização" />
-                <CourseField :value="course.coordinator?.name" label="Coordenador" />
+                <Field :value="course.organization?.name" label="Organização" />
+                <Field :value="course.coordinator?.name" label="Coordenador" />
             </template>
         </MobileCardList>
     </div>

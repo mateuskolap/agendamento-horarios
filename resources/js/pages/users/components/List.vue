@@ -7,7 +7,7 @@ import { useConfirmDelete } from '@/composables/useConfirmDelete';
 import { h } from 'vue';
 import { Pencil, Trash, Eye } from '@vicons/ionicons5';
 import MobileCardList from '@/components/ui/mobile-card/MobileCardList.vue';
-import UserField from './UserField.vue';
+import Field from './Field.vue';
 import { usePermission } from '@/composables/usePermissions';
 import { router } from '@inertiajs/vue3';
 
@@ -121,7 +121,7 @@ const columns = [
             </template>
 
             <template #default="{ item: user }">
-                <UserField :value="user.roles.map((r: Role) => r.name).join(', ')" label="Papéis" />
+                <Field :value="user.roles.map((r: Role) => r.name).join(', ')" label="Papéis" />
             </template>
         </MobileCardList>
     </div>

@@ -6,13 +6,10 @@ import Role from '@/types/Role';
 import { router, useForm } from '@inertiajs/vue3';
 import { Search, RefreshOutline } from '@vicons/ionicons5';
 import { NSelect } from 'naive-ui';
-import { computed } from 'vue';
 
-const props = defineProps<{
+defineProps<{
     roles_list: Role[];
 }>();
-
-const rolesOptions = computed(() => (props.roles_list || []).map((r) => ({ label: r.name, value: r.id })));
 
 const form = useForm({
     name: '',
@@ -31,7 +28,9 @@ const submit = () => form.get(users.index().url, { preserveState: true, preserve
                 v-model:value="form.role_id"
                 class="md:col-span-5"
                 placeholder="Papel"
-                :options="rolesOptions"
+                :options="roles_list"
+                label-field="name"
+                value-field="id"
                 clearable
                 filterable
             />

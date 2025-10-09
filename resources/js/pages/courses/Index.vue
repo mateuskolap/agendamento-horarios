@@ -2,16 +2,16 @@
 import IndexLayout from '@/layouts/IndexLayout.vue';
 import { useModal } from '@/composables/useModal';
 import AppLayout from '@/layouts/AppLayout.vue';
-import CourseFilters from '@/pages/courses/components/CourseFilters.vue';
-import CourseFormModal from '@/pages/courses/modals/CourseFormModal.vue';
+import Filters from '@/pages/courses/components/Filters.vue';
+import FormModal from '@/pages/courses/modals/FormModal.vue';
 import courses from '@/routes/courses';
 import type { BreadcrumbItem, User } from '@/types';
 import Course from '@/types/Course';
 import Organization from '@/types/Organization';
 import PaginatedData from '@/types/PaginatedData';
 import { Head } from '@inertiajs/vue3';
-import CourseList from '@/pages/courses/components/CourseList.vue';
-import CourseButtons from '@/pages/courses/components/CourseButtons.vue';
+import List from '@/pages/courses/components/List.vue';
+import Buttons from '@/pages/courses/components/Buttons.vue';
 import Pagination from '@/components/ui/pagination/Pagination.vue';
 
 defineProps<{
@@ -47,15 +47,15 @@ function closeModal() {
         <IndexLayout description="Gerencie os cursos" title="Cursos">
 
             <template #buttons>
-                <CourseButtons @open-modal="openModal()" />
+                <Buttons @open-modal="openModal()" />
             </template>
 
             <template #filters>
-                <CourseFilters :coordinators_list="coordinators_list" :organizations_list="organizations_list" />
+                <Filters :coordinators_list="coordinators_list" :organizations_list="organizations_list" />
             </template>
 
             <template #table>
-                <CourseList :courses_list="courses_list.data" @open-modal="openModal" />
+                <List :courses_list="courses_list.data" @open-modal="openModal" />
             </template>
 
             <template #pagination>
@@ -64,7 +64,7 @@ function closeModal() {
 
         </IndexLayout>
 
-        <CourseFormModal v-bind="modal.modalBindInfo()" :coordinators_list="coordinators_list"
+        <FormModal v-bind="modal.modalBindInfo()" :coordinators_list="coordinators_list"
             :organizations_list="organizations_list" @update:is-open="closeModal" />
     </AppLayout>
 </template>

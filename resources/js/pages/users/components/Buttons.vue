@@ -11,12 +11,15 @@ const can = usePermission();
 </script>
 
 <template>
-    <Button v-if="can('users.create')" class="cursor-pointer hover:bg-green-500 hover:dark:bg-green-700" variant="outline" @click="emit('open-modal', null)">
+    <Button
+        v-if="can('users.create')"
+        class="cursor-pointer hover:bg-green-500 hover:dark:bg-green-700"
+        variant="outline"
+        @click="emit('open-modal', null)"
+    >
         <Add />
         Adicionar
     </Button>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

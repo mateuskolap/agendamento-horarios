@@ -4,8 +4,8 @@ import Label from '@/components/ui/label/Label.vue';
 import { useModal } from '@/composables/useModal';
 import AppLayout from '@/layouts/AppLayout.vue';
 import UserCourseLayout from '@/layouts/users/courses/Layout.vue';
-import UserCourseList from '@/pages/users/components/UserCourseList.vue';
-import CourseSyncModal from '@/pages/users/modals/CourseSyncModal.vue';
+import CourseList from '@/pages/users/components/CourseList.vue';
+import SyncModal from '@/pages/users/modals/SyncModal.vue';
 import { translateArray } from '@/plugins/translate';
 import users from '@/routes/users';
 import { BreadcrumbItem, User } from '@/types';
@@ -99,14 +99,14 @@ function closeModal() {
             </div>
 
             <div class="pt-6">
-                <UserCourseList
+                <CourseList
                     :user_courses="user_courses"
                     :can_manage="selectedRole?.can_manage_courses ?? 0"
                     :selected_role="selectedRole || undefined"
                 />
             </div>
 
-            <CourseSyncModal
+            <SyncModal
                 v-if="selectedRole"
                 v-bind="modal.modalBindInfo()"
                 :user="user"
