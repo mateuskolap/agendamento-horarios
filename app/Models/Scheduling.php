@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Permission\Models\Role;
@@ -18,8 +17,15 @@ class Scheduling extends Model
         'educator_id',
         'educator_role_id',
         'course_id',
+        'date',
+        'time',
         'subject',
         'status',
+    ];
+
+    protected $casts = [
+        'date' => 'date',
+        'time' => 'datetime:H:i',
     ];
 
     public function student(): BelongsTo
@@ -40,11 +46,6 @@ class Scheduling extends Model
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
-    }
-
-    public function availabilities(): BelongsToMany
-    {
-        return $this->belongsToMany(Availability::class);
     }
 
     public function responses(): HasMany

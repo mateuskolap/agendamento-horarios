@@ -37,11 +37,11 @@ class RolesAndPermissionsSeeder extends Seeder
 
         Role::firstOrCreate(['name' => 'admin'])
             ->syncPermissions(Permission::all())
-            ->update(['can_manage_courses' => false]);
+            ->update(['courses_editable' => false]);
 
         Role::firstOrCreate(['name' => 'coordinator'])
             ->syncPermissions([])
-            ->update(['can_manage_courses' => false]);
+            ->update(['courses_editable' => false]);
 
         Role::firstOrCreate(['name' => 'professor'])
             ->syncPermissions([]);

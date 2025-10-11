@@ -17,5 +17,4 @@ Route::middleware(['auth', 'verified', 'password.change'])->group(function () {
     require __DIR__.'/settings.php';
     require __DIR__.'/courses.php';
     require __DIR__.'/users.php';
-    require __DIR__.'/availabilities.php';
 });

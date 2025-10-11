@@ -92,7 +92,7 @@ function closeModal() {
                     clearable
                     filterable
                 />
-                <Button v-if="form.role_id && selectedRole?.can_manage_courses" variant="outline" class="cursor-pointer" @click="openModal()">
+                <Button v-if="form.role_id && selectedRole?.courses_editable" variant="outline" class="cursor-pointer" @click="openModal()">
                     <Link2 />
                     Vincular Cursos
                 </Button>
@@ -101,7 +101,7 @@ function closeModal() {
             <div class="pt-6">
                 <CourseList
                     :user_courses="user_courses"
-                    :can_manage="selectedRole?.can_manage_courses ?? 0"
+                    :can_manage="selectedRole?.courses_editable ?? 0"
                     :selected_role="selectedRole || undefined"
                 />
             </div>

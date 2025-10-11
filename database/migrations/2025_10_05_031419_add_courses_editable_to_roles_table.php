@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('availability_schedulings', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('availability_id')->constrained();
-            $table->foreignId('scheduling_id')->constrained();
-            $table->unique(['availability_id', 'scheduling_id']);
+        Schema::table('roles', function (Blueprint $table) {
+            $table->boolean('courses_editable')->after('guard_name')->default(true);
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('availability_schedulings');
+        Schema::table('roles', function (Blueprint $table) {
+            $table->dropColumn('courses_editable');
+        });
     }
 };

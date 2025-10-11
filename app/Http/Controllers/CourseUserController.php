@@ -21,7 +21,7 @@ class CourseUserController extends Controller
         ]);
 
         $userCourses = collect();
-        if (!empty($validated['role_id'])) {
+        if (! empty($validated['role_id'])) {
             $selectedRole = Role::find($validated['role_id']);
             $userCourses = $user->courses()
                 ->wherePivot('role_id', $validated['role_id'])
@@ -57,8 +57,8 @@ class CourseUserController extends Controller
 
         $role = Role::find($validated['role_id']);
 
-        if (!$role->can_manage_courses) {
-            return back()->with('error', 'Não é permitida a alteração dos cursos para usuários com a função: ' . $role->name . '.');
+        if (! $role->courses_editable) {
+            return back()->with('error', 'Não é permitida a alteração dos cursos para usuários com a função: '.$role->name.'.');
         }
 
         foreach ($validated['course_ids'] as $courseId) {
