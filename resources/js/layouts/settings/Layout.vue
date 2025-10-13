@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import { usePermission } from '@/composables/usePermissions';
 import SidebarLayout from '@/layouts/SidebarLayout.vue';
+import availabilities from '@/routes/availabilities';
 import { edit as editPassword } from '@/routes/password';
 import { edit } from '@/routes/profile';
 import { type NavItem } from '@/types';
 import { usePage } from '@inertiajs/vue3';
-import availabilities from '@/routes/availabilities';
-import { usePermission } from '@/composables/usePermissions';
 
 const page = usePage();
 const can = usePermission();
@@ -28,14 +28,14 @@ const sidebarNavItems: NavItem[] = mustChangePassword
               title: 'Senha',
               href: editPassword(),
           },
-          ...(
-            can('availabilities.index')
-              ? [{
-                  title: 'Horários',
-                  href: availabilities.index(),
-                }]
-              : []
-          ),
+          ...(can('availabilities.index')
+              ? [
+                    {
+                        title: 'Horários',
+                        href: availabilities.index(),
+                    },
+                ]
+              : []),
       ];
 </script>
 

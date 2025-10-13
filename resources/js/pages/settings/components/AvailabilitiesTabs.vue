@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import Availability from '@/types/Availability';
+import { Add } from '@vicons/ionicons5';
 
-// const form = useForm({
-//     user_id: null as number | null,
-//     weekday: '',
-//     time: '',
-// });
+defineProps<{
+    availabilities_list: Availability[];
+}>();
 
 const tabs = [
     { value: 1, label: 'Seg', full: 'Segunda-Feira' },
@@ -29,11 +29,13 @@ const tabs = [
 
         <TabsContent v-for="tab in tabs" :key="`content-${tab.value}`" :value="tab.value">
             <Card>
-                <CardHeader>
+                <div class="flex items-center justify-between px-4">
                     <CardTitle>{{ tab.full }}</CardTitle>
-                </CardHeader>
-                <CardContent class="grid grid-cols-3 gap-4">
-                </CardContent>
+                    <Button class="cursor-pointer">
+                        <Add />
+                    </Button>
+                </div>
+                <CardContent class="grid grid-cols-3 gap-4"> </CardContent>
             </Card>
         </TabsContent>
     </Tabs>

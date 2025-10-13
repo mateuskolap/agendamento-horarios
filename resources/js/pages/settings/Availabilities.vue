@@ -5,7 +5,12 @@ import SettingsLayout from '@/layouts/settings/Layout.vue';
 import AvailabilitiesTabs from '@/pages/settings/components/AvailabilitiesTabs.vue';
 import availabilities from '@/routes/availabilities';
 import type { BreadcrumbItem } from '@/types';
+import Availability from '@/types/Availability';
 import { Head } from '@inertiajs/vue3';
+
+defineProps<{
+    availabilities_list: Availability[];
+}>();
 
 const breadcrumbItems: BreadcrumbItem[] = [
     {
@@ -27,7 +32,7 @@ const breadcrumbItems: BreadcrumbItem[] = [
                 />
 
                 <div class="space-y-6">
-                    <AvailabilitiesTabs />
+                    <AvailabilitiesTabs :availabilities_list="availabilities_list" />
                 </div>
             </div>
         </SettingsLayout>
