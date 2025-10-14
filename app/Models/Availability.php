@@ -3,32 +3,38 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Permission\Models\Role;
 
 class Availability extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
-        'educator_id',
-        'educator_type',
+        'user_id',
+        'role_id',
         'weekday',
         'time',
     ];
 
-    public function educator(): MorphTo
+    protected $casts = [
+        'time' => 'datetime:H:i',
+    ];
+
+    public function user(): BelongsTo
     {
-        return $this->morphTo();
+        return $this->belongsTo(User::class);
+    }
+
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class);
     }
 
     public function schedulings(): BelongsToMany
     {
-        return $this->belongsToMany(Scheduling::class, 'availability_schedulings');
+        return $this->belongsToMany(Scheduling::class);
     }
 }
-
-
-
-

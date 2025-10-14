@@ -9,7 +9,7 @@ class Response extends Model
 {
     protected $fillable = [
         'scheduling_id',
-        'message'
+        'message',
     ];
 
     public function scheduling(): BelongsTo

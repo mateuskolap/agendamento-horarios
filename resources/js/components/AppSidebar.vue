@@ -9,24 +9,27 @@ import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
 import { GraduationCap, LayoutGrid, Users } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
+import { usePermission } from '@/composables/usePermissions';
 
-const mainNavItems: NavItem[] = [
+const can = usePermission();
+
+const mainNavItems = [
     {
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
     },
-    {
+    can('courses.index') && {
         title: 'Cursos',
         href: courses.index(),
         icon: GraduationCap,
     },
-    {
+    can('users.index') && {
         title: 'Usuários',
         href: users.index(),
         icon: Users,
     },
-];
+].filter(Boolean) as NavItem[];
 </script>
 
 <template>

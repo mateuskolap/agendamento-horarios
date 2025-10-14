@@ -15,7 +15,7 @@ class Course extends Model
     protected $fillable = [
         'name',
         'organization_id',
-        'coordinator_id'
+        'coordinator_id',
     ];
 
     public function organization(): BelongsTo
@@ -25,17 +25,14 @@ class Course extends Model
 
     public function coordinator(): BelongsTo
     {
-        return $this->belongsTo(Coordinator::class);
+        return $this->belongsTo(User::class);
     }
 
-    public function students(): BelongsToMany
+    public function users(): BelongsToMany
     {
-        return $this->belongsToMany(Student::class, 'course_students');
-    }
-
-    public function professors(): BelongsToMany
-    {
-        return $this->belongsToMany(Professor::class, 'course_professors');
+        return $this->belongsToMany(User::class)
+            ->withPivot('role_id')
+            ->withTimestamps();
     }
 
     public function schedulings(): HasMany

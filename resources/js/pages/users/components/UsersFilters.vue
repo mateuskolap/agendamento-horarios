@@ -14,12 +14,9 @@ const props = defineProps<{
 
 const rolesOptions = computed(() => (props.roles_list || []).map((r) => ({ label: r.name, value: r.id })));
 
-const form = useForm<{
-    name: string;
-    role_id: number | null;
-}>({
+const form = useForm({
     name: '',
-    role_id: null,
+    role_id: null as number | null,
 });
 
 const refresh = () => router.get(users.index().url, {}, { preserveScroll: true });

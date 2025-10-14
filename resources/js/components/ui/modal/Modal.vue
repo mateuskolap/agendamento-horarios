@@ -36,7 +36,7 @@ watch(() => props.isOpen, (isOpen) => {
 
 onMounted(() => {
     const handleKey = (event: KeyboardEvent) => {
-        if ((props.isOpen) && (event.key === 'Escape')) {
+        if (props.isOpen && event.key === 'Escape') {
             closeModal();
         }
     };
