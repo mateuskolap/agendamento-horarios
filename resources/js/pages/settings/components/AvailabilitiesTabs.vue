@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
+import { Item, ItemActions, ItemContent, ItemDescription } from '@/components/ui/item';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Availability from '@/types/Availability';
 import { Add } from '@vicons/ionicons5';
@@ -22,20 +23,31 @@ const tabs = [
 <template>
     <Tabs :default-value="1" class="w-full max-w-xl">
         <TabsList class="grid w-full grid-cols-6">
-            <TabsTrigger v-for="tab in tabs" :key="tab.value" :value="tab.value" class="cursor-pointer hover:bg-sidebar-accent dark:hover:bg-accent">
+            <TabsTrigger v-for="tab in tabs" :key="tab.value" :value="tab.value" class="cursor-pointer hover:bg-sidebar-accent">
                 {{ tab.label }}
             </TabsTrigger>
         </TabsList>
 
         <TabsContent v-for="tab in tabs" :key="`content-${tab.value}`" :value="tab.value">
             <Card>
-                <div class="flex items-center justify-between px-4">
+                <div class="flex items-center justify-between px-6">
                     <CardTitle>{{ tab.full }}</CardTitle>
                     <Button class="cursor-pointer">
                         <Add />
                     </Button>
                 </div>
-                <CardContent class="grid grid-cols-3 gap-4"> </CardContent>
+                <CardContent class="gap-4">
+                    <Item variant="outline">
+                        <ItemContent>
+                            <ItemDescription> Apenas um simples teste </ItemDescription>
+                        </ItemContent>
+                        <ItemActions>
+                            <Button variant="outline" size="sm" class="cursor-pointer">
+                                Action
+                            </Button>
+                        </ItemActions>
+                    </Item>
+                </CardContent>
             </Card>
         </TabsContent>
     </Tabs>
