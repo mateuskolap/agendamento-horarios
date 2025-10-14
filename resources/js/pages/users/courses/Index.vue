@@ -77,7 +77,6 @@ function closeModal() {
 
     <Head title="Visualização Usuário" />
     <AppLayout :breadcrumbs="breadcrumbs">
-        {{ selectedRole?.name }}
         <UserCourseLayout :user="user">
             <Label class="pb-2">Comece selecionando um papel para gerenciar/visualizar os cursos</Label>
             <div class="flex gap-2">
