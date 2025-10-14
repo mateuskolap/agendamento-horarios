@@ -4,7 +4,7 @@ import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { Item, ItemActions, ItemContent, ItemDescription } from '@/components/ui/item';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Availability from '@/types/Availability';
-import { Add } from '@vicons/ionicons5';
+import { Add, Pencil, Trash } from '@vicons/ionicons5';
 
 defineProps<{
     availabilities_list: Availability[];
@@ -31,7 +31,7 @@ const tabs = [
         <TabsContent v-for="tab in tabs" :key="`content-${tab.value}`" :value="tab.value">
             <Card>
                 <div class="flex items-center justify-between px-6">
-                    <CardTitle>{{ tab.full }}</CardTitle>
+                    <CardTitle class="text-xl">{{ tab.full }}</CardTitle>
                     <Button class="cursor-pointer">
                         <Add />
                     </Button>
@@ -43,7 +43,10 @@ const tabs = [
                         </ItemContent>
                         <ItemActions>
                             <Button variant="outline" size="sm" class="cursor-pointer">
-                                Action
+                                <Pencil />
+                            </Button>
+                            <Button variant="outline" size="sm" class="cursor-pointer">
+                                <Trash />
                             </Button>
                         </ItemActions>
                     </Item>
