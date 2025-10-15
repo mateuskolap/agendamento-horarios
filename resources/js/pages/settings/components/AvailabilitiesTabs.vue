@@ -4,13 +4,14 @@ import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { Item, ItemActions, ItemContent, ItemDescription } from '@/components/ui/item';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Availability from '@/types/Availability';
-import { Add, Pencil, Trash } from '@vicons/ionicons5';
+import Weekday from '@/types/Weekday';
+import { Add, Trash } from '@vicons/ionicons5';
 
 defineProps<{
     availabilities_list: Availability[];
 }>();
 
-const tabs = [
+const tabs: Weekday[] = [
     { value: 1, label: 'Seg', full: 'Segunda-Feira' },
     { value: 2, label: 'Ter', full: 'Terça-Feira' },
     { value: 3, label: 'Qua', full: 'Quarta-Feira' },
@@ -37,14 +38,11 @@ const tabs = [
                     </Button>
                 </div>
                 <CardContent class="gap-4">
-                    <Item variant="outline">
+                    <Item variant="outline" class="p-2">
                         <ItemContent>
                             <ItemDescription> Apenas um simples teste </ItemDescription>
                         </ItemContent>
                         <ItemActions>
-                            <Button variant="outline" size="sm" class="cursor-pointer">
-                                <Pencil />
-                            </Button>
                             <Button variant="outline" size="sm" class="cursor-pointer">
                                 <Trash />
                             </Button>
