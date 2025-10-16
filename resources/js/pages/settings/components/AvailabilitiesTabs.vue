@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { Item, ItemActions, ItemContent, ItemDescription } from '@/components/ui/item';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useModal } from '@/composables/useModal';
+import AvailabilitiesHoursAddModal from '@/pages/settings/components/AvailabilitiesHoursAddModal.vue';
 import Availability from '@/types/Availability';
 import Weekday from '@/types/Weekday';
 import { Add, Trash } from '@vicons/ionicons5';
@@ -11,7 +13,7 @@ defineProps<{
     availabilities_list: Availability[];
 }>();
 
-const tabs: Weekday[] = [
+const weekdays: Weekday[] = [
     { value: 1, label: 'Seg', full: 'Segunda-Feira' },
     { value: 2, label: 'Ter', full: 'Terça-Feira' },
     { value: 3, label: 'Qua', full: 'Quarta-Feira' },
@@ -19,21 +21,25 @@ const tabs: Weekday[] = [
     { value: 5, label: 'Sex', full: 'Sexta-Feira' },
     { value: 6, label: 'Sáb', full: 'Sábado' },
 ];
+
+const modal = useModal<{
+    weekday: Weekday;
+}>();
 </script>
 
 <template>
     <Tabs :default-value="1" class="w-full max-w-xl">
         <TabsList class="grid w-full grid-cols-6">
-            <TabsTrigger v-for="tab in tabs" :key="tab.value" :value="tab.value" class="cursor-pointer hover:bg-sidebar-accent">
-                {{ tab.label }}
+            <TabsTrigger v-for="weekday in weekdays" :key="weekday.value" :value="weekday.value" class="cursor-pointer hover:bg-sidebar-accent">
+                {{ weekday.label }}
             </TabsTrigger>
         </TabsList>
 
-        <TabsContent v-for="tab in tabs" :key="`content-${tab.value}`" :value="tab.value">
+        <TabsContent v-for="weekday in weekdays" :key="`content-${weekday.value}`" :value="weekday.value">
             <Card>
                 <div class="flex items-center justify-between px-6">
-                    <CardTitle class="text-xl">{{ tab.full }}</CardTitle>
-                    <Button class="cursor-pointer">
+                    <CardTitle class="text-xl">{{ weekday.full }}</CardTitle>
+                    <Button class="cursor-pointer" @click="modal.open({ weekday: weekday })">
                         <Add />
                     </Button>
                 </div>
@@ -52,4 +58,6 @@ const tabs: Weekday[] = [
             </Card>
         </TabsContent>
     </Tabs>
+
+    <AvailabilitiesHoursAddModal v-bind="modal.modalBindInfo()" @update:is-open="modal.close()" />
 </template>
