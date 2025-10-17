@@ -47,8 +47,8 @@ class AvailabilityService
         return Availability::query()
             ->whereUserId($userId)
             ->whereWeekday($weekday)
-            ->where('start_time', '<=', $endTime)
-            ->where('end_time', '>=', $startTime)
+            ->where('start_time', '<', $endTime)
+            ->where('end_time', '>', $startTime)
             ->when($exceptOnAvailability, function ($query) use ($exceptOnAvailability) {
                 $query->whereNot('id', $exceptOnAvailability->id);
             })

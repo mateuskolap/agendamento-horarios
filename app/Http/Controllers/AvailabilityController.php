@@ -43,7 +43,7 @@ class AvailabilityController extends Controller
             return back()->with('error', $e->getMessage());
         }
 
-        return back();
+        return back()->with('success', 'Disponibilidade adicionada com sucesso.');
     }
 
     public function update(UpdateAvailabilityRequest $request, Availability $availability): RedirectResponse
