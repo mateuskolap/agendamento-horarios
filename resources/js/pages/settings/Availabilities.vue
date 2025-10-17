@@ -2,7 +2,7 @@
 import HeadingSmall from '@/components/HeadingSmall.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
-import AvailabilitiesTabs from '@/pages/settings/components/AvailabilitiesTabs.vue';
+import AvailabilityTabs from '@/components/app/settings/availabilities/AvailabilityTabs.vue';
 import availabilities from '@/routes/availabilities';
 import type { BreadcrumbItem } from '@/types';
 import Availability from '@/types/Availability';
@@ -32,7 +32,7 @@ const breadcrumbItems: BreadcrumbItem[] = [
                 />
 
                 <div class="space-y-6">
-                    <AvailabilitiesTabs :availabilities_list="availabilities_list" />
+                    <AvailabilityTabs :availabilities_list="availabilities_list" />
                 </div>
             </div>
         </SettingsLayout>

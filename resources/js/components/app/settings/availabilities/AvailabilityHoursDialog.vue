@@ -29,7 +29,7 @@ function submit() {
         preserveScroll: true,
         preserveState: true,
         onSuccess: () => {
-            form.reset('start_time', 'end_time');
+            form.reset();
             isOpen.value = false;
         },
     });

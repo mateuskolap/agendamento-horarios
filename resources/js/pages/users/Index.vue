@@ -2,9 +2,9 @@
 import IndexLayout from '@/layouts/IndexLayout.vue';
 import { useModal } from '@/composables/useModal';
 import AppLayout from '@/layouts/AppLayout.vue';
-import Buttons from '@/pages/users/components/Buttons.vue';
-import List from '@/pages/users/components/List.vue';
-import Filters from '@/pages/users/components/Filters.vue';
+import UserButtons from '@/components/app/users/UserButtons.vue';
+import UserList from '@/components/app/users/UserList.vue';
+import UserFilters from '@/components/app/users/UserFilters.vue';
 import FormModal from '@/pages/users/modals/FormModal.vue';
 import users from '@/routes/users';
 import type { BreadcrumbItem, User } from '@/types';
@@ -56,15 +56,15 @@ function closeModal() {
         <IndexLayout title="Usuários" description="Gerencie os usuários">
 
             <template #buttons>
-                <Buttons @open-modal="openModal()" />
+                <UserButtons @open-modal="openModal()" />
             </template>
 
             <template #filters>
-                <Filters :roles_list="rolesListPtBr" />
+                <UserFilters :roles_list="rolesListPtBr" />
             </template>
 
             <template #table>
-                <List :users_list="usersListPtBr.data" @open-modal="openModal" />
+                <UserList :users_list="usersListPtBr.data" @open-modal="openModal" />
             </template>
 
             <template #pagination>
