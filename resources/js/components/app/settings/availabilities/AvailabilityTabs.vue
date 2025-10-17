@@ -36,7 +36,7 @@ const weekdays: Weekday[] = [
                     <CardTitle class="text-xl">{{ weekday.full }}</CardTitle>
                     <AvailabilityHoursDialog :weekday="weekday" />
                 </div>
-                <CardContent class="gap-4">
+                <CardContent class="gap-3">
                     <Item variant="outline" class="p-2">
                         <ItemContent>
                             <ItemDescription> Apenas um simples teste </ItemDescription>

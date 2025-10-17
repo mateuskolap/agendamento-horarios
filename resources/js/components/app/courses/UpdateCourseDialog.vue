@@ -18,7 +18,7 @@ const props = defineProps<{
     organizations_list: Organization[];
 }>();
 
-const canEdit = usePermission()('courses.update');
+const canUpdate = usePermission()('courses.update');
 
 const form = useForm({
     name: props.course.name || '',
@@ -29,10 +29,6 @@ const form = useForm({
 function submit() {
     form.put(courses.update(props.course.id).url, {
         preserveScroll: true,
-        preserveState: true,
-        onSuccess: () => {
-            form.reset();
-        },
     });
 }
 </script>
@@ -40,16 +36,16 @@ function submit() {
 <template>
     <Dialog>
         <DialogTrigger as-child>
-            <Button v-if="canEdit" variant="ghost" size="sm" class="cursor-pointer">
+            <Button v-if="canUpdate" variant="ghost" size="sm" class="cursor-pointer">
                 <Pencil class="h-4 w-4" />
             </Button>
         </DialogTrigger>
         <DialogContent class="sm:max-w-[500px]">
             <DialogHeader>
-                <DialogTitle>Adicionar Curso</DialogTitle>
+                <DialogTitle>Editar Curso</DialogTitle>
             </DialogHeader>
             <form @submit.prevent="submit">
-                <div class="grid gap-4 py-4">
+                <div class="grid gap-3 py-4">
                     <FormGroup label="Nome" :input-error="form.errors.name">
                         <Input v-model="form.name" placeholder="Digite o Nome do Curso" />
                     </FormGroup>

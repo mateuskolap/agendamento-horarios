@@ -49,7 +49,7 @@ function submit() {
                 <DialogDescription>Escolha horários de 30 em 30 minutos.</DialogDescription>
             </DialogHeader>
             <form @submit.prevent="submit">
-                <div class="grid gap-4 py-4">
+                <div class="grid gap-3 py-4">
                     <FormGroup label="Horário inicial" :input-error="form.errors.start_time" required>
                         <Input v-model="form.start_time" type="time" step="1800" />
                     </FormGroup>

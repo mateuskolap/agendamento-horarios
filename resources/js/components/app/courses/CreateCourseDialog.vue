@@ -51,7 +51,7 @@ function submit() {
                 <DialogTitle>Adicionar Curso</DialogTitle>
             </DialogHeader>
             <form @submit.prevent="submit">
-                <div class="grid gap-4 py-4">
+                <div class="grid gap-3 py-4">
                     <FormGroup label="Nome" :input-error="form.errors.name" required>
                         <Input v-model="form.name" placeholder="Digite o Nome do Curso" />
                     </FormGroup>

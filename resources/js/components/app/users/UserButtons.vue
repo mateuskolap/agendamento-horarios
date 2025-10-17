@@ -1,25 +1,14 @@
 <script setup lang="ts">
-import { Add } from '@vicons/ionicons5';
-import { Button } from '@/components/ui/button';
-import { usePermission } from '@/composables/usePermissions';
+import CreateUserDialog from '@/components/app/users/CreateUserDialog.vue';
+import Role from '@/types/Role';
 
-const emit = defineEmits<{
-    (e: 'open-modal', user: null): void;
+defineProps<{
+    roles_list: Role[];
 }>();
-
-const can = usePermission();
 </script>
 
 <template>
-    <Button
-        v-if="can('users.create')"
-        class="cursor-pointer hover:bg-green-500 hover:dark:bg-green-700"
-        variant="outline"
-        @click="emit('open-modal', null)"
-    >
-        <Add />
-        Adicionar
-    </Button>
+    <CreateUserDialog :roles_list="roles_list"/>
 </template>
 
 <style scoped></style>

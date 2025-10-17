@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import EditCourseDialog from '@/components/app/courses/EditCourseDialog.vue';
+import UpdateCourseDialog from '@/components/app/courses/UpdateCourseDialog.vue';
 import { Button } from '@/components/ui/button';
 import { Item, ItemActions, ItemContent, ItemHeader, ItemTitle } from '@/components/ui/item';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -35,12 +35,12 @@ const handleDeleteCourse = async (course: Course) => {
 </script>
 
 <template>
-    <div class="block md:hidden">
+    <div class="block md:hidden space-y-4">
         <Item v-for="course in courses_list" :key="course.id" variant="outline">
             <ItemHeader class="border-b-2">
                 <ItemTitle>{{ course.name }}</ItemTitle>
                 <ItemActions>
-                    <EditCourseDialog :course="course" :coordinators_list="coordinators_list" :organizations_list="organizations_list" />
+                    <UpdateCourseDialog :course="course" :coordinators_list="coordinators_list" :organizations_list="organizations_list" />
                     <Button v-if="canDelete" variant="ghost" size="sm" class="cursor-pointer" @click="handleDeleteCourse(course)">
                         <Trash class="h-4 w-4 text-red-500 dark:text-red-700" />
                     </Button>
@@ -88,7 +88,7 @@ const handleDeleteCourse = async (course: Course) => {
                     <TableCell>{{ course.name }}</TableCell>
                     <TableCell>{{ course.coordinator.name }}</TableCell>
                     <TableCell v-if="canEdit || canDelete">
-                        <EditCourseDialog :course="course" :coordinators_list="coordinators_list" :organizations_list="organizations_list" />
+                        <UpdateCourseDialog :course="course" :coordinators_list="coordinators_list" :organizations_list="organizations_list" />
                         <Button v-if="canDelete" variant="ghost" size="sm" class="cursor-pointer" @click="handleDeleteCourse(course)">
                             <Trash class="h-4 w-4 text-red-500 dark:text-red-700" />
                         </Button>

@@ -28,7 +28,7 @@ const submit = () => form.get(users.index().url, { preserveState: true, preserve
                 v-model:value="form.role_id"
                 class="md:col-span-5"
                 placeholder="Papel"
-                :options="roles_list"
+                :options="roles_list as any"
                 label-field="name"
                 value-field="id"
                 clearable
