@@ -3,11 +3,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { Item, ItemActions, ItemContent, ItemDescription } from '@/components/ui/item';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useModal } from '@/composables/useModal';
-import AvailabilitiesHoursAddModal from '@/pages/settings/components/AvailabilitiesHoursAddModal.vue';
+import AvailabilitiesHoursDialog from '@/pages/settings/components/AvailabilitiesHoursDialog.vue';
 import Availability from '@/types/Availability';
 import Weekday from '@/types/Weekday';
-import { Add, Trash } from '@vicons/ionicons5';
+import { Trash } from '@vicons/ionicons5';
 
 defineProps<{
     availabilities_list: Availability[];
@@ -21,10 +20,6 @@ const weekdays: Weekday[] = [
     { value: 5, label: 'Sex', full: 'Sexta-Feira' },
     { value: 6, label: 'Sáb', full: 'Sábado' },
 ];
-
-const modal = useModal<{
-    weekday: Weekday;
-}>();
 </script>
 
 <template>
@@ -39,9 +34,7 @@ const modal = useModal<{
             <Card>
                 <div class="flex items-center justify-between px-6">
                     <CardTitle class="text-xl">{{ weekday.full }}</CardTitle>
-                    <Button class="cursor-pointer" @click="modal.open({ weekday: weekday })">
-                        <Add />
-                    </Button>
+                    <AvailabilitiesHoursDialog :weekday="weekday" />
                 </div>
                 <CardContent class="gap-4">
                     <Item variant="outline" class="p-2">
@@ -58,6 +51,4 @@ const modal = useModal<{
             </Card>
         </TabsContent>
     </Tabs>
-
-    <AvailabilitiesHoursAddModal v-bind="modal.modalBindInfo()" @update:is-open="modal.close()" />
 </template>
