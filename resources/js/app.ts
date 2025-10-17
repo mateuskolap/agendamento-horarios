@@ -1,7 +1,7 @@
 import 'sweetalert2/dist/sweetalert2.min.css';
 import '../css/app.css';
 
-import { createInertiaApp, router, usePage } from '@inertiajs/vue3';
+import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import type { DefineComponent } from 'vue';
 import { createApp, h } from 'vue';
