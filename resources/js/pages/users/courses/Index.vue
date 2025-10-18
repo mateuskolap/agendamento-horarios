@@ -59,6 +59,7 @@ watch(selectedRoleId, (roleId) => {
     <Head title="Visualização Usuário" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <UserCourseLayout :user="user">
+            {{selectedRoleId}}
             <Label class="pb-2">Comece selecionando um papel para gerenciar/visualizar os cursos</Label>
             <div class="flex gap-2">
                 <NSelect

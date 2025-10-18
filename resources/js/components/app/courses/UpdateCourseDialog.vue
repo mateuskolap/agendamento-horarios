@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import FormGroup from '@/components/FormGroup.vue';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { usePermission } from '@/composables/usePermissions';
 import courses from '@/routes/courses';
 import { User } from '@/types';
+import Course from '@/types/Course';
 import Organization from '@/types/Organization';
 import { useForm } from '@inertiajs/vue3';
 import { Card, Pencil } from '@vicons/ionicons5';
 import { NSelect } from 'naive-ui';
-import Course from '@/types/Course';
+import {ref} from "vue";
 
 const props = defineProps<{
     course: Course;
@@ -19,6 +20,7 @@ const props = defineProps<{
 }>();
 
 const canUpdate = usePermission()('courses.update');
+const isOpen = ref(false);
 
 const form = useForm({
     name: props.course.name || '',
@@ -29,12 +31,15 @@ const form = useForm({
 function submit() {
     form.put(courses.update(props.course.id).url, {
         preserveScroll: true,
+        onSuccess: () => {
+            isOpen.value = false;
+        },
     });
 }
 </script>
 
 <template>
-    <Dialog>
+    <Dialog v-model:open="isOpen">
         <DialogTrigger as-child>
             <Button v-if="canUpdate" variant="ghost" size="sm" class="cursor-pointer">
                 <Pencil class="h-4 w-4" />
@@ -75,12 +80,10 @@ function submit() {
                     </FormGroup>
                 </div>
                 <DialogFooter>
-                    <DialogClose as-child>
-                        <Button type="submit" :disabled="form.processing">
-                            <Card />
-                            Salvar
-                        </Button>
-                    </DialogClose>
+                    <Button type="submit" :disabled="form.processing">
+                        <Card />
+                        Salvar
+                    </Button>
                 </DialogFooter>
             </form>
         </DialogContent>

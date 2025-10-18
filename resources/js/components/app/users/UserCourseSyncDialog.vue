@@ -33,19 +33,22 @@ const courseOptions = computed((): Array<SelectOption | SelectGroupOption> => {
 });
 
 const form = useForm({
-    role_id: props.role.id,
     course_ids: [] as number[],
 });
 
 function submit() {
-    form.post(users.courses.store(props.user.id).url, {
-        preserveScroll: true,
-        preserveState: true,
-        onSuccess: () => {
-            form.reset();
-            isOpen.value = false;
-        },
-    });
+    form.transform((data) => ({
+        ...data,
+        role_id: props.role.id,
+    }))
+        .post(users.courses.store(props.user.id).url, {
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: () => {
+                form.reset();
+                isOpen.value = false;
+            },
+        });
 }
 </script>
 
@@ -58,6 +61,8 @@ function submit() {
             </Button>
         </DialogTrigger>
         <DialogContent class="sm:max-w-[425px]">
+            {{role.id}}
+            {{form.role_id}}
             <DialogHeader>
                 <DialogTitle>Vincular Cursos</DialogTitle>
             </DialogHeader>
