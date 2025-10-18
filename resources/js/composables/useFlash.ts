@@ -8,13 +8,19 @@ interface FlashMessage {
   error?: string;
 }
 
-export function useFlash() {
+export function useFlash(timeout = 5000) {
   const page = usePage();
   const flash = ref<FlashMessage>(page.props.flash || {});
 
   watch(() => page.props.flash, (newFlash) => {
     if (newFlash) {
       flash.value = newFlash;
+
+      if (Object.keys(newFlash).length > 0) {
+        setTimeout(() => {
+          flash.value = {};
+        }, timeout);
+      }
     }
   });
 

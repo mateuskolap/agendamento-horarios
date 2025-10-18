@@ -2,25 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\User\IndexUserRequest;
+use App\Http\Requests\User\StoreUserRequest;
+use App\Http\Requests\User\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(IndexUserRequest $request): Response
     {
-        $validated = $request->validate([
-            'name' => ['nullable', 'string'],
-            'role_id' => ['nullable', 'exists:roles,id'],
-        ]);
+        $validated = $request->validated();
 
         $usersList = User::query()
             ->when(! empty($validated['name']), function ($query) use ($validated) {
@@ -48,15 +45,9 @@ class UserController extends Controller
         return redirect()->route('users.courses.index', ['user' => $user]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreUserRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role_ids' => ['required', 'array'],
-            'role_ids.*' => ['exists:roles,id'],
-        ]);
+        $validated = $request->validated();
 
         $user = User::create([
             'name' => $validated['name'],
@@ -71,15 +62,9 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Usuário cadastrado com sucesso');
     }
 
-    public function update(Request $request, User $user): RedirectResponse
+    public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => ['nullable', 'string', 'max:255'],
-            'email' => ['nullable', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class, 'email')->ignore($user->id)],
-            'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
-            'role_ids' => ['nullable', 'array'],
-            'role_ids.*' => ['exists:roles,id'],
-        ]);
+        $validated = $request->validated();
 
         if (! empty($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);

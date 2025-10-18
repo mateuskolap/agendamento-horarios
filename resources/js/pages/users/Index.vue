@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import IndexLayout from '@/layouts/IndexLayout.vue';
-import { useModal } from '@/composables/useModal';
 import AppLayout from '@/layouts/AppLayout.vue';
-import UserButtons from '@/pages/users/components/UserButtons.vue';
-import UserList from '@/pages/users/components/UserList.vue';
-import UsersFilters from '@/pages/users/components/UsersFilters.vue';
-import UserFormModal from '@/pages/users/modals/UserFormModal.vue';
+import UserButtons from '@/components/app/users/UserButtons.vue';
+import UserList from '@/components/app/users/UserList.vue';
+import UserFilters from '@/components/app/users/UserFilters.vue';
 import users from '@/routes/users';
 import type { BreadcrumbItem, User } from '@/types';
 import PaginatedData from '@/types/PaginatedData';
@@ -36,18 +34,6 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: users.index().url,
     },
 ];
-
-const modal = useModal<{
-    user?: User;
-}>();
-
-function openModal(user?: User) {
-    modal.open({ user: user });
-}
-
-function closeModal() {
-    modal.close();
-}
 </script>
 
 <template>
@@ -56,15 +42,15 @@ function closeModal() {
         <IndexLayout title="Usuários" description="Gerencie os usuários">
 
             <template #buttons>
-                <UserButtons @open-modal="openModal()" />
+                <UserButtons :roles_list="rolesListPtBr" />
             </template>
 
             <template #filters>
-                <UsersFilters :roles_list="rolesListPtBr" />
+                <UserFilters :roles_list="rolesListPtBr" />
             </template>
 
             <template #table>
-                <UserList :users_list="usersListPtBr.data" @open-modal="openModal" />
+                <UserList :users_list="usersListPtBr.data" :roles_list="rolesListPtBr" />
             </template>
 
             <template #pagination>
@@ -72,7 +58,5 @@ function closeModal() {
             </template>
 
         </IndexLayout>
-
-        <UserFormModal v-bind="modal.modalBindInfo()" :roles_list="rolesListPtBr" @update:is-open="closeModal" />
     </AppLayout>
 </template>
