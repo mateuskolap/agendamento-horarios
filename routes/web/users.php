@@ -15,5 +15,5 @@ Route::middleware('can:users.index')->prefix('/users')->name('users.')->group(fu
         ->middleware('can:users.delete')
         ->name('destroy');
 
-    require __DIR__.'/user_courses.php';
+    require __DIR__ . '/user_courses.php';
 });
