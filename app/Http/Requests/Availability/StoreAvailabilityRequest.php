@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Availability;
 
-use App\Rules\TimeMultipleOf30;
+use App\Rules\TimeMultipleOf;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -18,8 +18,8 @@ class StoreAvailabilityRequest extends FormRequest
         return [
             'user_id' => ['required', 'exists:users,id'],
             'weekday' => ['required', 'integer', 'between:1,6'],
-            'start_time' => ['required', 'date_format:H:i', new TimeMultipleOf30],
-            'end_time' => ['required', 'date_format:H:i', 'after:start_time', new TimeMultipleOf30],
+            'start_time' => ['required', 'date_format:H:i', new TimeMultipleOf(30)],
+            'end_time' => ['required', 'date_format:H:i', 'after:start_time', new TimeMultipleOf(30)],
         ];
     }
 }

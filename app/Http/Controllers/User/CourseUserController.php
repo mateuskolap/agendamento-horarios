@@ -1,14 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
 use App\Enums\RoleEnum;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\CourseUser\IndexCourseUserRequest;
+use App\Http\Requests\DestroyCourseUserRequest;
+use App\Http\Requests\StoreCourseUserRequest;
 use App\Models\Course;
 use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\Permission\Models\Role;
@@ -46,13 +48,9 @@ class CourseUserController extends Controller
         ]);
     }
 
-    public function store(Request $request, User $user): RedirectResponse
+    public function store(StoreCourseUserRequest $request, User $user): RedirectResponse
     {
-        $validated = $request->validate([
-            'role_id' => ['required', 'exists:roles,id'],
-            'course_ids' => ['required', 'array'],
-            'course_ids.*' => ['exists:courses,id'],
-        ]);
+        $validated = $request->validated();
 
         $role = Role::find($validated['role_id']);
 
@@ -72,11 +70,9 @@ class CourseUserController extends Controller
         return back()->with('success', 'Curso(s) vinculado(s) com sucesso!');
     }
 
-    public function destroy(Request $request, User $user, Course $course): RedirectResponse
+    public function destroy(DestroyCourseUserRequest $request, User $user, Course $course): RedirectResponse
     {
-        $validated = $request->validate([
-            'role_id' => ['required', 'exists:roles,id'],
-        ]);
+        $validated = $request->validated();
 
         $user->courses()->wherePivot('role_id', $validated['role_id'])->detach($course->id);
 

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\CourseController;
+use App\Http\Controllers\Course\CourseController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('can:courses.index')->prefix('/courses')->name('courses.')->group(function () {

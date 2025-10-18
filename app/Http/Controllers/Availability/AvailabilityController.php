@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Availability;
 
+use App\DTOs\StoreAvailabilityDTO;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Availability\IndexAvailabilityRequest;
 use App\Http\Requests\Availability\StoreAvailabilityRequest;
-use App\Http\Requests\Availability\UpdateAvailabilityRequest;
 use App\Models\Availability;
-use App\Services\AvailabilityService;
+use App\Services\Availability\AvailabilityService;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -16,14 +17,16 @@ class AvailabilityController extends Controller
 {
     public function __construct(
         private readonly AvailabilityService $availabilityService,
-    ) {}
+    )
+    {
+    }
 
     public function index(IndexAvailabilityRequest $request): Response
     {
         $validated = $request->validated();
 
         $availabilitiesList = Availability::query()
-            ->when(! empty($validated['weekday']), function ($weekdayQuery) use ($validated) {
+            ->when(!empty($validated['weekday']), function ($weekdayQuery) use ($validated) {
                 $weekdayQuery->where('weekday', $validated['weekday']);
             })
             ->orderBy('start_time')
@@ -36,28 +39,15 @@ class AvailabilityController extends Controller
 
     public function store(StoreAvailabilityRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
+        $storeAvailabilityDTO = StoreAvailabilityDTO::fromArray($request->validated());
 
         try {
-            $this->availabilityService->create($validated);
+            $this->availabilityService->create($storeAvailabilityDTO);
         } catch (RuntimeException $e) {
             return back()->with('error', $e->getMessage());
         }
 
         return back()->with('success', 'Disponibilidade adicionada com sucesso.');
-    }
-
-    public function update(UpdateAvailabilityRequest $request, Availability $availability): RedirectResponse
-    {
-        $validated = $request->validated();
-
-        try {
-            $this->availabilityService->update($availability, $validated);
-        } catch (RuntimeException $e) {
-            return back()->with('error', $e->getMessage());
-        }
-
-        return back();
     }
 
     public function destroy(Availability $availability): RedirectResponse

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\CourseUserController;
+use App\Http\Controllers\User\CourseUserController;
 
 Route::middleware('can:users.index')->prefix('/{user}')->name('courses.')->group(function () {
     Route::get('/courses', [CourseUserController::class, 'index'])->name('index');
