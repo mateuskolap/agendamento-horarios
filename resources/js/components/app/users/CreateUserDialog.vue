@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import FormGroup from '@/components/FormGroup.vue';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { usePermission } from '@/composables/usePermissions';
+import users from '@/routes/users';
+import Role from '@/types/Role';
 import { useForm } from '@inertiajs/vue3';
 import { Add, Card } from '@vicons/ionicons5';
 import { NSelect } from 'naive-ui';
 import { ref } from 'vue';
-import Role from '@/types/Role';
-import users from '@/routes/users';
 
 defineProps<{
     roles_list: Role[];
@@ -49,6 +49,7 @@ function submit() {
         <DialogContent class="sm:max-w-[500px]">
             <DialogHeader>
                 <DialogTitle>Adicionar Curso</DialogTitle>
+                <DialogDescription />
             </DialogHeader>
             <form @submit.prevent="submit">
                 <div class="grid gap-3 py-4">
@@ -58,8 +59,8 @@ function submit() {
                     <FormGroup label="E-mail" :input-error="form.errors.email" required>
                         <Input v-model="form.email" type="email" placeholder="Digite o E-mail" />
                     </FormGroup>
-                    <FormGroup label="Senha" :input-error="form.errors.password" :required="mode === 'create'">
-                        <Input v-model="form.password" type="password" :placeholder="mode === 'edit' ? 'Digite a Nova Senha (deixe vazio para manter)' : 'Digite a Senha'" />
+                    <FormGroup label="Senha" :input-error="form.errors.password">
+                        <Input v-model="form.password" type="password" placeholder="Digite a Senha" />
                     </FormGroup>
                     <FormGroup label="Confirmar Senha" :input-error="form.errors.password_confirmation" required>
                         <Input v-model="form.password_confirmation" type="password" placeholder="Confirme a Senha" />
