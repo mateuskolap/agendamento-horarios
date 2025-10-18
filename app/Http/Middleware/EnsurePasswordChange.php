@@ -18,13 +18,13 @@ class EnsurePasswordChange
         $user = $request->user();
 
         // Se o usuário deve alterar a senha e não está na rota de alteração de senha
-        if ($user->must_change_password && ! $request->routeIs(['password.change.edit', 'password.change.update'])) {
+        if ($user->must_change_password && ! $request->routeIs(['password.edit', 'password.update'])) {
             // Armazena a URL pretendida para redirecionar após a alteração da senha
             if ($request->method() === 'GET' && ! $request->expectsJson()) {
                 session(['url.intended' => $request->url()]);
             }
 
-            return redirect()->route('password.change.edit');
+            return redirect()->route('password.edit');
         }
 
         return $next($request);

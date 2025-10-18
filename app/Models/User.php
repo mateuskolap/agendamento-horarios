@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -97,5 +98,12 @@ class User extends Authenticatable
     public function educatorSchedulings(): HasMany
     {
         return $this->hasMany(Scheduling::class, 'educator_id');
+    }
+
+    public function isAdmin(): Attribute
+    {
+        return Attribute::make(get: function () {
+            return $this->hasRole('admin');
+        });
     }
 }

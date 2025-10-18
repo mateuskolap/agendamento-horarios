@@ -2,39 +2,28 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\AvailabilityAccessibleByUserScope;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Permission\Models\Role;
 
+#[ScopedBy([AvailabilityAccessibleByUserScope::class])]
 class Availability extends Model
 {
-    use SoftDeletes;
-
     protected $fillable = [
         'user_id',
-        'role_id',
         'weekday',
-        'time',
+        'start_time',
+        'end_time',
     ];
 
     protected $casts = [
-        'time' => 'datetime:H:i',
+        'start_time' => 'datetime:H:i',
+        'end_time' => 'datetime:H:i',
     ];
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function role(): BelongsTo
-    {
-        return $this->belongsTo(Role::class);
-    }
-
-    public function schedulings(): BelongsToMany
-    {
-        return $this->belongsToMany(Scheduling::class);
     }
 }

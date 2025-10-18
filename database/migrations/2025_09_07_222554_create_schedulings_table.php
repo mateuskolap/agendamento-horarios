@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreignId('educator_id')->constrained('users');
             $table->foreignId('educator_role_id')->constrained('roles');
             $table->foreignId('course_id')->constrained();
+            $table->date('date');
+            $table->time('time');
             $table->string('subject');
             $table->string('status');
             $table->timestamps();

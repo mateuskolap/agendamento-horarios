@@ -5,7 +5,6 @@ use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\NewPasswordController;
-use App\Http\Controllers\Auth\PasswordChangeController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
@@ -48,12 +47,6 @@ Route::middleware('auth')->group(function () {
     Route::post('confirm-password', [ConfirmablePasswordController::class, 'store'])
         ->middleware('throttle:6,1')
         ->name('password.confirm.store');
-
-    Route::get('change-password', [PasswordChangeController::class, 'edit'])
-        ->name('password.change.edit');
-
-    Route::patch('change-password', [PasswordChangeController::class, 'update'])
-        ->name('password.change.update');
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');

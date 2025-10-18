@@ -1,18 +1,16 @@
 <script lang="ts" setup>
-import IndexLayout from '@/layouts/IndexLayout.vue';
-import { useModal } from '@/composables/useModal';
+import Pagination from '@/components/ui/pagination/Pagination.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
-import CourseFilters from '@/pages/courses/components/CourseFilters.vue';
-import CourseFormModal from '@/pages/courses/modals/CourseFormModal.vue';
+import IndexLayout from '@/layouts/IndexLayout.vue';
+import CourseButtons from '@/components/app/courses/CourseButtons.vue';
+import CourseFilters from '@/components/app/courses/CourseFilters.vue';
+import CourseList from '@/components/app/courses/CourseList.vue';
 import courses from '@/routes/courses';
 import type { BreadcrumbItem, User } from '@/types';
 import Course from '@/types/Course';
 import Organization from '@/types/Organization';
 import PaginatedData from '@/types/PaginatedData';
 import { Head } from '@inertiajs/vue3';
-import CourseList from '@/pages/courses/components/CourseList.vue';
-import CourseButtons from '@/pages/courses/components/CourseButtons.vue';
-import Pagination from '@/components/ui/pagination/Pagination.vue';
 
 defineProps<{
     courses_list: PaginatedData<Course>;
@@ -26,28 +24,14 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: courses.index().url,
     },
 ];
-
-const modal = useModal<{
-    course?: Course;
-}>();
-
-function openModal(course?: Course) {
-    modal.open({ course: course });
-}
-
-function closeModal() {
-    modal.close();
-}
 </script>
 
 <template>
-
     <Head title="Cursos" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <IndexLayout description="Gerencie os cursos" title="Cursos">
-
             <template #buttons>
-                <CourseButtons @open-modal="openModal()" />
+                <CourseButtons :coordinators_list="coordinators_list" :organizations_list="organizations_list" />
             </template>
 
             <template #filters>
@@ -55,16 +39,12 @@ function closeModal() {
             </template>
 
             <template #table>
-                <CourseList :courses_list="courses_list.data" @open-modal="openModal" />
+                <CourseList :courses_list="courses_list.data" :organizations_list="organizations_list" :coordinators_list="coordinators_list" />
             </template>
 
             <template #pagination>
                 <Pagination :pagination="courses_list" />
             </template>
-
         </IndexLayout>
-
-        <CourseFormModal v-bind="modal.modalBindInfo()" :coordinators_list="coordinators_list"
-            :organizations_list="organizations_list" @update:is-open="closeModal" />
     </AppLayout>
 </template>

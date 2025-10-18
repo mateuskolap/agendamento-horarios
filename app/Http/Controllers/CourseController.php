@@ -2,23 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Course\IndexCourseRequest;
+use App\Http\Requests\Course\StoreCourseRequest;
+use App\Http\Requests\Course\UpdateCourseRequest;
 use App\Models\Course;
 use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class CourseController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(IndexCourseRequest $request): Response
     {
-        $validated = $request->validate([
-            'organization_id' => ['nullable', 'exists:organizations,id'],
-            'name' => ['nullable', 'string'],
-            'coordinator_id' => ['nullable', 'exists:users,id'],
-        ]);
+        $validated = $request->validated();
 
         $coursesList = Course::query()
             ->when(! empty($validated['organization_id']), function ($query) use ($validated) {
@@ -46,26 +44,18 @@ class CourseController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreCourseRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string'],
-            'organization_id' => ['required', 'exists:organizations,id'],
-            'coordinator_id' => ['required', 'exists:users,id'],
-        ]);
+        $validated = $request->validated();
 
         Course::create($validated);
 
         return back()->with('success', 'Curso criado com sucesso!');
     }
 
-    public function update(Request $request, Course $course): RedirectResponse
+    public function update(UpdateCourseRequest $request, Course $course): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string'],
-            'organization_id' => ['required', 'exists:organizations,id'],
-            'coordinator_id' => ['required', 'exists:users,id'],
-        ]);
+        $validated = $request->validated();
 
         $course->update($validated);
 

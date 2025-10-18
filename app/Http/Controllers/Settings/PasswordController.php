@@ -30,10 +30,17 @@ class PasswordController extends Controller
             'password' => ['required', Password::defaults(), 'confirmed'],
         ]);
 
-        $request->user()->update([
+        $user = request()->user();
+
+        $user->update([
             'password' => Hash::make($validated['password']),
         ]);
 
-        return back();
+        if ($user->must_change_password) {
+            $user->update(['must_change_password' => false]);
+            return redirect()->route('dashboard')->with('success', 'Senha alterada com sucesso!');
+        }
+
+        return back()->with('success', 'Senha alterada com sucesso!');
     }
 }
