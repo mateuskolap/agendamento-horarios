@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import availabilities from '@/routes/availabilities';
 import Weekday from '@/types/Weekday';
 import { useForm, usePage } from '@inertiajs/vue3';
-import { Card, Pencil } from '@vicons/ionicons5';
+import { Card, Add } from '@vicons/ionicons5';
 import { ref } from 'vue';
 
 const page = usePage();
@@ -40,7 +40,7 @@ function submit() {
     <Dialog v-model:open="isOpen">
         <DialogTrigger as-child>
             <Button variant="outline" class="cursor-pointer">
-                <Pencil />
+                <Add />
             </Button>
         </DialogTrigger>
         <DialogContent class="sm:max-w-[425px]">

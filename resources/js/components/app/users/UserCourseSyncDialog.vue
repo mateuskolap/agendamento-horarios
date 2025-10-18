@@ -61,8 +61,6 @@ function submit() {
             </Button>
         </DialogTrigger>
         <DialogContent class="sm:max-w-[425px]">
-            {{role.id}}
-            {{form.role_id}}
             <DialogHeader>
                 <DialogTitle>Vincular Cursos</DialogTitle>
             </DialogHeader>

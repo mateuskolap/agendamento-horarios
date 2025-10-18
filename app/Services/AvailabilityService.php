@@ -20,6 +20,22 @@ class AvailabilityService
             throw new RuntimeException('A disponibilidade informada está sobreposta a outra já existente.');
         }
 
+        $existingAvailability  = Availability::query()
+            ->whereUserId($data['user_id'])
+            ->whereWeekday($data['weekday'])
+            ->where('end_time', $data['start_time'])
+            ->first();
+
+        // Verifica se existe uma disponibilidade que termina exatamente quando a nova começa
+        // E atualiza o horário de término dessa disponibilidade existente
+        if ($existingAvailability) {
+            $existingAvailability->update([
+                'end_time' => $data['end_time'],
+            ]);
+
+            return $existingAvailability->refresh();
+        }
+
         return Availability::create($data);
     }
 

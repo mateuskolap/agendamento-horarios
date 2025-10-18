@@ -26,6 +26,7 @@ class AvailabilityController extends Controller
             ->when(! empty($validated['weekday']), function ($weekdayQuery) use ($validated) {
                 $weekdayQuery->where('weekday', $validated['weekday']);
             })
+            ->orderBy('start_time')
             ->get();
 
         return Inertia::render('settings/Availabilities', [
