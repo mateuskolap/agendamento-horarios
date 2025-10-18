@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
 use App\Enums\RoleEnum;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\CourseUser\IndexCourseUserRequest;
 use App\Http\Requests\DestroyCourseUserRequest;
 use App\Http\Requests\StoreCourseUserRequest;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Availability;
 
 use App\DTOs\StoreAvailabilityDTO;
 use App\Models\Availability;

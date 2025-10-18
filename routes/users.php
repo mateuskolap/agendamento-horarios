@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\User\UserController;
 
 Route::middleware('can:users.index')->prefix('/users')->name('users.')->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('index');

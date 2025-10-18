@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Availability;
 
 use App\DTOs\StoreAvailabilityDTO;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Availability\IndexAvailabilityRequest;
 use App\Http\Requests\Availability\StoreAvailabilityRequest;
 use App\Models\Availability;
-use App\Services\AvailabilityService;
+use App\Services\Availability\AvailabilityService;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;

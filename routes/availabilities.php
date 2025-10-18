@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\AvailabilityController;
+use App\Http\Controllers\Availability\AvailabilityController;
 
 Route::middleware('can:availabilities.index')->prefix('/availabilities')->name('availabilities.')->group(function () {
     Route::get('/', [AvailabilityController::class, 'index'])->name('index');
