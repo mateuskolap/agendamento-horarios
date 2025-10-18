@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\RoleEnum;
+use App\Http\Requests\CourseUser\IndexCourseUserRequest;
 use App\Models\Course;
 use App\Models\Organization;
 use App\Models\User;
@@ -14,11 +15,9 @@ use Spatie\Permission\Models\Role;
 
 class CourseUserController extends Controller
 {
-    public function index(Request $request, User $user): Response
+    public function index(IndexCourseUserRequest $request, User $user): Response
     {
-        $validated = $request->validate([
-            'role_id' => ['nullable', 'exists:roles,id'],
-        ]);
+        $validated = $request->validated();
 
         $userCourses = collect();
         if (!empty($validated['role_id'])) {

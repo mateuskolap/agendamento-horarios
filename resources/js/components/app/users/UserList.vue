@@ -7,17 +7,13 @@ import { usePermission } from '@/composables/usePermissions';
 import users from '@/routes/users';
 import type { User } from '@/types';
 import { router } from '@inertiajs/vue3';
-import { Pencil, Trash, Eye } from '@vicons/ionicons5';
+import { Trash, Eye } from '@vicons/ionicons5';
 import UpdateUserDialog from '@/components/app/users/UpdateUserDialog.vue';
 import Role from '@/types/Role';
 
 defineProps<{
     users_list: User[];
     roles_list: Role[];
-}>();
-
-const emit = defineEmits<{
-    (e: 'open-modal', user?: User): void;
 }>();
 
 const { confirmDelete, showDeleteSuccess } = useConfirmDelete();
@@ -36,10 +32,6 @@ const handleDeleteUser = async (user: User) => {
     }
 };
 
-const handleEditUser = (user: User) => {
-    emit('open-modal', user);
-};
-
 const handleViewUserCourses = (user: User) => {
     router.get(users.courses.index(user.id).url);
 };
@@ -52,11 +44,10 @@ const handleViewUserCourses = (user: User) => {
                 <ItemTitle>{{ user.name }}</ItemTitle>
                 <ItemActions>
                     <Button variant="ghost" size="sm" class="cursor-pointer" @click="() => handleViewUserCourses(user)">
-                        <Eye class="h-4 w-4 text-green-500 dark:text-green-700" />
+                        <Eye class="h-4 w-4 text-zinc-500 dark:text-zinc-700" />
                     </Button>
-                    <Button v-if="canEdit" variant="ghost" size="sm" class="cursor-pointer" @click="() => handleEditUser(user)">
-                        <Pencil class="h-4 w-4" />
-                    </Button>
+                    <UpdateUserDialog :user="user" :roles_list="roles_list"/>
+
                     <Button v-if="canDelete" variant="ghost" size="sm" class="cursor-pointer" @click="() => handleDeleteUser(user)">
                         <Trash class="h-4 w-4 text-red-500 dark:text-red-700" />
                     </Button>
@@ -64,8 +55,8 @@ const handleViewUserCourses = (user: User) => {
             </ItemHeader>
             <ItemContent>
                 <div class="flex items-center gap-3">
-                    <span class="text-xs font-semibold text-muted-foreground uppercase">Papéis</span>
-                    <p class="font-medium text-foreground">
+                    <span class="font-medium text-foreground">Papéis</span>
+                    <p class="text-xs font-semibold text-muted-foreground uppercase">
                         {{ user.roles.map(r => r.name).join(', ') }}
                     </p>
                 </div>
@@ -90,7 +81,7 @@ const handleViewUserCourses = (user: User) => {
                     <TableCell>{{ user.roles.map(r => r.name).join(', ') }}</TableCell>
                     <TableCell v-if="canEdit || canDelete">
                         <Button variant="ghost" size="sm" class="cursor-pointer" @click="() => handleViewUserCourses(user)">
-                            <Eye class="h-4 w-4 text-green-500 dark:text-green-700" />
+                            <Eye class="h-4 w-4 text-zinc-500 dark:text-zinc-700" />
                         </Button>
                         <UpdateUserDialog :user="user" :roles_list="roles_list"/>
                         <Button v-if="canDelete" variant="ghost" size="sm" class="cursor-pointer" @click="() => handleDeleteUser(user)">

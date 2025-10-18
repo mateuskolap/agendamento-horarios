@@ -1,21 +1,17 @@
 <script setup lang="ts">
-import { Button } from '@/components/ui/button';
-import Label from '@/components/ui/label/Label.vue';
-import { useModal } from '@/composables/useModal';
+import UserCourseSyncDialog from '@/components/app/users/UserCourseSyncDialog.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import UserCourseLayout from '@/layouts/users/courses/Layout.vue';
-import UserCourseList from '@/components/app/users/UserCourseList.vue';
-import SyncModal from '@/pages/users/modals/SyncModal.vue';
 import { translateArray } from '@/plugins/translate';
 import users from '@/routes/users';
 import { BreadcrumbItem, User } from '@/types';
 import Course from '@/types/Course';
 import Organization from '@/types/Organization';
 import Role from '@/types/Role';
-import { Head, useForm } from '@inertiajs/vue3';
-import { Link2 } from 'lucide-vue-next';
-import { NSelect } from 'naive-ui';
-import { computed, onMounted, ref } from 'vue';
+import { Head, router } from '@inertiajs/vue3';
+import { computed, ref, watch } from 'vue';
+import { Label } from '@/components/ui/label';
+import UserCourseList from '@/components/app/users/UserCourseList.vue';
 
 const props = defineProps<{
     user: User;
@@ -24,7 +20,12 @@ const props = defineProps<{
     organizations_list: Organization[];
 }>();
 
-const rolesListPtBr = computed(() => translateArray(props.roles_list, ['name']) as any);
+const roleOptions = computed(() =>
+    translateArray(props.roles_list, ['name']).map((role) => ({
+        label: role.name,
+        value: role.id,
+    })),
+);
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -37,82 +38,52 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const form = useForm({
-    role_id: null as number | null,
+const selectedRoleId = ref<number | null>(null);
+
+const selectedRole = computed(() => {
+    return props.roles_list.find((role) => role.id === selectedRoleId.value) ?? null;
 });
 
-const selectedRole = ref<Role | null>(null);
-
-function handleRoleChange(roleId?: number) {
-    if (roleId) {
-        selectedRole.value = props.roles_list.find((role) => role.id === roleId) || null;
-        form.role_id = roleId;
-    } else {
-        selectedRole.value = null;
-        form.role_id = null;
-    }
-
-    form.get(users.courses.index(props.user.id).url, {
+// Faz a requisição sempre que o papel selecionado mudar
+watch(selectedRoleId, (roleId) => {
+    router.get(users.courses.index(props.user.id), {
+        role_id: roleId ?? undefined,
+    }, {
         preserveState: true,
         preserveScroll: true,
     });
-}
-
-onMounted(() => {
-    handleRoleChange();
 });
-
-const modal = useModal();
-
-function openModal() {
-    modal.open();
-}
-
-function closeModal() {
-    modal.close();
-}
 </script>
 
 <template>
-
     <Head title="Visualização Usuário" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <UserCourseLayout :user="user">
             <Label class="pb-2">Comece selecionando um papel para gerenciar/visualizar os cursos</Label>
             <div class="flex gap-2">
                 <NSelect
-                    :value="form.role_id"
-                    @update:value="handleRoleChange"
-                    class="md:col-span-3"
+                    v-model:value="selectedRoleId"
+                    :options="roleOptions"
                     placeholder="Selecione um papel"
-                    :options="rolesListPtBr"
-                    label-field="name"
-                    value-field="id"
+                    class="md:col-span-3"
                     clearable
                     filterable
                 />
-                <Button v-if="form.role_id && selectedRole?.courses_editable" variant="outline" class="cursor-pointer" @click="openModal()">
-                    <Link2 />
-                    Vincular Cursos
-                </Button>
-            </div>
-
-            <div class="pt-6">
-                <UserCourseList
-                    :user_courses="user_courses"
-                    :can_manage="selectedRole?.courses_editable ?? 0"
-                    :selected_role="selectedRole || undefined"
+                <UserCourseSyncDialog
+                    v-if="selectedRole && selectedRole.courses_editable"
+                    :role="selectedRole"
+                    :user="user"
+                    :organizations_list="organizations_list"
                 />
             </div>
-
-            <SyncModal
-                v-if="selectedRole"
-                v-bind="modal.modalBindInfo()"
-                :user="user"
-                :role="selectedRole"
-                :organizations_list="organizations_list"
-                @update:is-open="closeModal"
-            />
+            <div class="pt-6">
+                <UserCourseList
+                    v-if="selectedRole"
+                    :user_courses="user_courses"
+                    :selected_role="selectedRole"
+                    :can_manage="selectedRole?.courses_editable ?? 0"
+                />
+            </div>
         </UserCourseLayout>
     </AppLayout>
 </template>
