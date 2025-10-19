@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Data;
+namespace App\Data\Availability;
 
 use Carbon\Carbon;
 use Spatie\LaravelData\Data;

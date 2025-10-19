@@ -2,7 +2,7 @@
 
 namespace App\Services\Availability;
 
-use App\Data\StoreAvailabilityData;
+use App\Data\Availability\StoreAvailabilityData;
 use App\Models\Availability;
 use RuntimeException;
 
@@ -14,8 +14,7 @@ class AvailabilityService
             throw new RuntimeException('A disponibilidade informada está sobreposta a outra já existente.');
         }
 
-        $existingAvailability = $this->existsByStartOrEndTime($data);
-        if ($existingAvailability) {
+        if ($existingAvailability = $this->existsByStartOrEndTime($data)) {
             if ($existingAvailability->end_time->equalTo($data->start_time)) {
                 $existingAvailability->update([
                     'end_time' => $data->end_time,
