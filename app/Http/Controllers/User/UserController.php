@@ -2,20 +2,28 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Data\User\StoreUserData;
+use App\Data\User\UpdateUserData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\IndexUserRequest;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
 use App\Models\User;
+use App\Services\User\UserService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
+    public function __construct(
+        private readonly UserService $userService,
+    )
+    {
+    }
+
     public function index(IndexUserRequest $request): Response
     {
         $validated = $request->validated();
@@ -48,16 +56,9 @@ class UserController extends Controller
 
     public function store(StoreUserRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
+        $storeUserData = StoreUserData::from($request->validated());
 
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-        ]);
-
-        $user->assignRole($validated['role_ids']);
-
+        $user = $this->userService->create($storeUserData);
         event(new Registered($user));
 
         return redirect()->back()->with('success', 'Usuário cadastrado com sucesso');
@@ -65,17 +66,9 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
-        $validated = $request->validated();
+        $updateUserData = UpdateUserData::from($request->validated());
 
-        if (! empty($validated['password'])) {
-            $validated['password'] = Hash::make($validated['password']);
-            $user->must_change_password = true;
-        } else {
-            unset($validated['password']);
-        }
-
-        $user->update($validated);
-        $user->syncRoles($validated['role_ids']);
+        $this->userService->update($user, $updateUserData);
 
         return redirect()->back()->with('success', 'Usuário atualizado com sucesso');
     }

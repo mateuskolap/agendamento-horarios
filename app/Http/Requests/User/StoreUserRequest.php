@@ -22,7 +22,6 @@ class StoreUserRequest extends FormRequest
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'role_ids' => ['required', 'array'],
             'role_ids.*' => ['exists:roles,id'],
-
         ];
     }
 }

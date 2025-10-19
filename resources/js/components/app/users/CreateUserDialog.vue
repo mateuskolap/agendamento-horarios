@@ -48,7 +48,7 @@ function submit() {
         </DialogTrigger>
         <DialogContent class="sm:max-w-[500px]">
             <DialogHeader>
-                <DialogTitle>Adicionar Curso</DialogTitle>
+                <DialogTitle>Adicionar Usuário</DialogTitle>
                 <DialogDescription />
             </DialogHeader>
             <form @submit.prevent="submit">

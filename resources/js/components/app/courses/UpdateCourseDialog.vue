@@ -47,7 +47,7 @@ function submit() {
         </DialogTrigger>
         <DialogContent class="sm:max-w-[500px]">
             <DialogHeader>
-                <DialogTitle>Editar Curso</DialogTitle>
+                <DialogTitle>Editar Usuário</DialogTitle>
             </DialogHeader>
             <form @submit.prevent="submit">
                 <div class="grid gap-3 py-4">
