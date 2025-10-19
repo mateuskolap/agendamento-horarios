@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Availability;
 
-use App\DTOs\StoreAvailabilityDTO;
+use App\Data\StoreAvailabilityData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Availability\IndexAvailabilityRequest;
 use App\Http\Requests\Availability\StoreAvailabilityRequest;
@@ -39,7 +39,7 @@ class AvailabilityController extends Controller
 
     public function store(StoreAvailabilityRequest $request): RedirectResponse
     {
-        $storeAvailabilityDTO = StoreAvailabilityDTO::fromArray($request->validated());
+        $storeAvailabilityDTO = StoreAvailabilityData::from($request->validated());
 
         try {
             $this->availabilityService->create($storeAvailabilityDTO);

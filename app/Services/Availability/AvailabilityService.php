@@ -2,13 +2,13 @@
 
 namespace App\Services\Availability;
 
-use App\DTOs\StoreAvailabilityDTO;
+use App\Data\StoreAvailabilityData;
 use App\Models\Availability;
 use RuntimeException;
 
 class AvailabilityService
 {
-    public function create(StoreAvailabilityDTO $data): Availability
+    public function create(StoreAvailabilityData $data): Availability
     {
         if ($this->itsOverlapping($data)) {
             throw new RuntimeException('A disponibilidade informada está sobreposta a outra já existente.');
@@ -33,24 +33,24 @@ class AvailabilityService
         return Availability::create($data->toArray());
     }
 
-    private function itsOverlapping(StoreAvailabilityDTO $data): bool
+    private function itsOverlapping(StoreAvailabilityData $data): bool
     {
         return Availability::query()
             ->whereUserId($data->user_id)
             ->whereWeekday($data->weekday)
-            ->where('start_time', '<', $data->end_time)
-            ->where('end_time', '>', $data->start_time)
+            ->whereTime('start_time', '<', $data->end_time)
+            ->whereTime('end_time', '>', $data->start_time)
             ->exists();
     }
 
-    private function existsByStartOrEndTime(StoreAvailabilityDTO $data): ?Availability
+    private function existsByStartOrEndTime(StoreAvailabilityData $data): ?Availability
     {
         return Availability::query()
             ->whereUserId($data->user_id)
             ->whereWeekday($data->weekday)
             ->where(function ($query) use ($data) {
-                $query->whereEndTime($data->start_time)
-                    ->orWhere('start_time', $data->end_time);
+                $query->whereTime('end_time', $data->start_time)
+                    ->orWhereTime('start_time', $data->end_time);
             })
             ->first();
     }
