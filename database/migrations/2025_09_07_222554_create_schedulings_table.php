@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('course_id')->constrained();
             $table->date('date');
             $table->time('time');
-            $table->string('subject');
+            $table->text('subject');
             $table->string('status');
             $table->timestamps();
             $table->softDeletes();

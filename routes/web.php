@@ -11,7 +11,6 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified', 'password.change'])->group(function () {
     require __DIR__ . '/web/schedulings.php';
-
     require __DIR__ . '/web/settings.php';
     require __DIR__ . '/web/courses.php';
     require __DIR__ . '/web/users.php';
