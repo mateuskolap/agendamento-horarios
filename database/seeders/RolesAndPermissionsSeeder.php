@@ -40,11 +40,26 @@ class RolesAndPermissionsSeeder extends Seeder
             ->update(['courses_editable' => false]);
 
         Role::firstOrCreate(['name' => 'coordinator'])
-            ->syncPermissions([])
+            ->syncPermissions([
+                'courses.index',
+                'users.index',
+                'users.create',
+                'users.update',
+                'users.delete',
+                'users.courses.index',
+                'availabilities.index',
+                'availabilities.create',
+            ])
             ->update(['courses_editable' => false]);
 
         Role::firstOrCreate(['name' => 'professor'])
-            ->syncPermissions([]);
+            ->syncPermissions([
+                'courses.index',
+                'users.index',
+                'users.courses.index',
+                'availabilities.index',
+                'availabilities.create',
+            ]);
 
         Role::firstOrCreate(['name' => 'student'])
             ->syncPermissions([]);
