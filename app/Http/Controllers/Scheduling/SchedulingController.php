@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Scheduling;
 
 use App\Data\Scheduling\StoreSchedulingData;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreSchedulingRequest;
 use App\Services\Scheduling\SchedulingService;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -28,12 +27,10 @@ class SchedulingController extends Controller
         return Inertia::render('schedulings/Create');
     }
 
-    public function store(StoreSchedulingRequest $request): RedirectResponse
+    public function store(StoreSchedulingData $data): RedirectResponse
     {
-        $storeSchedulingData = StoreSchedulingData::from($request->validated());
-
         try {
-            $this->schedulingService->create($storeSchedulingData);
+            $this->schedulingService->create($data);
         } catch (\RuntimeException $e) {
             return back()->with('error', $e->getMessage());
         }

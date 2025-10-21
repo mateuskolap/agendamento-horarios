@@ -11,4 +11,12 @@ class StoreCourseUserData extends Data
         /** @var array<int> */
         public array $course_ids,
     ) {}
+
+    public static function rules(): array
+    {
+        return [
+            'course_ids' => ['required', 'array'],
+            'course_ids.*' => ['exists:courses,id'],
+        ];
+    }
 }
