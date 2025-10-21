@@ -2,14 +2,14 @@
 import Heading from '@/components/Heading.vue';
 
 defineProps<{
-    title: string;
+    title?: string;
     description?: string;
 }>();
 </script>
 
 <template>
     <div class="grid grid-cols-2">
-        <Heading :title="title" :description="description" />
+        <Heading v-if="title" :title="title" :description="description" />
         <div v-if="$slots.buttons && $slots.buttons().length" class="flex justify-end gap-3 py-2">
             <slot name="buttons"></slot>
         </div>

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('roles', function (Blueprint $table) {
             $table->boolean('courses_editable')->after('guard_name')->default(true);
+            $table->boolean('can_receive_scheduling_requests')->after('courses_editable')->default(false);
         });
     }
 
@@ -23,6 +24,7 @@ return new class extends Migration
     {
         Schema::table('roles', function (Blueprint $table) {
             $table->dropColumn('courses_editable');
+            $table->dropColumn('can_receive_scheduling_requests');
         });
     }
 };

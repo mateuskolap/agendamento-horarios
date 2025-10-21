@@ -4,9 +4,11 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Attribute;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -68,7 +70,7 @@ class User extends Authenticatable
     /**
      * Cursos vinculados ao usuário
      *
-     * @return BelongsToMany<Course, User, \Illuminate\Database\Eloquent\Relations\Pivot>
+     * @return BelongsToMany<Course, User, Pivot>
      */
     public function courses(): BelongsToMany
     {
