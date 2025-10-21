@@ -32,6 +32,10 @@ class PasswordController extends Controller
 
         $user = request()->user();
 
+        if (Hash::check($validated['password'], $user->password)) {
+            return back()->with('warning', 'A nova senha não pode ser igual a anterior');
+        }
+
         $user->update([
             'password' => Hash::make($validated['password']),
         ]);
