@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import FormGroup from '@/components/FormGroup.vue';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { usePermission } from '@/composables/usePermissions';
 import courses from '@/routes/courses';
@@ -11,7 +11,7 @@ import Organization from '@/types/Organization';
 import { useForm } from '@inertiajs/vue3';
 import { Card, Pencil } from '@vicons/ionicons5';
 import { NSelect } from 'naive-ui';
-import {ref} from "vue";
+import { ref } from 'vue';
 
 const props = defineProps<{
     course: Course;
@@ -24,8 +24,8 @@ const isOpen = ref(false);
 
 const form = useForm({
     name: props.course.name || '',
-    organization_id: props.course.organization_id || null as number | null,
-    coordinator_id: props.course.coordinator_id || null as number | null,
+    organization_id: props.course.organization_id || (null as number | null),
+    coordinator_id: props.course.coordinator_id || (null as number | null),
 });
 
 function submit() {
@@ -48,6 +48,7 @@ function submit() {
         <DialogContent class="sm:max-w-[500px]">
             <DialogHeader>
                 <DialogTitle>Editar Usuário</DialogTitle>
+                <DialogDescription />
             </DialogHeader>
             <form @submit.prevent="submit">
                 <div class="grid gap-3 py-4">

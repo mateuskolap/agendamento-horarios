@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import FormGroup from '@/components/FormGroup.vue';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import users from '@/routes/users';
 import { User } from '@/types';
 import Organization from '@/types/Organization';
@@ -40,15 +40,14 @@ function submit() {
     form.transform((data) => ({
         ...data,
         role_id: props.role.id,
-    }))
-        .post(users.courses.store(props.user.id).url, {
-            preserveScroll: true,
-            preserveState: true,
-            onSuccess: () => {
-                form.reset();
-                isOpen.value = false;
-            },
-        });
+    })).post(users.courses.store(props.user.id).url, {
+        preserveScroll: true,
+        preserveState: true,
+        onSuccess: () => {
+            form.reset();
+            isOpen.value = false;
+        },
+    });
 }
 </script>
 
@@ -63,6 +62,7 @@ function submit() {
         <DialogContent class="sm:max-w-[425px]">
             <DialogHeader>
                 <DialogTitle>Vincular Cursos</DialogTitle>
+                <DialogDescription />
             </DialogHeader>
             <form @submit.prevent="submit">
                 <div class="grid gap-3 py-4">
