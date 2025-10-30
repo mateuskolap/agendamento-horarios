@@ -4,6 +4,8 @@ namespace App\Services\Availability;
 
 use App\Data\Availability\StoreAvailabilityData;
 use App\Models\Availability;
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use RuntimeException;
 
 class AvailabilityService
@@ -14,19 +16,22 @@ class AvailabilityService
             throw new RuntimeException('A disponibilidade informada está sobreposta a outra já existente.');
         }
 
-        if ($existingAvailability = $this->existsByStartOrEndTime($data)) {
-            if ($existingAvailability->end_time->equalTo($data->start_time)) {
-                $existingAvailability->update([
-                    'end_time' => $data->end_time,
-                ]);
+        $adjacents = $this->findAdjacentAvailabilities($data);
 
-            } elseif ($existingAvailability->start_time->equalTo($data->end_time)) {
-                $existingAvailability->update([
-                    'start_time' => $data->start_time,
-                ]);
-            }
+        if ($adjacents->isNotEmpty()) {
+            $minStart = $adjacents->min('start_time');
+            $maxEnd = $adjacents->max('end_time');
 
-            return $existingAvailability->refresh();
+            $minStart = min($minStart, $data->start_time);
+            $maxEnd = max($maxEnd, $data->end_time);
+
+            Availability::whereIn('id', $adjacents->pluck('id'))->delete();
+
+            return Availability::create([
+                ...$data->toArray(),
+                'start_time' => $minStart,
+                'end_time' => $maxEnd,
+            ]);
         }
 
         return Availability::create($data->toArray());
@@ -42,7 +47,7 @@ class AvailabilityService
             ->exists();
     }
 
-    private function existsByStartOrEndTime(StoreAvailabilityData $data): ?Availability
+    private function findAdjacentAvailabilities(StoreAvailabilityData $data): Collection
     {
         return Availability::query()
             ->whereUserId($data->user_id)
@@ -51,6 +56,6 @@ class AvailabilityService
                 $query->whereTime('end_time', $data->start_time)
                     ->orWhereTime('start_time', $data->end_time);
             })
-            ->first();
+            ->get();
     }
 }
