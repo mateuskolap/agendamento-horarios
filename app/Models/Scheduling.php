@@ -20,14 +20,16 @@ class Scheduling extends Model
         'educator_role_id',
         'course_id',
         'date',
-        'time',
+        'start_time',
+        'end_time',
         'subject',
         'status',
     ];
 
     protected $casts = [
         'date' => 'date',
-        'time' => 'datetime:H:i',
+        'start_time' => 'datetime:H:i',
+        'end_time' => 'datetime:H:i',
     ];
 
     public function student(): BelongsTo

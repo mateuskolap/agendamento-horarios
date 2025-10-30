@@ -31,9 +31,11 @@ class StoreSchedulingData extends Data
         public Carbon $date,
 
         #[DateFormat('H:i')]
-        public Carbon $time,
+        public Carbon $start_time,
+
+        #[DateFormat('H:i')]
+        public Carbon $end_time,
 
         public string $subject,
-        public SchedulingStatusEnum $status,
     ) {}
 }
