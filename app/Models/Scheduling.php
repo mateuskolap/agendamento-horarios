@@ -15,9 +15,8 @@ class Scheduling extends Model
     use SoftDeletes, LogsActivity;
 
     protected $fillable = [
-        'student_id',
-        'educator_id',
-        'educator_role_id',
+        'requester_id',
+        'requested_id',
         'course_id',
         'date',
         'start_time',
@@ -32,19 +31,14 @@ class Scheduling extends Model
         'end_time' => 'datetime:H:i',
     ];
 
-    public function student(): BelongsTo
+    public function requester(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function educator(): BelongsTo
+    public function requested(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function educatorRole(): BelongsTo
-    {
-        return $this->belongsTo(Role::class);
     }
 
     public function course(): BelongsTo

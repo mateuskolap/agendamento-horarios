@@ -16,13 +16,7 @@ class StoreSchedulingData extends Data
 {
     public function __construct(
         #[Exists(User::class, 'id')]
-        public int $student_id,
-
-        #[Exists(User::class, 'id')]
-        public int $educator_id,
-
-        #[Exists(Role::class, 'id')]
-        public int $educator_role_id,
+        public int $requested_id,
 
         #[Exists(Course::class, 'id')]
         public int $course_id,

@@ -5,6 +5,8 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Attribute;
 use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -18,7 +20,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     use HasFactory, HasRoles, Notifiable, SoftDeletes, LogsActivity;
 
     /**
@@ -85,23 +87,23 @@ class User extends Authenticatable
     }
 
     /**
-     * Agendamentos onde o usuário é o estudante
+     * Agendamentos onde o usuário é o solicitante
      *
      * @return HasMany<Scheduling, User>
      */
-    public function studentSchedulings(): HasMany
+    public function requesterSchedulings(): HasMany
     {
-        return $this->hasMany(Scheduling::class, 'student_id');
+        return $this->hasMany(Scheduling::class, 'requester_id');
     }
 
     /**
-     * Agendamentos onde o usuário é o educador (coordenador ou professor)
+     * Agendamentos onde o usuário é o solicitado
      *
      * @return HasMany<Scheduling, User>
      */
-    public function educatorSchedulings(): HasMany
+    public function requestedSchedulings(): HasMany
     {
-        return $this->hasMany(Scheduling::class, 'educator_id');
+        return $this->hasMany(Scheduling::class, 'requested_id');
     }
 
     public function isAdmin(): Attribute
@@ -117,5 +119,14 @@ class User extends Authenticatable
             ->logFillable()
             ->logOnlyDirty()
             ->logExcept(['password']);
+    }
+
+    #[Scope]
+    public function availableForSchedulingsWith(Builder $query, User $user): Builder
+    {
+        return $query->whereRelation('roles', 'can_receive_scheduling_requests', true)
+            ->whereHas('courses', function ($courseQuery) use ($user) {
+                $courseQuery->whereIn('courses.id', $user->courses()->pluck('id'));
+            });
     }
 }

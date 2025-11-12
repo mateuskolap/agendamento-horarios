@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Scheduling;
 use App\Data\Scheduling\StoreSchedulingData;
 use App\Enums\RoleEnum;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Services\Scheduling\SchedulingService;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -26,8 +27,11 @@ class SchedulingController extends Controller
 
     public function create(): Response
     {
+        $user = \Auth::user();
+
         return Inertia::render('schedulings/Create', [
-            'roles' => Role::whereCanReceiveSchedulingRequests(true)->get(),
+            'courses' => $user->courses()->get(),
+            'educators' => User::availableForSchedulingsWith($user)->get(),
         ]);
     }
 
@@ -39,6 +43,6 @@ class SchedulingController extends Controller
             return back()->with('error', $e->getMessage());
         }
 
-        return redirect()->route('schedulings')->with('success', 'Solicitação de agendamento encaminhada');
+        return redirect()->route('schedulings')->with('success', 'Solicitação de agendamento encaminhada.');
     }
 }
