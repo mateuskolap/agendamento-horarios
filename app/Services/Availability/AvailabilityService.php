@@ -3,7 +3,11 @@
 namespace App\Services\Availability;
 
 use App\Data\Availability\StoreAvailabilityData;
+use App\Data\AvailableTimesForUserData;
+use App\Enums\SchedulingStatusEnum;
 use App\Models\Availability;
+use App\Models\Scheduling;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use RuntimeException;
@@ -35,6 +39,43 @@ class AvailabilityService
         }
 
         return Availability::create($data->toArray());
+    }
+
+    public function getAvailableTimesForRequestedOnDay(Carbon $date, User $requested): Collection
+    {
+        $busySchedules = Scheduling::whereRequestedId($requested->id)
+            ->whereDate('date', $date)
+            ->where('status', '!=', SchedulingStatusEnum::REJECTED)
+            ->get(['start_time', 'end_time'])
+            ->map(function (Scheduling $s) use ($date) {
+                return [
+                    'start' => $date->copy()->setTimeFrom($s->start_time),
+                    'end' => $date->copy()->setTimeFrom($s->end_time),
+                ];
+            });
+
+        $availableTimes = $requested->availabilities()
+            ->where('weekday', $date->dayOfWeekIso)
+            ->get()
+            ->flatMap(function ($availability) use ($date) {
+                $start = $date->copy()->setTimeFromTimeString($availability->start_time);
+                $end = $date->copy()->setTimeFromTimeString($availability->end_time);
+
+                $slots = collect();
+
+                while ($start->lt($end)) {
+                    $slots->push($start);
+                    $start->addMinutes(30);
+                }
+
+                return $slots;
+            });
+
+        return $availableTimes->filter(function (Carbon $slot) use ($busySchedules) {
+            return !$busySchedules->contains(function ($busy) use ($slot) {
+                return $slot->gte($busy['start']) && $slot->lt($busy['end']);
+            });
+        })->map(fn(Carbon $t) => $t->toTimeString())->values();
     }
 
     private function itsOverlapping(StoreAvailabilityData $data): bool

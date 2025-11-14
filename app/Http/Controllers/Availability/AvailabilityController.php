@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Services\Availability\AvailabilityService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Collection;
 use Inertia\Inertia;
 use Inertia\Response;
 use RuntimeException;
@@ -35,41 +36,9 @@ class AvailabilityController extends Controller
         ]);
     }
 
-    public function availableTimesForRequestedOnDay(AvailableTimesForUserData $data, User $requested)
+    public function availableTimesForRequestedOnDay(AvailableTimesForUserData $data, User $requested): Collection
     {
-        $busySchedules = Scheduling::whereRequestedId($requested->id)
-            ->whereDate('date', $data->date)
-            ->where('status', '!=', SchedulingStatusEnum::REJECTED)
-            ->get(['start_time', 'end_time'])
-            ->map(function (Scheduling $s) use ($data) {
-                return [
-                    'start' => $data->date->copy()->setTimeFrom($s->start_time),
-                    'end' => $data->date->copy()->setTimeFrom($s->end_time),
-                ];
-            });
-
-        $availableTimes = $requested->availabilities()
-            ->where('weekday', $data->date->dayOfWeekIso)
-            ->get()
-            ->flatMap(function ($availability) use ($data) {
-                $start = $data->date->copy()->setTimeFromTimeString($availability->start_time);
-                $end = $data->date->copy()->setTimeFromTimeString($availability->end_time);
-
-                $slots = collect();
-
-                while ($start->lt($end)) {
-                    $slots->push($start);
-                    $start->addMinutes(30);
-                }
-
-                return $slots;
-            });
-
-        return $availableTimes->filter(function (Carbon $slot) use ($busySchedules) {
-            return !$busySchedules->contains(function ($busy) use ($slot) {
-                return $slot->gte($busy['start']) && $slot->lt($busy['end']);
-            });
-        })->map(fn(Carbon $t) => $t->toTimeString())->values();
+        return $this->availabilityService->getAvailableTimesForRequestedOnDay($data->date, $requested);
     }
 
     public function store(StoreAvailabilityData $data): RedirectResponse
