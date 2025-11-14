@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -47,5 +49,15 @@ class Course extends Model
         return LogOptions::defaults()
             ->logFillable()
             ->logOnlyDirty();
+    }
+
+    #[Scope]
+    protected function availableByRequested(Builder $query, User $requested): void
+    {
+        $query->where(function ($query) use ($requested) {
+            $query
+                ->where('coordinator_id', $requested->id)
+                ->orWhereRelation('coordinator', 'id', $requested->id);
+        });
     }
 }

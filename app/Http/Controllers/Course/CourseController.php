@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Course;
 
+use App\Data\Course\GetAvailableCoursesByRequestedData;
 use App\Data\Course\IndexCourseData;
 use App\Data\Course\StoreCourseData;
 use App\Data\Course\UpdateCourseData;
@@ -10,6 +11,7 @@ use App\Models\Course;
 use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Collection;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -22,7 +24,7 @@ class CourseController extends Controller
                 $query->whereOrganizationId($data->organization_id);
             })
             ->when($data->name, function ($query) use ($data) {
-                $query->where('name', 'like', '%'.$data->name.'%');
+                $query->where('name', 'like', '%' . $data->name . '%');
             })
             ->when($data->coordinator_id, function ($query) use ($data) {
                 $query->whereCoordinatorId($data->coordinator_id);
@@ -41,6 +43,23 @@ class CourseController extends Controller
             'coordinators_list' => $coordinatorsList,
             'organizations_list' => $organizationsList,
         ]);
+    }
+
+    public function getAvailableByRequested(GetAvailableCoursesByRequestedData $data): Collection
+    {
+        $user = \Auth::user();
+        $requested = User::find($data->requested_id);
+
+        if ($requested->roles()->where('can_receive_scheduling_requests', true)->doesntExist()) {
+            return collect();
+        }
+
+        return $user->courses()
+            ->select(['courses.id', 'courses.name', 'organization_id'])
+            ->availableByRequested($requested)
+            ->with('organization:id,name')
+            ->get()
+            ->makeHidden('pivot');
     }
 
     public function store(StoreCourseData $data): RedirectResponse

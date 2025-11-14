@@ -122,11 +122,18 @@ class User extends Authenticatable
     }
 
     #[Scope]
-    public function availableForSchedulingsWith(Builder $query, User $user): Builder
+    protected function availableForSchedulingsWith(Builder $query, User $user): void
     {
-        return $query->whereRelation('roles', 'can_receive_scheduling_requests', true)
-            ->whereHas('courses', function ($courseQuery) use ($user) {
-                $courseQuery->whereIn('courses.id', $user->courses()->pluck('id'));
+        $query
+            ->whereRelation('roles', 'can_receive_scheduling_requests', true)
+            ->where(function ($query) use ($user) {
+                $query
+                    ->whereHas('courses', function ($query) use ($user) {
+                        $query->whereIn('courses.id', $user->courses()->pluck('courses.id'));
+                    })
+                    ->orWhereHas('coordinatedCourses', function ($query) use ($user) {
+                        $query->whereIn('courses.id', $user->courses()->pluck('courses.id'));
+                    });
             });
     }
 }

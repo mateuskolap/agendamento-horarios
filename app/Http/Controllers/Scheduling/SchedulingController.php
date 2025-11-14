@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Scheduling;
 
+use App\Data\Scheduling\CreateSchedulingData;
 use App\Data\Scheduling\StoreSchedulingData;
 use App\Enums\RoleEnum;
 use App\Http\Controllers\Controller;
@@ -30,8 +31,7 @@ class SchedulingController extends Controller
         $user = \Auth::user();
 
         return Inertia::render('schedulings/Create', [
-            'courses' => $user->courses()->get(),
-            'educators' => User::availableForSchedulingsWith($user)->get(),
+            'educators' => User::availableForSchedulingsWith($user)->select(['id', 'name', 'email'])->get(),
         ]);
     }
 
