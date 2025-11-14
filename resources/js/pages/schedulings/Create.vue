@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import FormGroup from '@/components/FormGroup.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import IndexLayout from '@/layouts/IndexLayout.vue';
 import { schedulings as schedulingsList } from '@/routes';
@@ -39,13 +40,15 @@ watch(
     () => form.requested_id,
     async (requested_id) => {
         if (requested_id) {
-            axios.get(courses.availableByRequested().url, {
-                params: {
-                    requested_id: requested_id,
-                },
-            }).then((response) => {
-                availableCourses.value = response.data.data;
-            });
+            axios
+                .get(courses.availableByRequested().url, {
+                    params: {
+                        requested_id: requested_id,
+                    },
+                })
+                .then((response) => {
+                    availableCourses.value = response.data;
+                });
         }
     },
 );
@@ -60,17 +63,31 @@ function submit() {
     <AppLayout :breadcrumbs="breadcrumbs">
         <IndexLayout title="Solicitar Agendamento">
             <section class="max-w-2xl">
-                <form @submit.prevent="submit">
-                    <NSelect
-                        v-model:value="form.requested_id"
-                        :options="educators as any"
-                        value-field="id"
-                        label-field="name"
-                        filterable
-                        clearable
-                        :to="false"
-                    />
-                    <pre>{{ courses }}</pre>
+                <form @submit.prevent="submit" class="flex flex-col gap-3">
+                    <FormGroup label="Educador" :input-error="form.errors.requested_id" required>
+                        <NSelect
+                            v-model:value="form.requested_id"
+                            :options="educators as any"
+                            value-field="id"
+                            label-field="name"
+                            filterable
+                            clearable
+                            :to="false"
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <NSelect
+                            v-model:value="form.course_id"
+                            :options="educators as any"
+                            value-field="id"
+                            label-field="name"
+                            filterable
+                            clearable
+                            :disabled="!form.requested_id"
+                            :to="false"
+                        />
+                    </FormGroup>
+                    <pre>{{ availableCourses }}</pre>
                     <pre>{{ educators }}</pre>
                 </form>
             </section>

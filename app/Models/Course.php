@@ -57,7 +57,7 @@ class Course extends Model
         $query->where(function ($query) use ($requested) {
             $query
                 ->where('coordinator_id', $requested->id)
-                ->orWhereRelation('coordinator', 'id', $requested->id);
+                ->orWhereRelation('users', 'users.id', $requested->id);
         });
     }
 }
