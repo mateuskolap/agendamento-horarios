@@ -3,7 +3,6 @@
 namespace App\Services\Availability;
 
 use App\Data\Availability\StoreAvailabilityData;
-use App\Data\AvailableTimesForUserData;
 use App\Enums\SchedulingStatusEnum;
 use App\Models\Availability;
 use App\Models\Scheduling;

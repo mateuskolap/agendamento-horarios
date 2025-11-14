@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers\Availability;
 
+use App\Data\Availability\AvailableTimesForUserData;
 use App\Data\Availability\IndexAvailabilityData;
 use App\Data\Availability\StoreAvailabilityData;
-use App\Data\AvailableTimesForUserData;
-use App\Enums\SchedulingStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Models\Availability;
-use App\Models\Scheduling;
 use App\Models\User;
 use App\Services\Availability\AvailabilityService;
-use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Inertia\Inertia;
