@@ -6,7 +6,10 @@ use Inertia\Inertia;
 require __DIR__ . '/web/auth.php';
 
 Route::get('/', function () {
-    return Inertia::render('auth/Login');
+    if (auth()->check()) {
+        return redirect()->route('schedulings.index');
+    }
+    return redirect()->route('login');
 })->name('home');
 
 Route::middleware(['auth', 'verified', 'password.change'])->group(function () {
