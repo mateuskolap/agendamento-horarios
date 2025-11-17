@@ -42,39 +42,40 @@ class AvailabilityService
 
     public function getAvailableTimesForRequestedOnDay(Carbon $date, User $requested): Collection
     {
-        $busySchedules = Scheduling::whereRequestedId($requested->id)
-            ->whereDate('date', $date)
-            ->where('status', '!=', SchedulingStatusEnum::REJECTED)
-            ->get(['start_time', 'end_time'])
-            ->map(function (Scheduling $s) use ($date) {
+        $busySchedules = Scheduling::query()
+            ->where('requested_id', $requested->id)
+            ->where('date', $date)
+            ->whereIn('status', [SchedulingStatusEnum::APPROVED, SchedulingStatusEnum::PENDING])
+            ->get()
+            ->flatMap(function (Scheduling $scheduling) {
                 return [
-                    'start' => $date->copy()->setTimeFrom($s->start_time),
-                    'end' => $date->copy()->setTimeFrom($s->end_time),
+                    $scheduling->start_time,
+                    $scheduling->end_time,
                 ];
             });
 
-        $availableTimes = $requested->availabilities()
+        $availabilities = $requested->availabilities()
+            ->withoutGlobalScopes()
             ->where('weekday', $date->dayOfWeekIso)
-            ->get()
-            ->flatMap(function ($availability) use ($date) {
-                $start = $date->copy()->setTimeFromTimeString($availability->start_time);
-                $end = $date->copy()->setTimeFromTimeString($availability->end_time);
+            ->get();
 
-                $slots = collect();
+        $availableTimes = $availabilities->flatMap(function ($availability) use ($date) {
+            $start = $date->copy()->setTimeFromTimeString($availability->start_time);
+            $end = $date->copy()->setTimeFromTimeString($availability->end_time);
 
-                while ($start->lt($end)) {
-                    $slots->push($start);
-                    $start->addMinutes(30);
-                }
+            $slots = collect();
 
-                return $slots;
-            });
+            while ($start->lt($end)) {
+                $slots->push($start->copy());
+                $start->addMinutes(30);
+            }
 
-        return $availableTimes->filter(function (Carbon $slot) use ($busySchedules) {
-            return !$busySchedules->contains(function ($busy) use ($slot) {
-                return $slot->gte($busy['start']) && $slot->lt($busy['end']);
-            });
-        })->map(fn(Carbon $t) => $t->toTimeString())->values();
+            return $slots;
+        });
+
+        return $availableTimes->filter(function (Carbon $time) use ($busySchedules) {
+            return ! $busySchedules->contains($time->toTimeString());
+        })->map(fn (Carbon $time) => $time->toTimeString());
     }
 
     private function itsOverlapping(StoreAvailabilityData $data): bool

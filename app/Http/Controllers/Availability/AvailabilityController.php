@@ -33,9 +33,11 @@ class AvailabilityController extends Controller
         ]);
     }
 
-    public function availableTimesForRequestedOnDay(AvailableTimesForUserData $data, User $requested): Collection
+    public function availableTimesForRequestedOnDay(AvailableTimesForUserData $data, User $requested)
     {
-        return $this->availabilityService->getAvailableTimesForRequestedOnDay($data->date, $requested);
+        $times = $this->availabilityService->getAvailableTimesForRequestedOnDay($data->date, $requested);
+        
+        return response()->json($times->values()->toArray());
     }
 
     public function store(StoreAvailabilityData $data): RedirectResponse

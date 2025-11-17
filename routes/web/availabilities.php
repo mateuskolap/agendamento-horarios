@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Availability\AvailabilityController;
 
-Route::prefix('/users/{user}/available-times')->name('users.available_times.')->group(function () {
+Route::prefix('/users/{requested}/available-times')->name('users.available_times.')->group(function () {
     Route::get('/', [AvailabilityController::class, 'availableTimesForRequestedOnDay'])->name('get');
 });
 
