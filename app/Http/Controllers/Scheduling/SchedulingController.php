@@ -22,9 +22,19 @@ class SchedulingController extends Controller
 
     public function index(): Response
     {
+        $user = \Auth::user();
+
         return Inertia::render('schedulings/Index', [
-            'requested_schedulings' => Scheduling::where('requester_id', \Auth::user()->id),
-            'received_schedulings' => Scheduling::where('requested_id', \Auth::user()->id),
+            'requested_schedulings' => Scheduling::where('requester_id', $user->id)
+                ->with(['requester', 'requested', 'course'])
+                ->orderBy('date', 'desc')
+                ->orderBy('start_time', 'desc')
+                ->get(),
+            'received_schedulings' => Scheduling::where('requested_id', $user->id)
+                ->with(['requester', 'requested', 'course'])
+                ->orderBy('date', 'desc')
+                ->orderBy('start_time', 'desc')
+                ->get(),
         ]);
     }
 

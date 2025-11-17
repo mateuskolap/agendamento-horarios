@@ -5,9 +5,9 @@ use Inertia\Inertia;
 
 require __DIR__ . '/web/auth.php';
 
-Route::get('/', function () {
+Route::get('/', static function () {
     if (auth()->check()) {
-        return redirect()->route('schedulings.index');
+        return redirect()->route('schedulings');
     }
     return redirect()->route('login');
 })->name('home');
