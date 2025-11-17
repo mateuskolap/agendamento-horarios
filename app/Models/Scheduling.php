@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\SchedulingStatusEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -26,6 +27,7 @@ class Scheduling extends Model
     ];
 
     protected $casts = [
+        'status' => SchedulingStatusEnum::class,
         'date' => 'date',
         'start_time' => 'datetime:H:i',
         'end_time' => 'datetime:H:i',
