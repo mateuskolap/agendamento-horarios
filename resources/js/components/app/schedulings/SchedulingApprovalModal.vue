@@ -9,6 +9,7 @@ import { useForm } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 import { Calendar, Clock, User, BookOpen, CheckCircle, XCircle } from 'lucide-vue-next';
 import schedulings from '@/routes/schedulings';
+import { usePermission } from '@/composables/usePermissions';
 
 const props = defineProps<{
     open: boolean;
@@ -18,6 +19,8 @@ const props = defineProps<{
 const emit = defineEmits<{
     (e: 'update:open', value: boolean): void;
 }>();
+
+const can = usePermission();
 
 const form = useForm({
     status: '',
@@ -146,6 +149,7 @@ function closeModal() {
                 </div>
 
                 <FormGroup
+                    v-if="canApprove && can('schedulings.update-status')"
                     label="Mensagem de Resposta (Opcional)"
                     :input-error="form.errors.response_message"
                 >
@@ -173,7 +177,7 @@ function closeModal() {
                 </Button>
 
                 <Button
-                    v-if="canApprove"
+                    v-if="canApprove && can('schedulings.update-status')"
                     type="button"
                     variant="destructive"
                     @click="handleReject"
@@ -184,7 +188,7 @@ function closeModal() {
                 </Button>
 
                 <Button
-                    v-if="canApprove"
+                    v-if="canApprove && can('schedulings.update-status')"
                     type="button"
                     @click="handleApprove"
                     :disabled="form.processing"
