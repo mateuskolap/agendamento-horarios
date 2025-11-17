@@ -151,8 +151,8 @@ function submit() {
         requested_id: form.requested_id,
         course_id: form.course_id,
         date: formatDate(form.date),
-        start_time: form.start_time,
-        end_time: form.end_time,
+        start_time: form.start_time ? form.start_time.substring(0, 5) : '',
+        end_time: form.end_time ? form.end_time.substring(0, 5) : '',
         subject: form.subject,
     };
 
