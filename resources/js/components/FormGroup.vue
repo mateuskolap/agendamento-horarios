@@ -10,10 +10,12 @@ defineProps<{
 </script>
 
 <template>
-    <Label>
-        {{ label }}
-        <span v-if="required" class="text-red-500">*</span>
-    </Label>
-    <slot></slot>
-    <InputError :message="inputError"/>
+    <div class="space-y-2">
+        <Label>
+            {{ label }}
+            <span v-if="required" class="text-red-500">*</span>
+        </Label>
+        <slot />
+    </div>
+    <InputError :message="inputError" />
 </template>

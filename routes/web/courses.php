@@ -15,4 +15,8 @@ Route::middleware('can:courses.index')->prefix('/courses')->name('courses.')->gr
     Route::delete('/{course}', [CourseController::class, 'destroy'])
         ->middleware('can:courses.delete')
         ->name('destroy');
+
+    Route::get('/available-by-requested', [CourseController::class, 'getAvailableByRequested'])
+        ->withoutMiddleware('can:courses.index')
+        ->name('availableByRequested');
 });

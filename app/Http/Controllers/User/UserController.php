@@ -2,31 +2,35 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Data\User\IndexUserData;
+use App\Data\User\StoreUserData;
+use App\Data\User\UpdateUserData;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\IndexUserRequest;
-use App\Http\Requests\User\StoreUserRequest;
-use App\Http\Requests\User\UpdateUserRequest;
 use App\Models\User;
+use App\Services\User\UserService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-    public function index(IndexUserRequest $request): Response
+    public function __construct(
+        private readonly UserService $userService,
+    )
     {
-        $validated = $request->validated();
+    }
 
+    public function index(IndexUserData $data): Response
+    {
         $usersList = User::query()
-            ->when(! empty($validated['name']), function ($query) use ($validated) {
-                $query->where('users.name', 'like', '%'.$validated['name'].'%');
+            ->when($data->name, function ($query) use ($data) {
+                $query->where('users.name', 'like', '%'.$data->name.'%');
             })
-            ->when(! empty($validated['role_id']), function ($query) use ($validated) {
-                $query->whereHas('roles', function ($query) use ($validated) {
-                    $query->where('roles.id', $validated['role_id']);
+            ->when($data->role_id, function ($query) use ($data) {
+                $query->whereHas('roles', function ($query) use ($data) {
+                    $query->where('roles.id', $data->role_id);
                 });
             })
             ->with('roles:id,name')
@@ -46,36 +50,17 @@ class UserController extends Controller
         return redirect()->route('users.courses.index', ['user' => $user]);
     }
 
-    public function store(StoreUserRequest $request): RedirectResponse
+    public function store(StoreUserData $data): RedirectResponse
     {
-        $validated = $request->validated();
-
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-        ]);
-
-        $user->assignRole($validated['role_ids']);
-
+        $user = $this->userService->create($data);
         event(new Registered($user));
 
         return redirect()->back()->with('success', 'Usuário cadastrado com sucesso');
     }
 
-    public function update(UpdateUserRequest $request, User $user): RedirectResponse
+    public function update(UpdateUserData $data, User $user): RedirectResponse
     {
-        $validated = $request->validated();
-
-        if (! empty($validated['password'])) {
-            $validated['password'] = Hash::make($validated['password']);
-            $user->must_change_password = true;
-        } else {
-            unset($validated['password']);
-        }
-
-        $user->update($validated);
-        $user->syncRoles($validated['role_ids']);
+        $this->userService->update($user, $data);
 
         return redirect()->back()->with('success', 'Usuário atualizado com sucesso');
     }

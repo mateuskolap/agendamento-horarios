@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Data\CourseUser\DestroyCourseUserData;
+use App\Data\CourseUser\IndexCourseUserData;
+use App\Data\CourseUser\StoreCourseUserData;
 use App\Enums\RoleEnum;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CourseUser\IndexCourseUserRequest;
-use App\Http\Requests\DestroyCourseUserRequest;
-use App\Http\Requests\StoreCourseUserRequest;
 use App\Models\Course;
 use App\Models\Organization;
 use App\Models\User;
+use App\Services\CourseUser\CourseUserService;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -17,15 +18,19 @@ use Spatie\Permission\Models\Role;
 
 class CourseUserController extends Controller
 {
-    public function index(IndexCourseUserRequest $request, User $user): Response
+    public function __construct(
+        private readonly CourseUserService $courseUserService,
+    )
     {
-        $validated = $request->validated();
+    }
 
+    public function index(IndexCourseUserData $data, User $user): Response
+    {
         $userCourses = collect();
-        if (!empty($validated['role_id'])) {
-            $selectedRole = Role::find($validated['role_id']);
+        if ($data->role_id) {
+            $selectedRole = Role::find($data->role_id);
             $userCourses = $user->courses()
-                ->wherePivot('role_id', $validated['role_id'])
+                ->wherePivot('role_id', $data->role_id)
                 ->with('organization:id,name')
                 ->get();
 
@@ -48,33 +53,20 @@ class CourseUserController extends Controller
         ]);
     }
 
-    public function store(StoreCourseUserRequest $request, User $user): RedirectResponse
+    public function store(StoreCourseUserData $data, User $user): RedirectResponse
     {
-        $validated = $request->validated();
-
-        $role = Role::find($validated['role_id']);
-
-        if (!$role->courses_editable) {
-            return back()->with('error', 'Não é permitida a alteração dos cursos para usuários com a função: ' . $role->name . '.');
-        }
-
-        foreach ($validated['course_ids'] as $courseId) {
-            if ($user->courses()->wherePivot('role_id', $validated['role_id'])->where('courses.id', $courseId)->exists()) {
-                continue; // Esse curso já está vinculado ao usuário
-            }
-
-            $user->courses()->attach($courseId, ['role_id' => $validated['role_id']]);
-
+        try {
+            $this->courseUserService->create($data, $user);
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
         }
 
         return back()->with('success', 'Curso(s) vinculado(s) com sucesso!');
     }
 
-    public function destroy(DestroyCourseUserRequest $request, User $user, Course $course): RedirectResponse
+    public function destroy(DestroyCourseUserData $data, User $user, Course $course): RedirectResponse
     {
-        $validated = $request->validated();
-
-        $user->courses()->wherePivot('role_id', $validated['role_id'])->detach($course->id);
+        $user->courses()->wherePivot('role_id', $data->role_id)->detach($course->id);
 
         return back()->with('success', 'Curso removido com sucesso!');
     }

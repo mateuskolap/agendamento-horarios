@@ -2,32 +2,32 @@
 
 namespace App\Http\Controllers\Course;
 
+use App\Data\Course\GetAvailableCoursesByRequestedData;
+use App\Data\Course\IndexCourseData;
+use App\Data\Course\StoreCourseData;
+use App\Data\Course\UpdateCourseData;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Course\IndexCourseRequest;
-use App\Http\Requests\Course\StoreCourseRequest;
-use App\Http\Requests\Course\UpdateCourseRequest;
 use App\Models\Course;
 use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Collection;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class CourseController extends Controller
 {
-    public function index(IndexCourseRequest $request): Response
+    public function index(IndexCourseData $data): Response
     {
-        $validated = $request->validated();
-
         $coursesList = Course::query()
-            ->when(! empty($validated['organization_id']), function ($query) use ($validated) {
-                $query->whereOrganizationId($validated['organization_id']);
+            ->when($data->organization_id, function ($query) use ($data) {
+                $query->whereOrganizationId($data->organization_id);
             })
-            ->when(! empty($validated['name']), function ($query) use ($validated) {
-                $query->where('name', 'like', '%'.$validated['name'].'%');
+            ->when($data->name, function ($query) use ($data) {
+                $query->where('name', 'like', '%' . $data->name . '%');
             })
-            ->when(! empty($validated['coordinator_id']), function ($query) use ($validated) {
-                $query->whereCoordinatorId($validated['coordinator_id']);
+            ->when($data->coordinator_id, function ($query) use ($data) {
+                $query->whereCoordinatorId($data->coordinator_id);
             })
             ->select(['id', 'name', 'organization_id', 'coordinator_id'])
             ->with(['coordinator:id,name', 'organization:id,name'])
@@ -45,20 +45,33 @@ class CourseController extends Controller
         ]);
     }
 
-    public function store(StoreCourseRequest $request): RedirectResponse
+    public function getAvailableByRequested(GetAvailableCoursesByRequestedData $data): Collection
     {
-        $validated = $request->validated();
+        $user = \Auth::user();
+        $requested = User::find($data->requested_id);
 
-        Course::create($validated);
+        if ($requested->roles()->where('can_receive_scheduling_requests', true)->doesntExist()) {
+            return collect();
+        }
+
+        return $user->courses()
+            ->select(['courses.id', 'courses.name', 'organization_id'])
+            ->availableByRequested($requested)
+            ->with('organization:id,name')
+            ->get()
+            ->makeHidden('pivot');
+    }
+
+    public function store(StoreCourseData $data): RedirectResponse
+    {
+        Course::create($data->toArray());
 
         return back()->with('success', 'Curso criado com sucesso!');
     }
 
-    public function update(UpdateCourseRequest $request, Course $course): RedirectResponse
+    public function update(UpdateCourseData $data, Course $course): RedirectResponse
     {
-        $validated = $request->validated();
-
-        $course->update($validated);
+        $course->update($data->toArray());
 
         return back()->with('success', 'Curso atualizado com sucesso!');
     }

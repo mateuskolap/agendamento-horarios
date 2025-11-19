@@ -62,7 +62,7 @@ const handleDeleteCourse = async (course: Course) => {
                     <div>
                         <span class="text-xs font-semibold text-muted-foreground uppercase"> Coordenador </span>
                         <p class="font-medium text-foreground">
-                            {{ course.coordinator.name }}
+                            {{ course.coordinator?.name || 'Não atribuído' }}
                         </p>
                     </div>
                 </div>
@@ -86,7 +86,7 @@ const handleDeleteCourse = async (course: Course) => {
                     <TableCell>{{ course.id }}</TableCell>
                     <TableCell>{{ course.organization.name }}</TableCell>
                     <TableCell>{{ course.name }}</TableCell>
-                    <TableCell>{{ course.coordinator.name }}</TableCell>
+                    <TableCell>{{ course.coordinator?.name || 'Não atribuído' }}</TableCell>
                     <TableCell v-if="canEdit || canDelete">
                         <UpdateCourseDialog :course="course" :coordinators_list="coordinators_list" :organizations_list="organizations_list" />
                         <Button v-if="canDelete" variant="ghost" size="sm" class="cursor-pointer" @click="handleDeleteCourse(course)">

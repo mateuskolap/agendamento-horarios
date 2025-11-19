@@ -1,7 +1,16 @@
 <script setup lang="ts">
 import FormGroup from '@/components/FormGroup.vue';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { usePermission } from '@/composables/usePermissions';
 import { useForm } from '@inertiajs/vue3';
@@ -43,6 +52,7 @@ function submit() {
         <DialogContent class="sm:max-w-[500px]">
             <DialogHeader>
                 <DialogTitle>Editar Usuário</DialogTitle>
+                <DialogDescription />
             </DialogHeader>
             <form @submit.prevent="submit">
                 <div class="grid gap-3 py-4">
@@ -53,11 +63,7 @@ function submit() {
                         <Input v-model="form.email" type="email" placeholder="Digite o E-mail" />
                     </FormGroup>
                     <FormGroup label="Senha" :input-error="form.errors.password">
-                        <Input
-                            v-model="form.password"
-                            type="password"
-                            placeholder="Digite a Nova Senha (deixe vazio para manter)"
-                        />
+                        <Input v-model="form.password" type="password" placeholder="Digite a Nova Senha (deixe vazio para manter)" />
                     </FormGroup>
                     <FormGroup v-if="form.password" label="Confirmar Senha" :input-error="form.errors.password_confirmation" required>
                         <Input v-model="form.password_confirmation" type="password" placeholder="Confirme a Senha" />

@@ -49,7 +49,7 @@ const { naiveTheme, themeOverrides } = useNaiveTheme();
 <template>
     <NConfigProvider :theme="naiveTheme" :theme-overrides="themeOverrides" :locale="ptBR">
         <AppLayout :breadcrumbs="breadcrumbs">
-            <div class="px-3 py-3">
+            <div class="px-3 py-3 h-full">
                 <slot />
             </div>
         </AppLayout>

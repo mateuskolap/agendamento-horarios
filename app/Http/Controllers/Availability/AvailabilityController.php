@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Availability;
 
-use App\Data\StoreAvailabilityData;
+use App\Data\Availability\AvailableTimesForUserData;
+use App\Data\Availability\IndexAvailabilityData;
+use App\Data\Availability\StoreAvailabilityData;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Availability\IndexAvailabilityRequest;
-use App\Http\Requests\Availability\StoreAvailabilityRequest;
 use App\Models\Availability;
+use App\Models\User;
 use App\Services\Availability\AvailabilityService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Collection;
 use Inertia\Inertia;
 use Inertia\Response;
 use RuntimeException;
@@ -21,28 +23,27 @@ class AvailabilityController extends Controller
     {
     }
 
-    public function index(IndexAvailabilityRequest $request): Response
+    public function index(IndexAvailabilityData $data): Response
     {
-        $validated = $request->validated();
-
-        $availabilitiesList = Availability::query()
-            ->when(!empty($validated['weekday']), function ($weekdayQuery) use ($validated) {
-                $weekdayQuery->where('weekday', $validated['weekday']);
-            })
-            ->orderBy('start_time')
-            ->get();
-
         return Inertia::render('settings/Availabilities', [
-            'availabilities_list' => $availabilitiesList,
+            'availabilities_list' => Availability::query()
+                ->whereWeekday($data->weekday)
+                ->orderBy('start_time')
+                ->get(),
         ]);
     }
 
-    public function store(StoreAvailabilityRequest $request): RedirectResponse
+    public function availableTimesForRequestedOnDay(AvailableTimesForUserData $data, User $requested)
     {
-        $storeAvailabilityDTO = StoreAvailabilityData::from($request->validated());
+        $times = $this->availabilityService->getAvailableTimesForRequestedOnDay($data->date, $requested);
+        
+        return response()->json($times->values()->toArray());
+    }
 
+    public function store(StoreAvailabilityData $data): RedirectResponse
+    {
         try {
-            $this->availabilityService->create($storeAvailabilityDTO);
+            $this->availabilityService->create($data);
         } catch (RuntimeException $e) {
             return back()->with('error', $e->getMessage());
         }

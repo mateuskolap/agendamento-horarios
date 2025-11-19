@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import FormGroup from '@/components/FormGroup.vue';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { usePermission } from '@/composables/usePermissions';
 import courses from '@/routes/courses';
@@ -49,6 +49,7 @@ function submit() {
         <DialogContent class="sm:max-w-[500px]">
             <DialogHeader>
                 <DialogTitle>Adicionar Curso</DialogTitle>
+                <DialogDescription />
             </DialogHeader>
             <form @submit.prevent="submit">
                 <div class="grid gap-3 py-4">

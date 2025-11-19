@@ -2,47 +2,44 @@
 
 namespace App\Models;
 
+use App\Enums\SchedulingStatusEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
-use Spatie\Permission\Models\Role;
 
 class Scheduling extends Model
 {
     use SoftDeletes, LogsActivity;
 
     protected $fillable = [
-        'student_id',
-        'educator_id',
-        'educator_role_id',
+        'requester_id',
+        'requested_id',
         'course_id',
         'date',
-        'time',
+        'start_time',
+        'end_time',
         'subject',
         'status',
     ];
 
     protected $casts = [
+        'status' => SchedulingStatusEnum::class,
         'date' => 'date',
-        'time' => 'datetime:H:i',
+        'start_time' => 'datetime:H:i',
+        'end_time' => 'datetime:H:i',
     ];
 
-    public function student(): BelongsTo
+    public function requester(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function educator(): BelongsTo
+    public function requested(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function educatorRole(): BelongsTo
-    {
-        return $this->belongsTo(Role::class);
     }
 
     public function course(): BelongsTo

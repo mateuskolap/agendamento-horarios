@@ -2,8 +2,13 @@
 
 namespace App\Services\Availability;
 
-use App\Data\StoreAvailabilityData;
+use App\Data\Availability\StoreAvailabilityData;
+use App\Enums\SchedulingStatusEnum;
 use App\Models\Availability;
+use App\Models\Scheduling;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use RuntimeException;
 
 class AvailabilityService
@@ -14,23 +19,63 @@ class AvailabilityService
             throw new RuntimeException('A disponibilidade informada está sobreposta a outra já existente.');
         }
 
-        $existingAvailability = $this->existsByStartOrEndTime($data);
-        if ($existingAvailability) {
-            if ($existingAvailability->end_time->equalTo($data->start_time)) {
-                $existingAvailability->update([
-                    'end_time' => $data->end_time,
-                ]);
+        $adjacents = $this->findAdjacentAvailabilities($data);
 
-            } elseif ($existingAvailability->start_time->equalTo($data->end_time)) {
-                $existingAvailability->update([
-                    'start_time' => $data->start_time,
-                ]);
-            }
+        if ($adjacents->isNotEmpty()) {
+            $minStart = $adjacents->min('start_time');
+            $maxEnd = $adjacents->max('end_time');
 
-            return $existingAvailability->refresh();
+            $minStart = min($minStart, $data->start_time);
+            $maxEnd = max($maxEnd, $data->end_time);
+
+            Availability::whereIn('id', $adjacents->pluck('id'))->delete();
+
+            return Availability::create([
+                ...$data->toArray(),
+                'start_time' => $minStart,
+                'end_time' => $maxEnd,
+            ]);
         }
 
         return Availability::create($data->toArray());
+    }
+
+    public function getAvailableTimesForRequestedOnDay(Carbon $date, User $requested): Collection
+    {
+        $busySchedules = Scheduling::query()
+            ->where('requested_id', $requested->id)
+            ->where('date', $date)
+            ->whereIn('status', [SchedulingStatusEnum::APPROVED, SchedulingStatusEnum::PENDING])
+            ->get()
+            ->flatMap(function (Scheduling $scheduling) {
+                return [
+                    $scheduling->start_time,
+                    $scheduling->end_time,
+                ];
+            });
+
+        $availabilities = $requested->availabilities()
+            ->withoutGlobalScopes()
+            ->where('weekday', $date->dayOfWeekIso)
+            ->get();
+
+        $availableTimes = $availabilities->flatMap(function ($availability) use ($date) {
+            $start = $date->copy()->setTimeFromTimeString($availability->start_time);
+            $end = $date->copy()->setTimeFromTimeString($availability->end_time);
+
+            $slots = collect();
+
+            while ($start->lt($end)) {
+                $slots->push($start->copy());
+                $start->addMinutes(30);
+            }
+
+            return $slots;
+        });
+
+        return $availableTimes->filter(function (Carbon $time) use ($busySchedules) {
+            return ! $busySchedules->contains($time->toTimeString());
+        })->map(fn (Carbon $time) => $time->toTimeString());
     }
 
     private function itsOverlapping(StoreAvailabilityData $data): bool
@@ -43,7 +88,7 @@ class AvailabilityService
             ->exists();
     }
 
-    private function existsByStartOrEndTime(StoreAvailabilityData $data): ?Availability
+    private function findAdjacentAvailabilities(StoreAvailabilityData $data): Collection
     {
         return Availability::query()
             ->whereUserId($data->user_id)
@@ -52,6 +97,6 @@ class AvailabilityService
                 $query->whereTime('end_time', $data->start_time)
                     ->orWhereTime('start_time', $data->end_time);
             })
-            ->first();
+            ->get();
     }
 }
