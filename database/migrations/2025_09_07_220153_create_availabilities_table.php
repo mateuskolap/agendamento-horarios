@@ -13,12 +13,11 @@ return new class extends Migration
     {
         Schema::create('availabilities', function (Blueprint $table) {
             $table->id();
-            $table->integer('educator_id');
-            $table->string('educator_type');
+            $table->foreignId('user_id')->constrained();
             $table->integer('weekday');
-            $table->time('time');
+            $table->time('start_time');
+            $table->time('end_time');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

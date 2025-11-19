@@ -13,11 +13,14 @@ return new class extends Migration
     {
         Schema::create('schedulings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('student_id')->constrained();
-            $table->integer('educator_id');
-            $table->string('educator_type');
+            $table->foreignId('student_id')->constrained('users');
+            $table->foreignId('educator_id')->constrained('users');
+            $table->foreignId('educator_role_id')->constrained('roles');
             $table->foreignId('course_id')->constrained();
-            $table->string('subject');
+            $table->date('date');
+            $table->time('start_time');
+            $table->time('end_time');
+            $table->text('subject');
             $table->string('status');
             $table->timestamps();
             $table->softDeletes();

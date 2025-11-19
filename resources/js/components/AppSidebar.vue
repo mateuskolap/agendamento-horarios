@@ -2,22 +2,25 @@
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
 import courses from '@/routes/courses';
 import users from '@/routes/users';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/vue3';
-import { GraduationCap, LayoutGrid, Users } from 'lucide-vue-next';
+import { Link, usePage } from '@inertiajs/vue3';
+import { GraduationCap, Clock, Users } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 import { usePermission } from '@/composables/usePermissions';
+import { schedulings } from '@/routes';
 
 const can = usePermission();
+const page = usePage();
+
+const mustChangePassword = page.props.auth.user.must_change_password;
 
 const mainNavItems = [
     {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
+        title: 'Agendamentos',
+        href: schedulings(),
+        icon: Clock,
     },
     can('courses.index') && {
         title: 'Cursos',
@@ -38,7 +41,7 @@ const mainNavItems = [
             <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton as-child class="justify-center" size="lg">
-                        <Link :href="dashboard()">
+                        <Link :href="schedulings()">
                             <AppLogo />
                         </Link>
                     </SidebarMenuButton>
@@ -47,7 +50,7 @@ const mainNavItems = [
         </SidebarHeader>
 
         <SidebarContent>
-            <NavMain :items="mainNavItems" />
+            <NavMain v-if="!mustChangePassword" :items="mainNavItems" />
         </SidebarContent>
 
         <SidebarFooter>

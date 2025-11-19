@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import { useFlash } from '@/composables/useFlash';
+import { useNaiveTheme } from '@/composables/useNaiveTheme';
 import AppLayout from '@/layouts/app/AppSidebarLayout.vue';
 import type { BreadcrumbItemType } from '@/types';
-import { useNaiveTheme } from '@/composables/useNaiveTheme';
 import ptBR from 'naive-ui/es/locales/common/ptBR';
-import { useFlash } from '@/composables/useFlash';
 import { watch } from 'vue';
-import Swal from 'sweetalert2';
+import { Toaster, toast } from 'vue-sonner';
+import 'vue-sonner/style.css';
 
 interface Props {
     breadcrumbs?: BreadcrumbItemType[];
@@ -17,65 +18,30 @@ withDefaults(defineProps<Props>(), {
 
 const flash = useFlash();
 
-watch(flash, (msg) => {
+watch(() => flash.value, (msg) => {
     if (!msg) return;
 
     if (msg.success) {
-        Swal.fire({
-            icon: "success",
-            title: "Sucesso",
-            text: msg.success,
-            timer: 1500,
-            showConfirmButton: false,
-            position: "top-end",
-            width: 400,
-            height: 200,
-            padding: '1em',
+        toast.success('Sucesso', {
+            description: msg.success
         });
     }
-
-    if (msg.info) {
-        Swal.fire({
-            icon: "info",
-            title: "Informação",
-            text: msg.info,
-            timer: 3000,
-            showConfirmButton: false,
-            position: "top-end",
-            width: 400,
-            height: 200,
-            padding: '1em',
-        });
-    }
-
-    if (msg.warning) {
-        Swal.fire({
-            icon: "warning",
-            title: "Atenção",
-            text: msg.warning,
-            timer: 3000,
-            showConfirmButton: false,
-            position: "top-end",
-            width: 400,
-            height: 200,
-            padding: '1em',
-        });
-    }
-
     if (msg.error) {
-        Swal.fire({
-            icon: "error",
-            title: "Erro",
-            text: msg.error,
-            timer: 3000,
-            showConfirmButton: false,
-            position: "top-end",
-            width: 400,
-            height: 200,
-            padding: '1em',
+        toast.error('Erro', {
+            description: msg.error
         });
     }
-})
+    if (msg.warning) {
+        toast.warning('Atenção', {
+            description: msg.warning
+        });
+    }
+    if (msg.info) {
+        toast.info('Informação', {
+            description: msg.info
+        });
+    }
+}, { immediate: true });
 
 const { naiveTheme, themeOverrides } = useNaiveTheme();
 </script>
@@ -83,9 +49,17 @@ const { naiveTheme, themeOverrides } = useNaiveTheme();
 <template>
     <NConfigProvider :theme="naiveTheme" :theme-overrides="themeOverrides" :locale="ptBR">
         <AppLayout :breadcrumbs="breadcrumbs">
-            <div class="px-3 py-3">
+            <div class="px-3 py-3 h-full">
                 <slot />
             </div>
         </AppLayout>
+        <Toaster
+            position="top-right"
+            theme="dark"
+            expand
+            richColors
+            :duration="5000"
+            closeButton
+        />
     </NConfigProvider>
 </template>

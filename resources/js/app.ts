@@ -1,14 +1,14 @@
 import 'sweetalert2/dist/sweetalert2.min.css';
 import '../css/app.css';
 
-import { createInertiaApp, router, usePage } from '@inertiajs/vue3';
+import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import type { DefineComponent } from 'vue';
 import { createApp, h } from 'vue';
 import { initializeTheme } from './composables/useAppearance';
 import naive from 'naive-ui'
 import VueSweetalert2 from 'vue-sweetalert2';
-import Swal from 'sweetalert2';
+import { translatePlugin } from './plugins/translate';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -18,6 +18,7 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         createApp({ render: () => h(App, props) })
             .use(plugin)
+            .use(translatePlugin)
             .use(naive)
             .use(VueSweetalert2)
             .mount(el);

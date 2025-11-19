@@ -2,34 +2,44 @@
 
 namespace App\Models;
 
+use App\Enums\SchedulingStatusEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Scheduling extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, LogsActivity;
 
     protected $fillable = [
-        'student_id',
-        'educator_id',
-        'educator_type',
+        'requester_id',
+        'requested_id',
         'course_id',
+        'date',
+        'start_time',
+        'end_time',
         'subject',
         'status',
     ];
 
-    public function student(): BelongsTo
+    protected $casts = [
+        'status' => SchedulingStatusEnum::class,
+        'date' => 'date',
+        'start_time' => 'datetime:H:i',
+        'end_time' => 'datetime:H:i',
+    ];
+
+    public function requester(): BelongsTo
     {
-        return $this->belongsTo(Student::class);
+        return $this->belongsTo(User::class);
     }
 
-    public function educator(): MorphTo
+    public function requested(): BelongsTo
     {
-        return $this->morphTo();
+        return $this->belongsTo(User::class);
     }
 
     public function course(): BelongsTo
@@ -37,13 +47,15 @@ class Scheduling extends Model
         return $this->belongsTo(Course::class);
     }
 
-    public function availabilities(): BelongsToMany
-    {
-        return $this->belongsToMany(Availability::class, 'availability_schedulings');
-    }
-
     public function responses(): HasMany
     {
         return $this->hasMany(Response::class);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logFillable()
+            ->logOnlyDirty();
     }
 }

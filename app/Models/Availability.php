@@ -2,29 +2,28 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\AvailabilityAccessibleByUserScope;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+#[ScopedBy([AvailabilityAccessibleByUserScope::class])]
 class Availability extends Model
 {
-    use SoftDeletes;
-
     protected $fillable = [
-        'educator_id',
-        'educator_type',
+        'user_id',
         'weekday',
-        'time',
+        'start_time',
+        'end_time',
     ];
 
-    public function educator(): MorphTo
-    {
-        return $this->morphTo();
-    }
+    protected $casts = [
+        'start_time' => 'datetime:H:i',
+        'end_time' => 'datetime:H:i',
+    ];
 
-    public function schedulings(): BelongsToMany
+    public function user(): BelongsTo
     {
-        return $this->belongsToMany(Scheduling::class, 'availability_schedulings');
+        return $this->belongsTo(User::class);
     }
 }

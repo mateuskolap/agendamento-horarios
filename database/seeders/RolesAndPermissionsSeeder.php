@@ -22,6 +22,10 @@ class RolesAndPermissionsSeeder extends Seeder
             'users.create',
             'users.update',
             'users.delete',
+            'users.courses.index',
+            'availabilities.index',
+            'availabilities.create',
+            'schedulings.update-status',
         ];
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
@@ -33,10 +37,38 @@ class RolesAndPermissionsSeeder extends Seeder
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         Role::firstOrCreate(['name' => 'admin'])
-            ->syncPermissions(Permission::all());
+            ->syncPermissions(Permission::all())
+            ->update(['courses_editable' => false]);
 
         Role::firstOrCreate(['name' => 'coordinator'])
-            ->syncPermissions([]);
+            ->syncPermissions([
+                'courses.index',
+                'users.index',
+                'users.create',
+                'users.update',
+                'users.delete',
+                'users.courses.index',
+                'availabilities.index',
+                'availabilities.create',
+                'schedulings.update-status',
+            ])
+            ->update([
+                'courses_editable' => false,
+                'can_receive_scheduling_requests' => true,
+            ]);
+
+        Role::firstOrCreate(['name' => 'professor'])
+            ->syncPermissions([
+                'courses.index',
+                'users.index',
+                'users.courses.index',
+                'availabilities.index',
+                'availabilities.create',
+                'schedulings.update-status',
+            ])
+            ->update([
+                'can_receive_scheduling_requests' => true,
+            ]);
 
         Role::firstOrCreate(['name' => 'student'])
             ->syncPermissions([]);

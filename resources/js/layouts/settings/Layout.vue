@@ -1,55 +1,48 @@
 <script setup lang="ts">
-import Heading from '@/components/Heading.vue';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { toUrl, urlIsActive } from '@/lib/utils';
+import { usePermission } from '@/composables/usePermissions';
+import SidebarLayout from '@/layouts/SidebarLayout.vue';
+import availabilities from '@/routes/availabilities';
 import { edit as editPassword } from '@/routes/password';
 import { edit } from '@/routes/profile';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/vue3';
+import { usePage } from '@inertiajs/vue3';
 
-const sidebarNavItems: NavItem[] = [
-    {
-        title: 'Perfil',
-        href: edit(),
-    },
-    {
-        title: 'Senha',
-        href: editPassword(),
-    },
-];
+const page = usePage();
+const can = usePermission();
 
-const currentPath = typeof window !== undefined ? window.location.pathname : '';
+const mustChangePassword = page.props.auth.user.must_change_password;
+
+const sidebarNavItems: NavItem[] = mustChangePassword
+    ? [
+          {
+              title: 'Senha',
+              href: editPassword(),
+          },
+      ]
+    : [
+          {
+              title: 'Perfil',
+              href: edit(),
+          },
+          {
+              title: 'Senha',
+              href: editPassword(),
+          },
+          ...(can('availabilities.index')
+              ? [
+                    {
+                        title: 'Horários',
+                        href: availabilities.index(),
+                    },
+                ]
+              : []),
+      ];
 </script>
 
 <template>
-    <div class="px-4 py-6">
-        <Heading title="Configurações" description="Gerencie as suas configurações" />
-
-        <div class="flex flex-col lg:flex-row lg:space-x-12">
-            <aside class="w-full max-w-xl lg:w-48">
-                <nav class="flex flex-col space-y-1 space-x-0">
-                    <Button
-                        v-for="item in sidebarNavItems"
-                        :key="toUrl(item.href)"
-                        variant="ghost"
-                        :class="['w-full justify-start', { 'bg-muted': urlIsActive(item.href, currentPath) }]"
-                        as-child
-                    >
-                        <Link :href="item.href">
-                            {{ item.title }}
-                        </Link>
-                    </Button>
-                </nav>
-            </aside>
-
-            <Separator class="my-6 lg:hidden" />
-
-            <div class="flex-1 md:max-w-2xl">
-                <section class="max-w-xl space-y-12">
-                    <slot />
-                </section>
-            </div>
-        </div>
-    </div>
+    <SidebarLayout :sidebar-nav-items="sidebarNavItems" nav-title="Configurações" nav-description="Gerencie as suas configurações">
+        <section class="max-w-xl space-y-12">
+            <slot></slot>
+        </section>
+    </SidebarLayout>
 </template>
